@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/rounded_card"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/architectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="John Santos"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/architectStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modern / Minimalist"
+        android:textColor="@color/dark_gray"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/architectBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Budget: ₱300k - ₱500k"
+        android:textColor="@color/gray"
+        android:textSize="13sp"
+        android:layout_marginBottom="6dp" />
+
+    <Button
+        android:id="@+id/matchButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Match"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white" />
+</LinearLayout>

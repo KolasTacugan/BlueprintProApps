@@ -25,13 +25,15 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
+
+        // Adjust for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Get UI references
+        // UI references
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
         val loginButton = findViewById<Button>(R.id.loginButton)
@@ -39,17 +41,19 @@ class LoginActivity : AppCompatActivity() {
         val registerLink = findViewById<TextView>(R.id.registerLink)
         val forgotPassword = findViewById<TextView>(R.id.forgotPassword)
 
-
+        // Navigate to Change Password
         forgotPassword.setOnClickListener {
             val intent = Intent(this@LoginActivity, ChangePasswordActivity::class.java)
             startActivity(intent)
-
         }
+
+        // Navigate to Choose Role / Register
         registerLink.setOnClickListener {
             val intent = Intent(this@LoginActivity, ChooseRoleActivity::class.java)
             startActivity(intent)
-
         }
+
+        // Login button click
         loginButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
@@ -59,21 +63,37 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Create login request
             val request = LoginRequest(email = email, password = password)
 
-            // Call API
             ApiClient.instance.login(request).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Login successful! Welcome ${loginResponse?.email}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (loginResponse != null) {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Login successful! Welcome ${loginResponse.email}",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                        // TODO: Save user info in SessionManager and navigate to dashboard
+                            // Navigate based on role
+                            when (loginResponse.role.lowercase()) {
+                                "client" -> {
+                                    val intent = Intent(this@LoginActivity, ClientDashboardActivity::class.java)
+                                    startActivity(intent)
+                                    finish() // Close LoginActivity
+                                }
+                                "architect" -> {
+                                    // Placeholder for Architect dashboard
+                                    Toast.makeText(this@LoginActivity, "Architect login not implemented yet", Toast.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    Toast.makeText(this@LoginActivity, "Unknown role", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            Toast.makeText(this@LoginActivity, "Login failed: empty response", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
