@@ -2,6 +2,11 @@ package com.example.blueprintproapps.network
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,39 +27,80 @@ class MatchClientActivity : AppCompatActivity() {
 
     private lateinit var matchRecyclerView: RecyclerView
     private lateinit var matchAdapter: MatchAdapter
+    private lateinit var clientPrompt: EditText
+    private lateinit var sendButton: ImageButton
+    private lateinit var chatContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_match_client)
 
-        // Adjust layout for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Initialize RecyclerView
+        // Initialize views
         matchRecyclerView = findViewById(R.id.matchRecyclerView)
+        clientPrompt = findViewById(R.id.clientPrompt)
+        sendButton = findViewById(R.id.sendButton)
+        chatContainer = findViewById(R.id.chatContainer)
+
+        // RecyclerView setup
         matchRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        // Setup adapter with click listener
         matchAdapter = MatchAdapter { architectId ->
             sendMatchRequest(architectId)
         }
         matchRecyclerView.adapter = matchAdapter
 
-        // Load available architects
+        // Initial load
         fetchMatches()
+
+        // Handle send button click
+        sendButton.setOnClickListener {
+            val query = clientPrompt.text.toString().trim()
+            if (query.isNotEmpty()) {
+                addChatMessage(query, isClient = true) // Add to chat
+                fetchMatches(query) // Refresh matches
+                clientPrompt.text.clear()
+            } else {
+                Toast.makeText(this, "Please enter what you're looking for.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
-     * Fetch all available architects (GET /api/MobileClient/Matches)
+     * Add a chat message to the chat container dynamically
      */
-    private fun fetchMatches() {
-        ApiClient.instance.getMatches().enqueue(object : Callback<List<MatchResponse>> {
+    private fun addChatMessage(message: String, isClient: Boolean) {
+        val inflater = LayoutInflater.from(this)
+        val chatView = inflater.inflate(R.layout.item_chat_message, chatContainer, false)
+
+        val textView = chatView.findViewById<TextView>(R.id.chatMessage)
+        textView.text = message
+
+        // Differentiate style for client vs system messages
+        val layoutParams = textView.layoutParams as LinearLayout.LayoutParams
+        if (isClient) {
+            layoutParams.marginEnd = 60
+            textView.setBackgroundResource(R.drawable.bg_client_message)
+        } else {
+            layoutParams.marginStart = 60
+            textView.setBackgroundResource(R.drawable.bg_system_message)
+        }
+
+        textView.layoutParams = layoutParams
+        chatContainer.addView(chatView)
+    }
+
+    /**
+     * Fetch architects with optional query
+     */
+    private fun fetchMatches(query: String? = null) {
+        ApiClient.instance.getMatches(query).enqueue(object : Callback<List<MatchResponse>> {
             override fun onResponse(
                 call: Call<List<MatchResponse>>,
                 response: Response<List<MatchResponse>>
@@ -62,6 +108,9 @@ class MatchClientActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val matches = response.body()!!
                     matchAdapter.submitList(matches)
+
+                    // Add system message about loaded results
+                    addChatMessage("Found ${matches.size} architect(s) for: ${query ?: "all"}", isClient = false)
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("MatchClientActivity", "Failed to load matches: ${response.code()} - $errorBody")
@@ -85,10 +134,16 @@ class MatchClientActivity : AppCompatActivity() {
     }
 
     /**
-     * Send a match request (POST /api/MobileClient/RequestMatch)
+     * Send a match request ensuring clientId is from login
      */
     private fun sendMatchRequest(architectId: String) {
-        val request = MatchRequest(architectId)
+        val clientId = getClientIdFromPreferences()
+        if (clientId.isEmpty()) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val request = MatchRequest(architectId, clientId)
 
         ApiClient.instance.requestMatch(request).enqueue(object : Callback<GenericResponse> {
             override fun onResponse(
@@ -102,7 +157,7 @@ class MatchClientActivity : AppCompatActivity() {
                         body.message ?: "Match request sent!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    fetchMatches() // Refresh after success
+                    fetchMatches()
                 } else {
                     val message = body?.message ?: "Failed to send request"
                     Log.e("MatchClientActivity", "Match request failed: $message")
@@ -123,5 +178,13 @@ class MatchClientActivity : AppCompatActivity() {
                 ).show()
             }
         })
+    }
+
+    /**
+     * Read clientId stored at login
+     */
+    private fun getClientIdFromPreferences(): String {
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        return prefs.getString("clientId", "") ?: ""
     }
 }
