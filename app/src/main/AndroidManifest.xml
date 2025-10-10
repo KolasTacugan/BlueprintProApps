@@ -16,6 +16,9 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".network.MarketPlaceActivity"
+            android:exported="false" />
+        <activity
             android:name=".network.MatchClientActivity"
             android:exported="false" />
         <activity

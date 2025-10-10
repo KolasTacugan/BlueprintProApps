@@ -1,5 +1,7 @@
 package com.example.blueprintproapps.models
 
+import com.google.gson.annotations.SerializedName
+
 data class BlueprintResponse(
     val blueprintId: Int,
     val blueprintName: String,
@@ -7,3 +9,5 @@ data class BlueprintResponse(
     val blueprintPrice: Double,
     val blueprintIsForSale: Boolean
 )
+
+
