@@ -70,6 +70,10 @@ class LoginActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
                         if (loginResponse != null) {
+                            // Save clientId for future sessions
+                            val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                            prefs.edit().putString("clientId", loginResponse.userId).apply()
+
                             Toast.makeText(
                                 this@LoginActivity,
                                 "Login successful! Welcome ${loginResponse.email}",
@@ -84,16 +88,14 @@ class LoginActivity : AppCompatActivity() {
                                     finish() // Close LoginActivity
                                 }
                                 "architect" -> {
-                                    // Placeholder for Architect dashboard
                                     Toast.makeText(this@LoginActivity, "Architect login not implemented yet", Toast.LENGTH_SHORT).show()
                                 }
                                 else -> {
                                     Toast.makeText(this@LoginActivity, "Unknown role", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        } else {
-                            Toast.makeText(this@LoginActivity, "Login failed: empty response", Toast.LENGTH_SHORT).show()
                         }
+
                     } else {
                         Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }

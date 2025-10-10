@@ -47,7 +47,8 @@ interface ApiService {
     fun requestMatch(
         @Body request: MatchRequest
     ): Call<GenericResponse>
-
+    @POST("api/MobileArchitect/RespondMatch")
+    fun respondMatch(@Body request: MatchResponseRequest): Call<GenericResponse>
     @GET("api/MobileClient/Messages/{architectId}")
     fun getMessages(@Path("architectId") architectId: String): Call<List<MessageResponse>>
 
