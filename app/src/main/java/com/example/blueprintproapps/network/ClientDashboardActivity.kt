@@ -25,10 +25,15 @@ class ClientDashboardActivity : AppCompatActivity() {
 
         // ✅ Reference your "Find Architect" button
         val findArchitect = findViewById<LinearLayout>(R.id.findArchitect)
+        val marketplaceBtn = findViewById<LinearLayout>(R.id.marketplaceBtn)
 
         // ✅ Open MatchClientActivity when tapped
         findArchitect.setOnClickListener {
             val intent = Intent(this, MatchClientActivity::class.java)
+            startActivity(intent)
+        }
+        marketplaceBtn.setOnClickListener {
+            val intent = Intent(this, MarketPlaceActivity::class.java)
             startActivity(intent)
         }
     }

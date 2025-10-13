@@ -20,7 +20,8 @@ interface ApiService {
     fun getDashboard(): Call<DashboardResponse>
 
     @GET("api/MobileClient/marketplace")
-    fun getMarketplace(): Call<List<BlueprintResponse>>
+    fun getMarketplace(): Call<MarketplaceResponse>
+
 
     @POST("api/MobileClient/AddToCart")
     fun addToCart(@Body request: CartRequest): Call<GenericResponse>
