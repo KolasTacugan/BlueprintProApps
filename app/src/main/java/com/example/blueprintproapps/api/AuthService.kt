@@ -24,10 +24,10 @@ interface ApiService {
 
 
     @POST("api/MobileClient/AddToCart")
-    fun addToCart(@Body request: CartRequest): Call<GenericResponse>
-
+    fun addToCart(@Body request: CartRequest): Call<CartResponse>
     @GET("api/MobileClient/GetCart")
-    fun getCart(): Call<CartResponse>
+    fun getCart(@Query("clientId") clientId: String): Call<List<CartItem>>
+
 
     @POST("api/MobileClient/CreateCheckoutSession")
     fun createCheckoutSession(@Body cart: List<CartItemRequest>): Call<CheckoutResponse>

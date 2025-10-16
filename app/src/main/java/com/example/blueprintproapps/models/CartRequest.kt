@@ -1,3 +1,9 @@
 package com.example.blueprintproapps.models
 
-data class CartRequest(val blueprintId: Int, val quantity: Int)
+import com.google.gson.annotations.SerializedName
+
+data class CartRequest(
+    @SerializedName("ClientId") val clientId: String,
+    @SerializedName("BlueprintId") val blueprintId: Int,
+    @SerializedName("Quantity") val quantity: Int
+)

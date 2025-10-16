@@ -2,7 +2,7 @@ package com.example.blueprintproapps.models
 
 data class CartResponse(
     val cartItems: List<CartItem>,
-    val totalPrice: Double
+    val totalPrice: Double,
 )
 data class CartItem(
     val cartId: Int,
