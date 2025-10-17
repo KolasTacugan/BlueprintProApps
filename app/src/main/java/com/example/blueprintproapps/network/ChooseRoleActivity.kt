@@ -48,7 +48,7 @@ class ChooseRoleActivity : AppCompatActivity() {
             finish()
         }
     }
-
+    //test push
     private fun saveRole(sharedPrefs: SharedPreferences, role: String) {
         sharedPrefs.edit().putString("user_role", role).apply()
     }
