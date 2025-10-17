@@ -26,14 +26,12 @@ class LoginActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
-        // Adjust for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // UI references
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
         val loginButton = findViewById<Button>(R.id.loginButton)
@@ -41,19 +39,18 @@ class LoginActivity : AppCompatActivity() {
         val registerLink = findViewById<TextView>(R.id.registerLink)
         val forgotPassword = findViewById<TextView>(R.id.forgotPassword)
 
-        // Navigate to Change Password
+        // Forgot Password
         forgotPassword.setOnClickListener {
             val intent = Intent(this@LoginActivity, ChangePasswordActivity::class.java)
             startActivity(intent)
         }
 
-        // Navigate to Choose Role / Register
+        // Register Link
         registerLink.setOnClickListener {
             val intent = Intent(this@LoginActivity, ChooseRoleActivity::class.java)
             startActivity(intent)
         }
 
-        // Login button click
         loginButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
@@ -70,32 +67,39 @@ class LoginActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
                         if (loginResponse != null) {
-                            // Save clientId for future sessions
+
                             val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                            prefs.edit().putString("clientId", loginResponse.userId).apply()
+                            val editor = prefs.edit()
 
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "Login successful! Welcome ${loginResponse.email}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            // Navigate based on role
+                            // ✅ Save based on role
                             when (loginResponse.role.lowercase()) {
                                 "client" -> {
+                                    editor.putString("clientId", loginResponse.userId)
+                                    editor.putString("userType", "Client")
+                                    editor.apply()
+
+                                    Toast.makeText(this@LoginActivity, "Login successful! Welcome ${loginResponse.email}", Toast.LENGTH_SHORT).show()
                                     val intent = Intent(this@LoginActivity, ClientDashboardActivity::class.java)
                                     startActivity(intent)
-                                    finish() // Close LoginActivity
+                                    finish()
                                 }
+
                                 "architect" -> {
-                                    Toast.makeText(this@LoginActivity, "Architect login not implemented yet", Toast.LENGTH_SHORT).show()
+                                    editor.putString("architectId", loginResponse.userId)
+                                    editor.putString("userType", "Architect")
+                                    editor.apply()
+
+                                    Toast.makeText(this@LoginActivity, "Login successful! Welcome ${loginResponse.email}", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this@LoginActivity, ArchitectDashboardActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
                                 }
+
                                 else -> {
                                     Toast.makeText(this@LoginActivity, "Unknown role", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
-
                     } else {
                         Toast.makeText(this@LoginActivity, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
