@@ -16,6 +16,15 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".network.UploadMarketplaceBlueprintActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ArchitectBlueprintActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ArchitectDashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".network.MarketPlaceActivity"
             android:exported="false" />
         <activity

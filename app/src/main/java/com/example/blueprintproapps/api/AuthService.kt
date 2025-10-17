@@ -1,6 +1,9 @@
 package com.example.blueprintproapps.api
 
 import com.example.blueprintproapps.models.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -62,4 +65,23 @@ interface ApiService {
 
     @GET("api/MobileClient/ProjectTracker/{id}")
     fun getProjectTracker(@Path("id") projectId: Int): Call<ProjectTrackerResponse>
+
+
+    //ARCHITECT CALLS
+    @GET("api/MobileArchitect/blueprints/{architectId}")
+    fun getArchitectBlueprints(
+        @Path("architectId") architectId: String
+    ): Call<List<ArchitectBlueprintResponse>>
+
+    @Multipart
+    @POST("api/MobileArchitect/AddMarketplaceBlueprint")
+    fun addMarketplaceBlueprint(
+        @Part("BlueprintName") name: RequestBody,
+        @Part("BlueprintPrice") price: RequestBody,
+        @Part("BlueprintDescription") description: RequestBody,
+        @Part("BlueprintStyle") style: RequestBody,
+        @Part("IsForSale") isForSale: RequestBody,
+        @Part BlueprintImage: MultipartBody.Part
+    ): Call<ResponseBody>
+
 }
