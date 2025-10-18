@@ -1,5 +1,6 @@
 package com.example.blueprintproapps.api
 
+import com.example.blueprintproapps.MainActivity
 import com.example.blueprintproapps.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -40,7 +41,9 @@ interface ApiService {
     fun createCheckoutSession(@Body cart: List<CartItemRequest>): Call<CheckoutResponse>
 
     @POST("api/MobileClient/CompletePurchase")
-    fun completePurchase(@Body blueprintIds: List<Int>): Call<GenericResponse>
+    fun completePurchase(
+        @Body request: CompletePurchaseRequest
+    ): Call<GenericResponse>
 
     @GET("api/MobileClient/Projects")
     fun getProjects(): Call<List<ProjectResponse>>

@@ -15,6 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Stripe success & cancel redirect URLs -->
+                <data
+                    android:scheme="blueprintpro"
+                    android:host="payment-success" />
+                <data
+                    android:scheme="blueprintpro"
+                    android:host="payment-cancel" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".network.UploadMarketplaceBlueprintActivity"
             android:exported="false" />
