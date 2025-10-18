@@ -54,7 +54,10 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
         }
         loadBlueprints()
     }
-
+    override fun onResume() {
+        super.onResume()
+        loadBlueprints()
+    }
     private fun loadBlueprints() {
         val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val architectId = sharedPrefs.getString("architectId", null)

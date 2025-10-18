@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -123,31 +124,44 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
         val bodyPart = MultipartBody.Part.createFormData("BlueprintImage", file.name, requestFile)
 
-        val namePart: RequestBody = name.toRequestBody("text/plain".toMediaType())
-        val pricePart: RequestBody = price.toRequestBody("text/plain".toMediaType())
-        val descPart: RequestBody = desc.toRequestBody("text/plain".toMediaType())
-        val stylePart: RequestBody = style.toRequestBody("text/plain".toMediaType())
-        val isForSalePart: RequestBody = "true".toRequestBody("text/plain".toMediaType())
+        val namePart = name.toRequestBody("text/plain".toMediaType())
+        val pricePart = price.toRequestBody("text/plain".toMediaType())
+        val descPart = desc.toRequestBody("text/plain".toMediaType())
+        val stylePart = style.toRequestBody("text/plain".toMediaType())
+        val isForSalePart = "true".toRequestBody("text/plain".toMediaType())
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userArchitectId = prefs.getString("architectId", null)
+        Log.d("UploadBlueprint", "Architect ID from SharedPreferences: $userArchitectId")
+        if (userArchitectId == null) {
+            Toast.makeText(this, "Error: Architect ID not found. Please log in again.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val architectIdPart = userArchitectId.toRequestBody("text/plain".toMediaType())
 
-        // Use your ApiClient (assumes ApiClient.instance is a Retrofit-created ApiService)
         val api = ApiClient.instance
 
-        api.addMarketplaceBlueprint(namePart, pricePart, descPart, stylePart, isForSalePart, bodyPart)
-            .enqueue(object : Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Uploaded successfully!", Toast.LENGTH_SHORT).show()
-                        // optionally delete temp file
-                        file.delete()
-                        finish()
-                    } else {
-                        Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Upload failed: ${response.code()}", Toast.LENGTH_SHORT).show()
-                    }
+        api.addMarketplaceBlueprint(
+            namePart,
+            pricePart,
+            descPart,
+            stylePart,
+            isForSalePart,
+            architectIdPart,
+            bodyPart
+        ).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Uploaded successfully!", Toast.LENGTH_SHORT).show()
+                    file.delete()
+                    finish()
+                } else {
+                    Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Upload failed: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
+            }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
