@@ -81,6 +81,7 @@ interface ApiService {
         @Part("BlueprintDescription") description: RequestBody,
         @Part("BlueprintStyle") style: RequestBody,
         @Part("IsForSale") isForSale: RequestBody,
+        @Part("ArchitectId") architectId: RequestBody,
         @Part BlueprintImage: MultipartBody.Part
     ): Call<ResponseBody>
 
