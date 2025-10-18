@@ -30,13 +30,11 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         forMarketplaceBtn.setOnClickListener {
             val intent = Intent(this, ArchitectBlueprintActivity::class.java)
             startActivity(intent)
-            //Toast.makeText(this, "For Marketplace clicked", Toast.LENGTH_SHORT).show()
         }
 
         forProjectBtn.setOnClickListener {
-            // val intent = Intent(this, UploadProjectBlueprintActivity::class.java)
-            // startActivity(intent)
-            Toast.makeText(this, "For Project clicked", Toast.LENGTH_SHORT).show()
+             val intent = Intent(this, ArchitectProjectActivity::class.java)
+             startActivity(intent)
         }
     }
 }

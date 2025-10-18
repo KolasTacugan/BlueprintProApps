@@ -88,4 +88,24 @@ interface ApiService {
         @Part BlueprintImage: MultipartBody.Part
     ): Call<ResponseBody>
 
+    @GET("api/MobileArchitect/getProjects/{architectId}")
+    fun getArchitectProjects(
+        @Path("architectId") architectId: String
+    ): Call<List<ArchitectProjectResponse>>
+
+    @GET("api/MobileArchitect/clientsForProject/{architectId}")
+    fun getClientsForProject(@Path("architectId") architectId: String): Call<List<MatchedClientResponse>>
+
+    @Multipart
+    @POST("api/MobileArchitect/addProjectBlueprint")
+    fun uploadProjectBlueprint(
+        @Part BlueprintImage: MultipartBody.Part,
+        @Part("blueprintName") blueprintName: okhttp3.RequestBody,
+        @Part("blueprintPrice") blueprintPrice: okhttp3.RequestBody,
+        @Part("blueprintDescription") blueprintDescription: okhttp3.RequestBody,
+        @Part("clientId") clientId: okhttp3.RequestBody,
+        @Part("projectTrack_dueDate") projectTrack_dueDate: okhttp3.RequestBody,
+        @Part("architectId") architectId: okhttp3.RequestBody
+    ): Call<UploadProjectBlueprintResponse>
+
 }

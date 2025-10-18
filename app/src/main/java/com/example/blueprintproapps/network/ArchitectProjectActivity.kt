@@ -3,39 +3,38 @@ package com.example.blueprintproapps.network
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
-import com.example.blueprintproapps.adapter.ArchitectBlueprintAdapter
+import com.example.blueprintproapps.adapter.ArchitectProjectAdapter
 import com.example.blueprintproapps.api.ApiClient
-import com.example.blueprintproapps.models.ArchitectBlueprintResponse
+import com.example.blueprintproapps.models.ArchitectProjectResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class ArchitectBlueprintActivity : AppCompatActivity() {
+class ArchitectProjectActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ArchitectBlueprintAdapter
+    private lateinit var adapter: ArchitectProjectAdapter
     private lateinit var backBtn: ImageButton
     private lateinit var addBtn: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_architect_blueprint)
+        setContentView(R.layout.activity_architect_project)
 
         recyclerView = findViewById(R.id.recyclerViewBlueprints)
         backBtn = findViewById(R.id.backButton)
-        addBtn = findViewById(R.id.addBlueprintBtn)
+        addBtn = findViewById(R.id.addProjectBtn)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ArchitectBlueprintAdapter(mutableListOf(), this)
+        adapter = ArchitectProjectAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
 
         // 🔙 Back to Architect Dashboard
@@ -45,19 +44,16 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
             finish()
         }
 
-        // ➕ Add Blueprint (go to upload)
+        // ➕ Add Project (upload blueprint for project)
         addBtn.setOnClickListener {
-            // Uncomment when activity is ready
-            val intent = Intent(this, UploadMarketplaceBlueprintActivity::class.java)
+            val intent = Intent(this, UploadProjectBlueprintActivity::class.java)
             startActivity(intent)
         }
-        loadBlueprints()
+
+        loadProjects()
     }
-    override fun onResume() {
-        super.onResume()
-        loadBlueprints()
-    }
-    private fun loadBlueprints() {
+
+    private fun loadProjects() {
         val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val architectId = sharedPrefs.getString("architectId", null)
 
@@ -66,24 +62,22 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
             return
         }
 
-        ApiClient.instance.getArchitectBlueprints(architectId)
-            .enqueue(object : retrofit2.Callback<List<ArchitectBlueprintResponse>> {
+        ApiClient.instance.getArchitectProjects(architectId)
+            .enqueue(object : Callback<List<ArchitectProjectResponse>> {
                 override fun onResponse(
-                    call: Call<List<ArchitectBlueprintResponse>>,
-                    response: Response<List<ArchitectBlueprintResponse>>
+                    call: Call<List<ArchitectProjectResponse>>,
+                    response: Response<List<ArchitectProjectResponse>>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        val blueprintList = response.body()!!
-                        adapter.updateData(blueprintList)
+                        val projectList = response.body()!!
+                        adapter.updateData(projectList)
                     } else {
-                        Toast.makeText(this@ArchitectBlueprintActivity, "Failed to load blueprints", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ArchitectProjectActivity, "Failed to load projects", Toast.LENGTH_SHORT).show()
                     }
                 }
-                override fun onFailure(
-                    call: retrofit2.Call<List<ArchitectBlueprintResponse>>,
-                    t: Throwable
-                ) {
-                    Toast.makeText(this@ArchitectBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+
+                override fun onFailure(call: Call<List<ArchitectProjectResponse>>, t: Throwable) {
+                    Toast.makeText(this@ArchitectProjectActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }

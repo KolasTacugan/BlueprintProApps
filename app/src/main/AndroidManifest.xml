@@ -35,6 +35,27 @@
         </activity>
 
         <activity
+            android:name=".network.UploadProjectBlueprintActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Stripe success & cancel redirect URLs -->
+                <data
+                    android:host="payment-success"
+                    android:scheme="blueprintpro" />
+                <data
+                    android:host="payment-cancel"
+                    android:scheme="blueprintpro" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".network.UploadMarketplaceBlueprintActivity"
             android:exported="false" />
         <activity
@@ -63,6 +84,9 @@
             android:exported="false" />
         <activity
             android:name=".network.ChooseRoleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ArchitectProjectActivity"
             android:exported="false" />
         <activity
             android:name=".network.LoginActivity"
