@@ -1,0 +1,73 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 🏡 Project Image -->
+        <ImageView
+            android:id="@+id/blueprintImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@color/light_gray"
+            android:contentDescription="Project image" />
+
+        <!-- 📄 Project Information -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/blueprintBudget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₱ 100,000"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/blueprintName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Project Name"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/clientName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Client Name"
+                android:textSize="13sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="4dp" />
+
+            <!-- 📍 Track Button -->
+            <Button
+                android:id="@+id/trackBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Track"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/accent"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
