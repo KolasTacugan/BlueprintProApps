@@ -317,13 +317,13 @@
             android:orientation="vertical">
 
             <!-- Message Item 1 -->
-            <include layout="@layout/item_chat_message" />
+            <include layout="@layout/items_conversation" />
 
             <!-- Message Item 2 -->
-            <include layout="@layout/item_chat_message" />
+            <include layout="@layout/items_conversation" />
 
             <!-- Message Item 3 -->
-            <include layout="@layout/item_chat_message" />
+            <include layout="@layout/items_conversation" />
 
         </LinearLayout>
     </ScrollView>
