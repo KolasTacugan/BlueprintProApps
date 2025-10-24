@@ -15,27 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
-
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- Stripe success & cancel redirect URLs -->
-                <data
-                    android:scheme="blueprintpro"
-                    android:host="payment-success" />
-                <data
-                    android:scheme="blueprintpro"
-                    android:host="payment-cancel" />
-            </intent-filter>
-        </activity>
-
+            android:name=".network.ArchitectChatActivity"
+            android:exported="false" />
         <activity
-            android:name=".network.UploadProjectBlueprintActivity"
+            android:name=".network.ArchitectMessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.MessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.MessagesCaActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -55,6 +48,27 @@
                     android:scheme="blueprintpro" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Stripe success & cancel redirect URLs -->
+                <data
+                    android:host="payment-success"
+                    android:scheme="blueprintpro" />
+                <data
+                    android:host="payment-cancel"
+                    android:scheme="blueprintpro" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".network.UploadProjectBlueprintActivity"
+            android:exported="false" />
         <activity
             android:name=".network.UploadMarketplaceBlueprintActivity"
             android:exported="false" />

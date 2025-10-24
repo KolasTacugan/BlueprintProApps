@@ -2,6 +2,7 @@ package com.example.blueprintproapps.network
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,13 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         val forMarketplaceBtn = findViewById<LinearLayout>(R.id.forMarketplaceBtn)
         val forProjectBtn = findViewById<LinearLayout>(R.id.forProjectBtn)
 
+        val chatIcon = findViewById<ImageView>(R.id.chatIcon)
+
+        // ✅ Navigate to your upload blueprint screens (you can change the target activities)
+        chatIcon.setOnClickListener {
+            val intent = Intent(this, ArchitectMessagesActivity::class.java)
+            startActivity(intent)
+        }
         // ✅ Navigate to your upload blueprint screens (you can change the target activities)
         forMarketplaceBtn.setOnClickListener {
             val intent = Intent(this, ArchitectBlueprintActivity::class.java)

@@ -1,6 +1,8 @@
 package com.example.blueprintproapps.models
 
 data class MessageRequest(
-    val receiverId: String,
-    val messageContent: String
+    val clientId: String,
+    val architectId: String,
+    val senderId: String,
+    val messageBody: String
 )

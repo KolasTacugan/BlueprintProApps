@@ -3,6 +3,7 @@ package com.example.blueprintproapps.network
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,12 @@ class ClientDashboardActivity : AppCompatActivity() {
         // ✅ Reference your "Find Architect" button
         val findArchitect = findViewById<LinearLayout>(R.id.findArchitect)
         val marketplaceBtn = findViewById<LinearLayout>(R.id.marketplaceBtn)
+        val chatIcon = findViewById<ImageView>(R.id.chatIcon)
+
+        chatIcon.setOnClickListener {
+            val intent = Intent(this, MessagesActivity::class.java)
+            startActivity(intent)
+        }
 
         // ✅ Open MatchClientActivity when tapped
         findArchitect.setOnClickListener {
