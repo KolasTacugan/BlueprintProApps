@@ -16,6 +16,10 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".network.ArchitectMatchActivity"
+            android:exported="false" />
+        <activity
+
             android:name=".network.ArchitectChatActivity"
             android:exported="false" />
         <activity

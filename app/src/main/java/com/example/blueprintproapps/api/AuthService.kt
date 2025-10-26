@@ -140,4 +140,15 @@ interface ApiService {
         @Query("architectId") architectId: String
     ): Call<MessageListResponse>
 
+    @GET("api/MobileArchitect/matchRequests/{architectId}")
+    fun getPendingMatches(
+        @Path("architectId") architectId: String
+    ): Call<List<ArchitectMatchRequest>>
+
+    @POST("api/MobileArchitect/respondMatch")
+    fun respondMatch(
+        @Query("matchId") matchId: String,
+        @Query("approve") approve: Boolean
+    ): Call<Void>
+
 }
