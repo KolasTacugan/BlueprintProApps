@@ -16,7 +16,19 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".network.UploadProjectBlueprintActivity"
+            android:name=".network.ArchitectMatchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ArchitectChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ArchitectMessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.MessagesActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -36,6 +48,9 @@
                     android:scheme="blueprintpro" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".network.UploadProjectBlueprintActivity"
+            android:exported="false" />
         <activity
             android:name=".network.UploadMarketplaceBlueprintActivity"
             android:exported="false" />

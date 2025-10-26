@@ -1,5 +1,6 @@
 package com.example.blueprintproapps.api
 
+import com.example.blueprintproapps.MainActivity
 import com.example.blueprintproapps.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -40,7 +41,9 @@ interface ApiService {
     fun createCheckoutSession(@Body cart: List<CartItemRequest>): Call<CheckoutResponse>
 
     @POST("api/MobileClient/CompletePurchase")
-    fun completePurchase(@Body blueprintIds: List<Int>): Call<GenericResponse>
+    fun completePurchase(
+        @Body request: CompletePurchaseRequest
+    ): Call<GenericResponse>
 
     @GET("api/MobileClient/Projects")
     fun getProjects(): Call<List<ProjectResponse>>
@@ -104,5 +107,37 @@ interface ApiService {
         @Part("projectTrack_dueDate") projectTrack_dueDate: okhttp3.RequestBody,
         @Part("architectId") architectId: okhttp3.RequestBody
     ): Call<UploadProjectBlueprintResponse>
+
+    @GET("api/MobileArchitect/Architect/Messages/All")
+    fun getAllMessagesForArchitect(
+        @Query("architectId") architectId: String
+    ): Call<ArchitectConversationListResponse>
+
+    @GET("api/MobileArchitect/ArchitectMatches")
+    fun getAllMatchesForArchitect(
+        @Query("architectId") architectId: String
+    ): Call<ArchitectMatchListResponse>
+
+    @POST("api/MobileArchitect/Architect/SendMessage")
+    fun sendArchitectMessage(
+        @Body request: MessageRequest
+    ): Call<GenericResponse>
+
+    @GET("api/MobileArchitect/Architect/Messages")
+    fun getArchitectMessages(
+        @Query("clientId") clientId: String,
+        @Query("architectId") architectId: String
+    ): Call<MessageListResponse>
+
+    @GET("api/MobileArchitect/matchRequests/{architectId}")
+    fun getPendingMatches(
+        @Path("architectId") architectId: String
+    ): Call<List<ArchitectMatchRequest>>
+
+    @POST("api/MobileArchitect/respondMatch")
+    fun respondMatch(
+        @Query("matchId") matchId: String,
+        @Query("approve") approve: Boolean
+    ): Call<Void>
 
 }
