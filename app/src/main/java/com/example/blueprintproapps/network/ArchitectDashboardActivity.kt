@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
+import com.example.blueprintproapps.network.ArchitectMatchActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ArchitectDashboardActivity : AppCompatActivity() {
@@ -27,7 +28,6 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         // ✅ Reference buttons
         val forMarketplaceBtn = findViewById<LinearLayout>(R.id.forMarketplaceBtn)
         val forProjectBtn = findViewById<LinearLayout>(R.id.forProjectBtn)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         val chatIcon = findViewById<ImageView>(R.id.chatIcon)
 
@@ -47,27 +47,26 @@ class ArchitectDashboardActivity : AppCompatActivity() {
              startActivity(intent)
         }
 
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> {
-                    // Already in ArchitectDashboardActivity
-                    true
-                }
-
-                R.id.nav_project -> {
-                    val intent = Intent(this, ArchitectProjectActivity::class.java)
+                R.id.nav_match_request -> {
+                    val intent = Intent(this, ArchitectMatchActivity::class.java)
                     startActivity(intent)
                     true
                 }
-
                 R.id.nav_profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
+                    Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+                    // val intent = Intent(this, ArchitectProfileActivity::class.java)
+                    // startActivity(intent)
                     true
                 }
-
                 else -> false
             }
         }
+
+        bottomNavigation.selectedItemId = R.id.nav_home
+
     }
 }

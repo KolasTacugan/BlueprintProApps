@@ -8,9 +8,9 @@
     android:layout_height="match_parent"
     tools:context=".network.ArchitectDashboardActivity">
 
-    <!-- Scrollable content -->
+    <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/dashboardScroll"
+        android:id="@+id/dashboardScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -93,17 +93,18 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- ADDED: Prominent title above the grid -->
+                    <!-- Section Title -->
                     <TextView
                         android:id="@+id/featureTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Blueprint"
+                        android:text="Blueprints"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#091635"
                         android:layout_marginBottom="12dp" />
 
+                    <!-- Grid of Features -->
                     <GridLayout
                         android:id="@+id/featuresGrid"
                         android:layout_width="match_parent"
@@ -111,7 +112,7 @@
                         android:columnCount="2"
                         android:paddingTop="8dp">
 
-                        <!-- For Marketplace -->
+                        <!-- Marketplace -->
                         <LinearLayout
                             android:id="@+id/forMarketplaceBtn"
                             android:layout_width="0dp"
@@ -133,14 +134,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="For Marketplace"
+                                android:text="Marketplace"
                                 android:textColor="#091635"
                                 android:textSize="14sp"
                                 android:fontFamily="sans-serif-medium"
                                 android:layout_marginTop="8dp" />
                         </LinearLayout>
 
-                        <!-- For Project -->
+                        <!-- Project -->
                         <LinearLayout
                             android:id="@+id/forProjectBtn"
                             android:layout_width="0dp"
@@ -162,7 +163,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="For Project"
+                                android:text="Project"
                                 android:textColor="#091635"
                                 android:textSize="14sp"
                                 android:fontFamily="sans-serif-medium"
@@ -174,7 +175,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Fixed Bottom Navigation -->
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
@@ -182,7 +183,7 @@
         android:background="#0D3C80"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_nav_menu"
+        app:menu="@menu/bottom_nav_menu_architect"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
