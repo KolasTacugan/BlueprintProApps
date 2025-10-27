@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background Image -->
+    <ImageView
+        android:id="@+id/bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bldg_bg"
+        android:scaleType="centerCrop" />
+
+    <!-- Overlay for dark effect -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000" />
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:id="@+id/hero_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:layout_centerInParent="true">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/bpp_logo"
+            android:contentDescription="BlueprintPro Logo"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Brand Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BlueprintPro"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/raleway_bold" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect. Share. Build."
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:textColor="#E0E0E0"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/raleway_regular" />
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connecting people, designs, and progress—architecture made simple."
+            android:textSize="14sp"
+            android:textColor="#CCCCCC"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            android:paddingHorizontal="20dp"
+            android:fontFamily="@font/raleway_regular" />
+
+        <!-- Get Started Button -->
+        <Button
+            android:id="@+id/btnGetStarted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Started"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#000000"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="12dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/raleway_bold" />
+    </LinearLayout>
+
+</RelativeLayout>
