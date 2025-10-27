@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ArchitectDashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,7 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         // ✅ Reference buttons
         val forMarketplaceBtn = findViewById<LinearLayout>(R.id.forMarketplaceBtn)
         val forProjectBtn = findViewById<LinearLayout>(R.id.forProjectBtn)
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         val chatIcon = findViewById<ImageView>(R.id.chatIcon)
 
@@ -43,6 +45,29 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         forProjectBtn.setOnClickListener {
              val intent = Intent(this, ArchitectProjectActivity::class.java)
              startActivity(intent)
+        }
+
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    // Already in ArchitectDashboardActivity
+                    true
+                }
+
+                R.id.nav_project -> {
+                    val intent = Intent(this, ArchitectProjectActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_profile -> {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 }

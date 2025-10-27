@@ -19,6 +19,22 @@ interface ApiService {
     @POST("api/MobileAuth/change-password")
     fun changePassword(@Body request: ChangePasswordRequest): Call<ChangePasswordResponse>
 
+    @GET("api/MobileAuth/profile/{userId}")
+    fun getProfile(@Path("userId") userId: String): Call<ProfileApiResponse>
+    @Multipart
+    @POST("api/MobileAuth/edit-profile/{userId}")
+    fun editProfile(
+        @Path("userId") userId: String,
+        @Part("firstName") firstName: RequestBody,
+        @Part("lastName") lastName: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part profileImage: MultipartBody.Part?,
+        @Part credentialsPdf: MultipartBody.Part?
+    ): Call<EditProfileResponse>
+
+
+
     // CLIENT CALLS
     @GET("api/MobileClient/dashboard")
     fun getDashboard(): Call<DashboardResponse>
