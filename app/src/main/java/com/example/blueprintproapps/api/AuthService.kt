@@ -60,11 +60,22 @@ interface ApiService {
     ): Call<GenericResponse>
     @POST("api/MobileArchitect/RespondMatch")
     fun respondMatch(@Body request: MatchResponseRequest): Call<GenericResponse>
-    @GET("api/MobileClient/Messages/{architectId}")
-    fun getMessages(@Path("architectId") architectId: String): Call<List<MessageResponse>>
+    @GET("api/MobileClient/Messages")
+    fun getMessages(
+        @Query("clientId") clientId: String,
+        @Query("architectId") architectId: String
+    ): Call<MessageListResponse>
+    @GET("api/MobileClient/Messages/All")
+    fun getAllMessages(@Query("clientId") clientId: String): Call<ConversationListResponse>
+
+    @GET("api/MobileClient/AllMatches")
+    fun getAllMatches(@Query("clientId") clientId: String): Call<MatchListResponse>
 
     @POST("api/MobileClient/SendMessage")
-    fun sendMessage(@Body request: MessageRequest): Call<GenericResponse>
+    fun sendMessage(
+        @Body request: MessageRequest
+    ): Call<GenericResponse>
+
 
     @GET("api/MobileClient/ProjectTracker/{id}")
     fun getProjectTracker(@Path("id") projectId: Int): Call<ProjectTrackerResponse>
@@ -140,4 +151,43 @@ interface ApiService {
         @Query("approve") approve: Boolean
     ): Call<Void>
 
+    @GET("api/MobileArchitect/getProjectTracker/{blueprintId}")
+    fun getArchitectProjectTracker(
+        @Path("blueprintId") blueprintId: Int
+    ): Call<ArchitectProjectTrackerResponse>
+
+    @Multipart
+    @POST("api/MobileArchitect/UploadProjectFile")
+    fun uploadProjectFile(
+        @Part("projectId") projectId: RequestBody,
+        @Part file: MultipartBody.Part
+    ): Call<ArchitectApiResponse>
+
+    @Multipart
+    @POST("api/MobileArchitect/UploadComplianceFile")
+    fun uploadComplianceFile(
+        @Part("projectTrackId") projectTrackId: RequestBody,
+        @Part("fileType") fileType: RequestBody,
+        @Part file: MultipartBody.Part
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/SaveFinalizationNotes")
+    fun saveFinalizationNotes(
+        @Field("projectTrackId") projectTrackId: Int,
+        @Field("notes") notes: String
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/FinalizeProject")
+    fun finalizeProject(
+        @Field("projectId") projectId: String
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/updateProjectStatus")
+    fun updateProjectStatus(
+        @Field("projectId") projectId: String,
+        @Field("status") status: String
+    ): Call<ArchitectApiResponse>
 }

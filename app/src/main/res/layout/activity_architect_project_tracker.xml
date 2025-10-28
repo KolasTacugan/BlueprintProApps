@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Step Indicator -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/stepProgress"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:progress="33"
+        android:max="100"
+        app:trackColor="@color/gray"
+        app:indicatorColor="#071744" />
+
+    <!-- ViewPager for 3 steps -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/stepViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal" />
+
+</LinearLayout>
