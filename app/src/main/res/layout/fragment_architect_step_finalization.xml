@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/stepTitle"
+            android:text="Finalization"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:layout_marginBottom="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- ✅ Final Revision Display -->
+        <TextView
+            android:text="Final Revision:"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/finalRevisionName"
+            android:text="None uploaded yet"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- ✅ Finalization Notes -->
+        <EditText
+            android:id="@+id/finalizationNotesInput"
+            android:hint="Enter your finalization notes..."
+            android:minLines="5"
+            android:gravity="top|start"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- ✅ Save Notes & Finalize Buttons -->
+        <Button
+            android:id="@+id/saveNotesBtn"
+            android:text="Save Notes"
+            android:layout_marginBottom="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/finalizeProjectBtn"
+
+            android:text="Finalize Project"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+</ScrollView>
