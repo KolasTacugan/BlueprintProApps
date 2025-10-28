@@ -2,6 +2,7 @@ package com.example.blueprintproapps.network
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.BlueprintResponse
 import com.example.blueprintproapps.models.CartItem
 import com.example.blueprintproapps.models.MarketplaceResponse
+import com.example.blueprintproapps.utils.CartBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +28,7 @@ class MarketPlaceActivity : AppCompatActivity() {
     // ✅ Cart badge elements
     private lateinit var cartCountText: TextView
     private var cartItemCount = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,12 @@ class MarketPlaceActivity : AppCompatActivity() {
         })
 
         recyclerView.adapter = adapter
+
+        val cartIcon: ImageView = findViewById(R.id.cartIcon)
+        cartIcon.setOnClickListener {
+            val cartBottomSheet = CartBottomSheet()
+            cartBottomSheet.show(supportFragmentManager, "CartBottomSheet")
+        }
 
         fetchMarketplace()
         fetchCartCount()

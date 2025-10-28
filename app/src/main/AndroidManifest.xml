@@ -15,6 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".network.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".network.ArchitectProjectTrackerActivity"
             android:exported="false" />
@@ -39,6 +46,9 @@
         <activity
             android:name=".network.MessagesActivity"
             android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".network.MessagesCaActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -95,10 +105,12 @@
             android:exported="false" />
         <activity
             android:name=".network.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.LandingPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,10 +1,12 @@
 package com.example.blueprintproapps.models
 
 data class MessageResponse(
-    val messageId: Int,
+    val messageId: String,
+    val clientId: String,
+    val architectId: String,
     val senderId: String,
-    val receiverId: String,
-    val messageContent: String,
-    val timestamp: String,
-    val isRead: Boolean
+    val messageBody: String,
+    val messageDate: String,
+    val isRead: Boolean,
+    val attachmentUrl: String?
 )
