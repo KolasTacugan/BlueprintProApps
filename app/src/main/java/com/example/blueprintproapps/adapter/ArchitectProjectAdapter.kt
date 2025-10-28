@@ -1,6 +1,7 @@
 package com.example.blueprintproapps.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectProjectResponse
+import com.example.blueprintproapps.network.ArchitectProjectTrackerActivity
 import com.squareup.picasso.Picasso
 
 class ArchitectProjectAdapter(
@@ -47,10 +49,10 @@ class ArchitectProjectAdapter(
         }
 
         holder.trackBtn.setOnClickListener {
-            // 🔸 Do something when "Track" is clicked (e.g. open tracking activity)
-            // val intent = Intent(context, ProjectTrackActivity::class.java)
-            // intent.putExtra("projectId", item.projectId)
-            // context.startActivity(intent)
+            val intent = Intent(context, ArchitectProjectTrackerActivity::class.java)
+            intent.putExtra("projectId", item.project_Id)
+            intent.putExtra("blueprintId", item.blueprint_Id) // ✅ Add this line
+            context.startActivity(intent)
         }
     }
 

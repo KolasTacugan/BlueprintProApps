@@ -167,4 +167,43 @@ interface ApiService {
         @Query("approve") approve: Boolean
     ): Call<Void>
 
+    @GET("api/MobileArchitect/getProjectTracker/{blueprintId}")
+    fun getArchitectProjectTracker(
+        @Path("blueprintId") blueprintId: Int
+    ): Call<ArchitectProjectTrackerResponse>
+
+    @Multipart
+    @POST("api/MobileArchitect/UploadProjectFile")
+    fun uploadProjectFile(
+        @Part("projectId") projectId: RequestBody,
+        @Part file: MultipartBody.Part
+    ): Call<ArchitectApiResponse>
+
+    @Multipart
+    @POST("api/MobileArchitect/UploadComplianceFile")
+    fun uploadComplianceFile(
+        @Part("projectTrackId") projectTrackId: RequestBody,
+        @Part("fileType") fileType: RequestBody,
+        @Part file: MultipartBody.Part
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/SaveFinalizationNotes")
+    fun saveFinalizationNotes(
+        @Field("projectTrackId") projectTrackId: Int,
+        @Field("notes") notes: String
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/FinalizeProject")
+    fun finalizeProject(
+        @Field("projectId") projectId: String
+    ): Call<ArchitectApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/updateProjectStatus")
+    fun updateProjectStatus(
+        @Field("projectId") projectId: String,
+        @Field("status") status: String
+    ): Call<ArchitectApiResponse>
 }

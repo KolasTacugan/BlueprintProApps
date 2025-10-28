@@ -23,6 +23,15 @@
             android:name=".network.ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".network.ArchitectProjectTrackerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".network.ArchitectMatchActivity"
             android:exported="false" />
         <activity
