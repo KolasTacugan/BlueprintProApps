@@ -58,8 +58,8 @@ class ArchitectDashboardActivity : AppCompatActivity() {
                 }
                 R.id.nav_profile -> {
                     Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
-                    // val intent = Intent(this, ArchitectProfileActivity::class.java)
-                    // startActivity(intent)
+                     val intent = Intent(this, ProfileActivity::class.java)
+                     startActivity(intent)
                     true
                 }
                 else -> false

@@ -35,6 +35,7 @@
             android:name=".network.ArchitectMatchActivity"
             android:exported="false" />
         <activity
+
             android:name=".network.ArchitectChatActivity"
             android:exported="false" />
         <activity
@@ -46,9 +47,27 @@
         <activity
             android:name=".network.MessagesActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".network.MessagesCaActivity"-->
-<!--            android:exported="false" />-->
+        <activity
+            android:name=".network.MessagesCaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Stripe success & cancel redirect URLs -->
+                <data
+                    android:host="payment-success"
+                    android:scheme="blueprintpro" />
+                <data
+                    android:host="payment-cancel"
+                    android:scheme="blueprintpro" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -105,12 +124,10 @@
             android:exported="false" />
         <activity
             android:name=".network.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".network.LandingPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

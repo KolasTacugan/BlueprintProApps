@@ -21,17 +21,21 @@ interface ApiService {
 
     @GET("api/MobileAuth/profile/{userId}")
     fun getProfile(@Path("userId") userId: String): Call<ProfileApiResponse>
+
     @Multipart
-    @POST("api/MobileAuth/edit-profile/{userId}")
+    @POST("api/MobileAuth/edit-profile")
     fun editProfile(
-        @Path("userId") userId: String,
-        @Part("firstName") firstName: RequestBody,
-        @Part("lastName") lastName: RequestBody,
-        @Part("email") email: RequestBody,
-        @Part("phone") phone: RequestBody,
-        @Part profileImage: MultipartBody.Part?,
-        @Part credentialsPdf: MultipartBody.Part?
+        @Part("UserId") userId: RequestBody,
+        @Part("FirstName") firstName: RequestBody,
+        @Part("LastName") lastName: RequestBody,
+        @Part("Email") email: RequestBody,
+        @Part("PhoneNumber") phoneNumber: RequestBody,
+        @Part ProfilePhoto: MultipartBody.Part?,
+        @Part CredentialsFile: MultipartBody.Part?
     ): Call<EditProfileResponse>
+
+    @GET("api/MobileAuth/edit-profile/{userId}")
+    fun getEditProfile(@Path("userId") userId: String): Call<GetEditProfileResponse>
 
 
 

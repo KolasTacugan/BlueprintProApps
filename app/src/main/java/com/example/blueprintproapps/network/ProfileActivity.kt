@@ -1,5 +1,6 @@
 package com.example.blueprintproapps.network
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -66,8 +67,29 @@ class ProfileActivity : AppCompatActivity() {
             return
         }
 
+        btnEditProfile.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            startActivity(intent)
+        }
         // ✅ Fetch Profile
         loadProfile(userId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userType = prefs.getString("userType", null)
+
+        val userId = when (userType) {
+            "Architect" -> prefs.getString("architectId", null)
+            "Client" -> prefs.getString("clientId", null)
+            else -> null
+        }
+
+        if (!userId.isNullOrEmpty()) {
+            loadProfile(userId)
+        }
     }
 
     private fun loadProfile(userId: String) {
