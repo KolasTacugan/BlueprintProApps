@@ -1,26 +1,56 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Step Indicator -->
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/stepProgress"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:progress="33"
-        android:max="100"
-        app:trackColor="@color/gray"
-        app:indicatorColor="#071744" />
-
-    <!-- ViewPager for 3 steps -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/stepViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal" />
+        android:layout_weight="1" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/stepProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="33"
+        android:max="100"
+        android:layout_marginTop="8dp" />
+
+    <!-- Step Buttons -->
+    <LinearLayout
+        android:id="@+id/stepButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/btnReview"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textSize="11dp"
+            android:layout_height="wrap_content"
+            android:text="Review" />
+
+        <Button
+            android:id="@+id/btnCompliance"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textSize="11dp"
+            android:layout_height="wrap_content"
+            android:text="Compliance" />
+
+        <Button
+            android:id="@+id/btnFinalization"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textSize="11dp"
+            android:layout_height="wrap_content"
+            android:text="Finalization" />
+    </LinearLayout>
 </LinearLayout>

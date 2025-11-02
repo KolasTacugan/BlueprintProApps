@@ -34,5 +34,5 @@ object ApiClient {
             .create(ApiService::class.java)
     }
 
-
+    fun getBaseUrl(): String = BASE_URL
 }
