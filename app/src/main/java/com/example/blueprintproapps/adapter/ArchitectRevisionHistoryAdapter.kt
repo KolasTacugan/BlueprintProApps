@@ -18,7 +18,6 @@ class ArchitectRevisionHistoryAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val revisionName: TextView = view.findViewById(R.id.revisionName)
-        val revisionDate: TextView = view.findViewById(R.id.revisionDate)
         val openBtn: Button = view.findViewById(R.id.openBtn)
     }
 
@@ -31,7 +30,6 @@ class ArchitectRevisionHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val revision = revisionList[position]
         holder.revisionName.text = "Revision_ver.${revision.projectFile_Version}"
-        holder.revisionDate.text = "— ${revision.projectFile_uploadedDate}"
 
         holder.openBtn.setOnClickListener {
             val filePath = revision.projectFile_Path?.trim()

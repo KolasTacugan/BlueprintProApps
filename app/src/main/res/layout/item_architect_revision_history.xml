@@ -24,14 +24,6 @@
             android:textStyle="bold"
             android:text="Revision_ver.1"
             android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/revisionDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            android:text="— 10/27/2025"
-            android:textSize="13sp" />
     </LinearLayout>
 
     <!-- Right side: Open button -->

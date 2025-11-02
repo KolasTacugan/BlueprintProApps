@@ -2,6 +2,8 @@ package com.example.blueprintproapps.network
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.blueprintproapps.R
@@ -59,7 +61,8 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
                         tracker.project_Id ?: "",
                         blueprintId,
                         tracker.currentFilePath,
-                        ArrayList(tracker.revisionHistory)
+                        ArrayList(tracker.revisionHistory),
+                        tracker.projectTrack_Id
                     )
                 } else {
                     Log.e("TrackerError", "❌ Failed response: ${response.code()}")
@@ -77,24 +80,61 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
         projectId: String,
         blueprintId: Int,
         currentFilePath: String?,
-        revisionHistory: ArrayList<com.example.blueprintproapps.models.ArchitectProjectFileResponse>
+        revisionHistory: ArrayList<com.example.blueprintproapps.models.ArchitectProjectFileResponse>,
+        projectTrackId: Int
     ) {
         val fragments = listOf(
             ArchitectStepReviewFragment.newInstance(projectId, status, blueprintId, currentFilePath, revisionHistory),
-            ArchitectStepComplianceFragment.newInstance(projectId, status),
+            ArchitectStepComplianceFragment.newInstance(projectTrackId.toString(), status),
             ArchitectStepFinalizationFragment.newInstance(projectId, status)
         )
 
         val adapter = ArchitectProjectTrackerAdapter(this, fragments)
         viewPager.adapter = adapter
-        viewPager.isUserInputEnabled = true
+        viewPager.isUserInputEnabled = false // disable swiping
 
+        val btnReview = findViewById<Button>(R.id.btnReview)
+        val btnCompliance = findViewById<Button>(R.id.btnCompliance)
+        val btnFinalization = findViewById<Button>(R.id.btnFinalization)
+
+        // Define which buttons are enabled based on project status
         when (status) {
-            "Review" -> viewPager.currentItem = 0
-            "Compliance" -> viewPager.currentItem = 1
-            "Finalization" -> viewPager.currentItem = 2
+            "Review" -> {
+                btnReview.isEnabled = true
+                btnCompliance.isEnabled = false
+                btnFinalization.isEnabled = false
+                viewPager.currentItem = 0
+            }
+            "Compliance" -> {
+                btnReview.isEnabled = true
+                btnCompliance.isEnabled = true
+                btnFinalization.isEnabled = false
+                viewPager.currentItem = 1
+            }
+            "Finalization" -> {
+                btnReview.isEnabled = true
+                btnCompliance.isEnabled = true
+                btnFinalization.isEnabled = true
+                viewPager.currentItem = 2
+            }
+            else -> {
+                btnReview.isEnabled = true
+                btnCompliance.isEnabled = false
+                btnFinalization.isEnabled = false
+                viewPager.currentItem = 0
+            }
         }
 
+        // Button click listeners
+        btnReview.setOnClickListener { viewPager.currentItem = 0 }
+        btnCompliance.setOnClickListener {
+            if (btnCompliance.isEnabled) viewPager.currentItem = 1
+        }
+        btnFinalization.setOnClickListener {
+            if (btnFinalization.isEnabled) viewPager.currentItem = 2
+        }
+
+        // Progress bar updates
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -103,4 +143,9 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
             }
         })
     }
+
+    fun reloadTrackerData() {
+        loadTrackerData(blueprintId)
+    }
+
 }
