@@ -85,8 +85,12 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
     ) {
         val fragments = listOf(
             ArchitectStepReviewFragment.newInstance(projectId, status, blueprintId, currentFilePath, revisionHistory),
-            ArchitectStepComplianceFragment.newInstance(projectTrackId.toString(), status),
-            ArchitectStepFinalizationFragment.newInstance(projectId, status)
+            ArchitectStepComplianceFragment.newInstance(projectTrackId.toString(), blueprintId, status, projectId),
+            ArchitectStepFinalizationFragment.newInstance( projectId = projectId,
+                blueprintId = blueprintId,
+                projectTrackId = projectTrackId,
+                status = status,
+                finalBlueprintUrl = currentFilePath)
         )
 
         val adapter = ArchitectProjectTrackerAdapter(this, fragments)

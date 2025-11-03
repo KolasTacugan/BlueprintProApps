@@ -121,7 +121,7 @@ class ArchitectStepReviewFragment : Fragment() {
                                 "Please double-check all information in this step before continuing."
                     )
                     .setPositiveButton("Proceed") { _, _ ->
-                        updateStep("Compliance", 1)
+                        updateStep(projectId!!, "Compliance")
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
@@ -129,7 +129,6 @@ class ArchitectStepReviewFragment : Fragment() {
                 Toast.makeText(requireContext(), "Missing project ID", Toast.LENGTH_SHORT).show()
             }
         }
-
 
         val openCurrentBtn = view.findViewById<Button>(R.id.openCurrentBtn)
         openCurrentBtn.setOnClickListener {
@@ -276,11 +275,7 @@ class ArchitectStepReviewFragment : Fragment() {
         return result ?: "file_${System.currentTimeMillis()}"
     }
 
-    private fun updateStep(status: String, step: Int) {
-        val projectId = arguments?.getString("projectId") ?: return
-
-        Log.d("UpdateStep", "Updating project $projectId to $status")
-
+    private fun updateStep(projectId: String, status: String) {
         ApiClient.instance.updateProjectStatus(projectId, status)
             .enqueue(object : Callback<ArchitectApiResponse> {
                 override fun onResponse(
@@ -288,19 +283,26 @@ class ArchitectStepReviewFragment : Fragment() {
                     response: Response<ArchitectApiResponse>
                 ) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        Toast.makeText(requireContext(), "Moved to next step!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Step updated successfully!", Toast.LENGTH_SHORT).show()
+
+                        // ✅ Reload the latest project tracker data
+                        reloadRevisionList()
+
+                        // ✅ Also refresh the parent activity (status, tabs, etc.)
                         (activity as? ArchitectProjectTrackerActivity)?.reloadTrackerData()
+
+                        // ✅ Automatically move to next tab (Compliance)
+                        viewPager.setCurrentItem(1, true) // index 1 = Compliance fragment (adjust if different)
                     } else {
-                        Log.e("UpdateStep", "Response failed: ${response.errorBody()?.string()}")
-                        Toast.makeText(requireContext(), "Fail", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<ArchitectApiResponse>, t: Throwable) {
-                    Log.e("UpdateStep", "Error: ${t.message}")
-                    Toast.makeText(requireContext(), "Failed to connect", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
     }
+
 
 }
