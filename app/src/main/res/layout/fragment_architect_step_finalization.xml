@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="24dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,55 +14,60 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="left"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- ✅ Final Revision Display -->
-        <TextView
-            android:text="Final Revision:"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/finalRevisionName"
-            android:text="None uploaded yet"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- ✅ Finalization Notes -->
-        <EditText
-            android:id="@+id/finalizationNotesInput"
-            android:hint="Enter your finalization notes..."
-            android:minLines="5"
-            android:gravity="top|start"
-            android:background="@drawable/edittext_bg"
-            android:padding="12dp"
             android:layout_marginBottom="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- ✅ Save Notes & Finalize Buttons -->
+        <!-- 📄 Final Blueprint -->
+        <TextView
+            android:text="Final Blueprint"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/finalFileNameText"
+            android:text="No final file uploaded yet"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/gray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- ✍️ Finalization Notes -->
+        <TextView
+            android:text="Finalization Notes"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/finalizationNotesEditText"
+            android:hint="    Write finalization notes here..."
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:minHeight="150dp"
+            android:background="@drawable/edittext_bg"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/saveNotesBtn"
             android:text="Save Notes"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/finalizeProjectBtn"
-
-            android:text="Finalize Project"
+            android:text="Finish Project"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#2E6F40"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#4CAF50"
-            android:textColor="@android:color/white" />
-
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

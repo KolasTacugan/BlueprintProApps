@@ -1,10 +1,13 @@
 package com.example.blueprintproapps.network
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -13,9 +16,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ArchitectApiResponse
+import com.example.blueprintproapps.models.ArchitectProjectTrackerResponse
+import com.example.blueprintproapps.models.ProjectTrackerResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
@@ -31,18 +35,20 @@ class ArchitectStepComplianceFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var zoningContainer: LinearLayout
     private lateinit var otherContainer: LinearLayout
-
     private var projectTrackId: String? = null
     private var currentStatus: String? = null
+    private var projectId: String? = null
 
     companion object {
         private const val FILE_PICK_REQUEST = 1001
 
-        fun newInstance(projectTrackId: String, status: String): ArchitectStepComplianceFragment {
+        fun newInstance(projectTrackId: String, blueprintId: Int, status: String, projectId: String): ArchitectStepComplianceFragment {
             val fragment = ArchitectStepComplianceFragment()
             val args = Bundle()
             args.putString("projectTrackId", projectTrackId)
+            args.putInt("blueprintId", blueprintId)
             args.putString("status", status)
+            args.putString("projectId", projectId)
             fragment.arguments = args
             return fragment
         }
@@ -61,13 +67,14 @@ class ArchitectStepComplianceFragment : Fragment() {
         zoningContainer = view.findViewById(R.id.zoningFilesContainer)
         otherContainer = view.findViewById(R.id.otherFilesContainer)
 
+        projectId = arguments?.getString("projectId")
         projectTrackId = arguments?.getString("projectTrackId")
         currentStatus = arguments?.getString("status")
 
         // Disable buttons if not the current step
         if (currentStatus != "Compliance") {
-            uploadBtn.isEnabled = false
-            nextBtn.isEnabled = false
+            uploadBtn.visibility = View.GONE
+            nextBtn.visibility = View.GONE
         }
 
         uploadBtn.setOnClickListener {
@@ -75,22 +82,90 @@ class ArchitectStepComplianceFragment : Fragment() {
         }
 
         nextBtn.setOnClickListener {
-            showNextStepDialog()
+            if (!projectId.isNullOrEmpty()) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Proceed to Next Step")
+                    .setMessage(
+                        "Are you sure you want to proceed to the next step?\n\n" +
+                                "⚠️ This action cannot be reverted.\n" +
+                                "Please double-check all compliance files before continuing."
+                    )
+                    .setPositiveButton("Proceed") { _, _ ->
+                        ApiClient.instance.updateProjectStatus(projectId!!, "Finalization")
+                            .enqueue(object : Callback<ArchitectApiResponse> {
+                                override fun onResponse(
+                                    call: Call<ArchitectApiResponse>,
+                                    response: Response<ArchitectApiResponse>
+                                ) {
+                                    if (response.isSuccessful && response.body()?.success == true) {
+                                        Toast.makeText(requireContext(), "Step updated successfully!", Toast.LENGTH_SHORT).show()
+
+                                        // ✅ Reload this fragment's compliance data
+                                        fetchProjectTrackerData()
+
+                                        // ✅ Ask parent activity to refresh main tracker data (tabs/status bar)
+                                        (activity as? ArchitectProjectTrackerActivity)?.reloadTrackerData()
+                                    } else {
+                                        Toast.makeText(requireContext(), "Failed: ${response.body()?.message ?: response.code()}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ArchitectApiResponse>, t: Throwable) {
+                                    Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            } else {
+                Toast.makeText(requireContext(), "Missing project ID", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         return view
     }
 
-    // ✅ Step confirmation dialog before proceeding
-    private fun showNextStepDialog() {
-        android.app.AlertDialog.Builder(requireContext())
-            .setTitle("Confirm Proceed")
-            .setMessage("Are you sure to proceed to next step? This action can't be reverted. Please check the information carefully.")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Proceed") { _, _ ->
-                updateStep("Finalization", 2)
-            }
-            .show()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        fetchProjectTrackerData()
+    }
+
+    private fun fetchProjectTrackerData() {
+        val projectTrackId = arguments?.getString("projectTrackId") ?: return
+        val blueprintId = arguments?.getInt("blueprintId") ?: return
+
+        Log.d("ComplianceFragment", "🔹 Fetching tracker for blueprintId=$blueprintId trackId=$projectTrackId")
+
+        ApiClient.instance.getArchitectProjectTracker(blueprintId)
+            .enqueue(object : Callback<ArchitectProjectTrackerResponse> {
+                override fun onResponse(
+                    call: Call<ArchitectProjectTrackerResponse>,
+                    response: Response<ArchitectProjectTrackerResponse>
+                ) {
+                    Log.d("ComplianceFragment", "✅ API response: ${response.body()}")
+                    if (response.isSuccessful) {
+                        val tracker = response.body()
+                        zoningContainer.removeAllViews()
+                        otherContainer.removeAllViews()
+
+                        tracker?.compliance?.let { compliance ->
+                            if (!compliance.zoningFile.isNullOrEmpty()) {
+                                val zoningLink = createFileLinkUI("Zoning File", compliance.zoningFile!!)
+                                zoningContainer.addView(zoningLink)
+                            }
+                            if (!compliance.othersFile.isNullOrEmpty()) {
+                                val otherLink = createFileLinkUI("Others File", compliance.othersFile!!)
+                                otherContainer.addView(otherLink)
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ArchitectProjectTrackerResponse>, t: Throwable) {
+                    Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     // ✅ Launch file picker
@@ -110,7 +185,7 @@ class ArchitectStepComplianceFragment : Fragment() {
         }
     }
 
-    // ✅ Upload compliance file using your API definition
+    // ✅ Upload compliance file to backend
     private fun uploadComplianceFile(uri: Uri) {
         val fileType =
             if (fileTypeGroup.checkedRadioButtonId == R.id.zoningRadio) "Zoning" else "Others"
@@ -123,16 +198,17 @@ class ArchitectStepComplianceFragment : Fragment() {
 
         val safeProjectTrackId = projectTrackId ?: return
 
-        // ✅ Create RequestBodies
+        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val multipartBody = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
         val trackIdBody = safeProjectTrackId.toRequestBody("text/plain".toMediaTypeOrNull())
         val fileTypeBody = fileType.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        // ✅ Create MultipartBody.Part for the file
-        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
-
-        // ✅ Call the API
-        ApiClient.instance.uploadComplianceFile(trackIdBody, fileTypeBody, filePart)
+        ApiClient.instance.uploadComplianceFile(
+            trackIdBody,
+            fileTypeBody,
+            multipartBody
+        )
             .enqueue(object : Callback<ArchitectApiResponse> {
                 override fun onResponse(
                     call: Call<ArchitectApiResponse>,
@@ -140,11 +216,7 @@ class ArchitectStepComplianceFragment : Fragment() {
                 ) {
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(context, "File uploaded successfully", Toast.LENGTH_SHORT).show()
-
-                        // ✅ Show clickable link to file
-                        val link = createFileLink(file.name)
-                        if (fileType == "Zoning") zoningContainer.addView(link)
-                        else otherContainer.addView(link)
+                        fetchProjectTrackerData() // ✅ refresh list after upload
                     } else {
                         Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
                     }
@@ -153,19 +225,11 @@ class ArchitectStepComplianceFragment : Fragment() {
                 override fun onFailure(call: Call<ArchitectApiResponse>, t: Throwable) {
                     Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+        )
     }
 
-
-    // ✅ Helper: Display uploaded filename in UI
-    private fun addFileToList(fileName: String, fileType: String) {
-        val textView = TextView(context)
-        textView.text = fileName
-        textView.setPadding(8, 4, 8, 4)
-        if (fileType == "Zoning") zoningContainer.addView(textView)
-        else otherContainer.addView(textView)
-    }
-
+    // ✅ Get clean file name from URI
     private fun getFileName(uri: Uri): String {
         var name = "unknown_file"
         val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
@@ -178,37 +242,21 @@ class ArchitectStepComplianceFragment : Fragment() {
         return name
     }
 
-    private fun createFileLink(fileName: String): TextView {
-        return TextView(requireContext()).apply {
-            text = fileName
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_dark)) // use a link color
-            setPadding(8, 8, 8, 8)
-            setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("${ApiClient.getBaseUrl()}/wwwroot/uploads/compliance/$fileName")
-                startActivity(intent)
-            }
+    // ✅ Clean, readable clickable link
+    private fun createFileLinkUI(label: String, fileName: String): View {
+        val textView = TextView(context)
+        textView.text = label
+        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+        textView.paintFlags = textView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
+        // ✅ Fix: prepend full URL path
+        val fileUrl = "http://10.0.2.2:5169/uploads/compliance/$fileName"
+
+        textView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl))
+            startActivity(intent)
         }
-    }
 
-    private fun updateStep(newStatus: String, nextPage: Int) {
-        ApiClient.instance.updateProjectStatus(projectTrackId!!, newStatus)
-            .enqueue(object : Callback<ArchitectApiResponse> {
-                override fun onResponse(
-                    call: Call<ArchitectApiResponse>,
-                    response: Response<ArchitectApiResponse>
-                ) {
-                    if (response.isSuccessful && response.body()?.success == true) {
-                        Toast.makeText(context, "Moved to $newStatus", Toast.LENGTH_SHORT).show()
-                        viewPager.currentItem = nextPage
-                    } else {
-                        Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<ArchitectApiResponse>, t: Throwable) {
-                    Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+        return textView
     }
 }
