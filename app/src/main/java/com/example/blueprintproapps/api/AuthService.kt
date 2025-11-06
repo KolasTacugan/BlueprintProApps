@@ -37,7 +37,22 @@ interface ApiService {
     @GET("api/MobileAuth/edit-profile/{userId}")
     fun getEditProfile(@Path("userId") userId: String): Call<GetEditProfileResponse>
 
+    // ✅ ARCHITECT SUBSCRIPTION (Create Stripe session)
+    @POST("api/MobileAuth/CreateArchitectSubscription")
+    fun createArchitectSubscription(
+        @Body request: ArchitectSubscriptionRequest
+    ): Call<ArchitectSubscriptionResponse>
 
+    // ✅ ARCHITECT SUBSCRIPTION (Complete subscription)
+    @POST("api/MobileAuth/CompleteSubscription")
+    fun completeSubscription(
+        @Body request: ArchitectSubscriptionCompleteRequest
+    ): Call<GenericResponse>
+
+    @POST("api/MobileAuth/DowngradeArchitectPlan")
+    fun downgradeArchitectPlan(
+        @Body request: ArchitectSubscriptionRequest
+    ): Call<GenericResponse>
 
     // CLIENT CALLS
     @GET("api/MobileClient/dashboard")
