@@ -21,7 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class BlueprintAdapter(
-    private val items: List<BlueprintResponse>,
+    private val items: MutableList<BlueprintResponse>,
     private val context: Context,
     private val cartUpdateListener: OnCartUpdateListener // ✅ Listener for cart updates
 ) : RecyclerView.Adapter<BlueprintAdapter.ViewHolder>() {
@@ -45,6 +45,12 @@ class BlueprintAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+    fun updateList(newItems: List<BlueprintResponse>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
@@ -52,11 +58,17 @@ class BlueprintAdapter(
         holder.blueprintName.text = item.blueprintName
         holder.blueprintPrice.text = "₱${item.blueprintPrice}"
 
+
         if (!item.blueprintImage.isNullOrEmpty()) {
-            Picasso.get().load(item.blueprintImage).into(holder.blueprintImage)
+            Picasso.get()
+                .load(item.blueprintImage)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_gallery)
+                .into(holder.blueprintImage)
         } else {
             holder.blueprintImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
+
 
         // ✅ Add to Cart button logic
         holder.addToCartBtn.setOnClickListener {
