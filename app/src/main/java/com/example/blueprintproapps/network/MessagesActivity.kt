@@ -21,6 +21,7 @@ class MessagesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMessagesBinding
     private lateinit var messageAdapter: MessagesAdapter
     private lateinit var chatHeadAdapter: ChatHeadAdapter
+    private var lastRefreshTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,19 @@ class MessagesActivity : AppCompatActivity() {
         loadMatches(clientId)
     }
 
+    override fun onResume() {
+        super.onResume()
+        val now = System.currentTimeMillis()
+        if (now - lastRefreshTime > 3000) { // refresh only if 3s passed
+            val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+            val clientId = sharedPref.getString("clientId", null)
+            if (!clientId.isNullOrEmpty()) {
+                loadConversations(clientId)
+                loadMatches(clientId)
+            }
+            lastRefreshTime = now
+        }
+    }
     // 🗨️ Load all existing conversations
     private fun loadConversations(clientId: String) {
         ApiClient.instance.getAllMessages(clientId)
