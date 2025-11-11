@@ -69,11 +69,13 @@
         android:background="@android:color/white"
         app:tabMode="scrollable"
         app:tabIndicatorColor="@color/primary"
+        app:tabIndicatorHeight="3dp"
         app:tabTextColor="@color/dark_gray"
         app:tabSelectedTextColor="@color/primary"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <!-- RecyclerView for Blueprint Cards -->
     <androidx.recyclerview.widget.RecyclerView
