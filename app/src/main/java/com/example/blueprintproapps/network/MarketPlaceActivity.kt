@@ -55,6 +55,10 @@ class MarketPlaceActivity : AppCompatActivity() {
         val cartIcon: ImageView = findViewById(R.id.cartIcon)
         cartIcon.setOnClickListener {
             val cartBottomSheet = CartBottomSheet()
+
+            cartBottomSheet.onCartClosed = {
+                refreshMarketplace()   // ✅ Your new function
+            }
             cartBottomSheet.show(supportFragmentManager, "CartBottomSheet")
         }
         val categoryTabs = findViewById<TabLayout>(R.id.categoryTabs)
@@ -80,6 +84,12 @@ class MarketPlaceActivity : AppCompatActivity() {
 
 
     }
+
+    private fun refreshMarketplace() {
+        fetchCartCount()     // ✅ Updates the cart badge AND sets isAddedToCart flags
+        adapter.notifyDataSetChanged()
+    }
+
     private fun filterBlueprints(category: String) {
         val filtered = if (category == "All") {
             blueprintList
@@ -142,6 +152,14 @@ class MarketPlaceActivity : AppCompatActivity() {
                     cartItemCount = cartItems.size
                     cartCountText.text = cartItemCount.toString()
                     Log.d("CartCount", "Cart count updated: $cartItemCount")
+
+                    // 🟩 Mark items already in cart (no renames, works fine)
+                    val cartIds = cartItems.map { it.blueprintId }
+                    displayedList.forEach { bp ->
+                        bp.isAddedToCart = cartIds.contains(bp.blueprintId)
+                    }
+
+                    adapter.notifyDataSetChanged()
                 } else {
                     Log.e("CartCountError", "Response code: ${response.code()}")
                 }
@@ -151,6 +169,12 @@ class MarketPlaceActivity : AppCompatActivity() {
                 Log.e("CartCountError", "Failed: ${t.message}")
             }
         })
+    }
+    override fun onResume() {
+        super.onResume()
+
+
+        fetchCartCount()
     }
 
 

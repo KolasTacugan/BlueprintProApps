@@ -58,7 +58,6 @@ class BlueprintAdapter(
         holder.blueprintName.text = item.blueprintName
         holder.blueprintPrice.text = "₱${item.blueprintPrice}"
 
-
         if (!item.blueprintImage.isNullOrEmpty()) {
             Picasso.get()
                 .load(item.blueprintImage)
@@ -69,13 +68,20 @@ class BlueprintAdapter(
             holder.blueprintImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
 
+        // ✅ Change button appearance depending on isAddedToCart flag
+        if (item.isAddedToCart) {
+            holder.addToCartBtn.text = "Item Added"
+            holder.addToCartBtn.isEnabled = false
+            holder.addToCartBtn.setBackgroundColor(context.getColor(R.color.gray))
+        } else {
+            holder.addToCartBtn.text = "Add to Cart"
+            holder.addToCartBtn.isEnabled = true
+            holder.addToCartBtn.setBackgroundColor(context.getColor(R.color.accent))
+        }
 
-        // ✅ Add to Cart button logic
         holder.addToCartBtn.setOnClickListener {
-            // Retrieve clientId (example if stored in SharedPreferences)
             val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
             val clientId = sharedPrefs.getString("clientId", null)
-
 
             if (clientId == null) {
                 Toast.makeText(context, "Please log in first.", Toast.LENGTH_SHORT).show()
@@ -87,11 +93,19 @@ class BlueprintAdapter(
                 blueprintId = item.blueprintId,
                 quantity = 1
             )
+            val currentPosition = holder.adapterPosition
+
 
             ApiClient.instance.addToCart(request).enqueue(object : Callback<CartResponse> {
                 override fun onResponse(call: Call<CartResponse>, response: Response<CartResponse>) {
                     if (response.isSuccessful) {
                         Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show()
+
+                        // 🟩 Mark this item as added
+                        item.isAddedToCart = true
+                        notifyItemChanged(currentPosition)
+
+                        // Notify Marketplace activity
                         cartUpdateListener.onItemAdded()
                     } else {
                         Toast.makeText(context, "Failed to add. Please try again.", Toast.LENGTH_SHORT).show()
@@ -105,6 +119,9 @@ class BlueprintAdapter(
                 }
             })
         }
-
     }
+
+
+
 }
+
