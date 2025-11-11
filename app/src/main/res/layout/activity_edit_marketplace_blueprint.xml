@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".network.UploadMarketplaceBlueprintActivity">
+    tools:context=".network.EditMarketplaceBlueprintActivity">
 
     <!-- Header -->
     <LinearLayout
@@ -41,7 +41,7 @@
             android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upload Blueprint"
+            android:text="Edit Blueprint"
             android:textColor="#091635"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -105,13 +105,20 @@
 
             <!-- Upload -->
             <Button
-                android:id="@+id/uploadBtn"
+                android:id="@+id/saveBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upload to Blueprint Marketplace"
+                android:text="Save Edit"
                 android:backgroundTint="#0D3C80"
                 android:textColor="#FFF"/>
 
+            <Button
+                android:id="@+id/deleteBlueprintBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DELETE BLUEPRINT"
+                android:backgroundTint="#DB1402"
+                android:textColor="#FFF"/>
         </LinearLayout>
     </ScrollView>
 

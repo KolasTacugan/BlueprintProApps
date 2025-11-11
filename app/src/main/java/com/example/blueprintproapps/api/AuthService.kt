@@ -226,4 +226,20 @@ interface ApiService {
         @Field("status") status: String
     ): Call<ArchitectApiResponse>
 
+    @Multipart
+    @POST("api/MobileArchitect/EditBlueprint")
+    fun editBlueprint(
+        @Part("blueprintId") blueprintId: RequestBody,
+        @Part("blueprintName") name: RequestBody,
+        @Part("blueprintPrice") price: RequestBody,
+        @Part("blueprintStyle") style: RequestBody,
+        @Part("blueprintDescription") description: RequestBody,
+        @Part BlueprintImage: MultipartBody.Part?
+    ): Call<ResponseBody>
+
+    @DELETE("api/MobileArchitect/DeleteBlueprint/{blueprintId}")
+    fun deleteBlueprint(
+        @Path("blueprintId") blueprintId: Int
+    ): Call<ResponseBody>
+
 }

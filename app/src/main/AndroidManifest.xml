@@ -29,6 +29,22 @@
         </activity>
 
         <activity
+            android:name=".network.EditMarketplaceBlueprintActivity"
+            android:exported="false" />
+
+        <!-- ✅ WebViewActivity: handles subscription success/cancel -->
+        <activity android:name=".WebViewActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="blueprintpro" android:host="subscription-success" />
+                <data android:scheme="blueprintpro" android:host="subscription-cancel" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".network.EditProfileActivity"
             android:exported="false" />
 
@@ -64,15 +80,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- Stripe success & cancel redirect URLs -->
-                <data
-                    android:host="payment-success"
-                    android:scheme="blueprintpro" />
-                <data
-                    android:host="payment-cancel"
-                    android:scheme="blueprintpro" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
