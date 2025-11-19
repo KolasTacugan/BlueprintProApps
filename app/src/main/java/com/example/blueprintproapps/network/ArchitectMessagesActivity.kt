@@ -22,7 +22,7 @@ class ArchitectMessagesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityArchitectMessagesBinding
     private lateinit var messageAdapter: ArchitectMessagesAdapter
     private lateinit var chatHeadAdapter: ArchitectChatHeadAdapter
-
+    private var lastRefreshTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityArchitectMessagesBinding.inflate(layoutInflater)
@@ -65,7 +65,21 @@ class ArchitectMessagesActivity : AppCompatActivity() {
         loadConversations(architectId)
         loadMatches(architectId)
     }
+    override fun onResume() {
+        super.onResume()
 
+        val now = System.currentTimeMillis()
+        if (now - lastRefreshTime > 3000) { // refresh only if at least 3 seconds passed
+            val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+            val architectId = sharedPref.getString("architectId", null)
+
+            if (!architectId.isNullOrEmpty()) {
+                loadConversations(architectId)
+                loadMatches(architectId)
+            }
+            lastRefreshTime = now
+        }
+    }
     // 🗨️ Load all conversations for architect
     private fun loadConversations(architectId: String) {
         ApiClient.instance.getAllMessagesForArchitect(architectId)
