@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ChatHeadAdapter
 import com.example.blueprintproapps.adapter.MessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
@@ -28,15 +30,24 @@ class MessagesActivity : AppCompatActivity() {
         binding = ActivityMessagesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // ✅ Load logged-in user's profile photo in the top search bar
+        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val userProfileUrl = sharedPref.getString("profilePhoto", null)
+        userProfileUrl?.let {
+            Glide.with(this)
+                .load(it)
+                .placeholder(R.drawable.profile_pic) // default fallback
+                .circleCrop() // optional: make it circular
+                .into(binding.imgUserProfile) // make sure this matches your ImageView ID
+        }
+
         // ✅ Setup RecyclerViews
         binding.recyclerMessages.layoutManager = LinearLayoutManager(this)
         binding.recyclerChatHeads.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         // ✅ Get clientId from SharedPreferences
-        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val clientId = sharedPref.getString("clientId", null)
-
         if (clientId.isNullOrEmpty()) {
             Toast.makeText(this, "Missing client ID", Toast.LENGTH_SHORT).show()
             finish()
@@ -65,6 +76,7 @@ class MessagesActivity : AppCompatActivity() {
         loadConversations(clientId)
         loadMatches(clientId)
     }
+
 
     override fun onResume() {
         super.onResume()

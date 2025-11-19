@@ -110,7 +110,8 @@ class EditProfileActivity : AppCompatActivity() {
                     // ✅ Load profile image
                     if (!data.profilePhoto.isNullOrEmpty()) {
                         Glide.with(this@EditProfileActivity)
-                            .load("YOUR_BASE_URL" + data.profilePhoto)
+                            .load(data.profilePhoto)
+                            .placeholder(R.drawable.ic_user_placeholder)
                             .into(imgProfile)
                     }
 

@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectChatHeadAdapter
 import com.example.blueprintproapps.adapter.ArchitectMessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
@@ -35,6 +37,17 @@ class ArchitectMessagesActivity : AppCompatActivity() {
 
         // ✅ Get architectId from SharedPreferences
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val architectProfileUrl = sharedPref.getString("profilePhoto", null)
+
+        architectProfileUrl?.let {
+            Glide.with(this)
+                .load(it)
+                .placeholder(R.drawable.profile_pic)
+                .circleCrop()
+                .into(binding.architectProfilePic)
+        }
+
+
         val architectId = sharedPref.getString("architectId", null)
 
         if (architectId.isNullOrEmpty()) {

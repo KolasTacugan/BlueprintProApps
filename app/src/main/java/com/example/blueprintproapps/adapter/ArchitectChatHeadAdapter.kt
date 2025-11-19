@@ -28,7 +28,9 @@ class ArchitectChatHeadAdapter(
 
                 // ✅ Launch ArchitectChatActivity with clientId
                 val intent = Intent(context, ArchitectChatActivity::class.java)
-                intent.putExtra("clientId", match.clientId) // <-- crucial line
+                intent.putExtra("receiverId", match.clientId)
+                intent.putExtra("receiverName", match.clientName)
+
                 context.startActivity(intent)
 
                 // Optional callback if you still use it elsewhere
