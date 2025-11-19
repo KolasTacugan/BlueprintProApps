@@ -15,23 +15,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
-
         <activity
-            android:name=".network.EditMarketplaceBlueprintActivity"
+            android:name=".network.ArchitectDeletedProjectsActivity"
             android:exported="false" />
-
         <!-- ✅ WebViewActivity: handles subscription success/cancel -->
-        <activity android:name=".WebViewActivity" android:exported="true">
+        <activity
+            android:name=".WebViewActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="blueprintpro" android:host="subscription-success" />
-                <data android:scheme="blueprintpro" android:host="subscription-cancel" />
+                <data
+                    android:host="subscription-success"
+                    android:scheme="blueprintpro" />
+                <data
+                    android:host="subscription-cancel"
+                    android:scheme="blueprintpro" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".network.EditMarketplaceBlueprintActivity"
+            android:exported="false" />
         <activity
             android:name=".network.EditProfileActivity"
             android:exported="false" />
@@ -58,7 +65,6 @@
         <activity
             android:name=".network.MessagesActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">

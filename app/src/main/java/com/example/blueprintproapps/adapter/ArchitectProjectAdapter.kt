@@ -16,7 +16,8 @@ import com.squareup.picasso.Picasso
 
 class ArchitectProjectAdapter(
     private val items: MutableList<ArchitectProjectResponse>,
-    private val context: Context
+    private val context: Context,
+    private val onDeleteClick: (String) -> Unit
 ) : RecyclerView.Adapter<ArchitectProjectAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,6 +26,7 @@ class ArchitectProjectAdapter(
         val blueprintBudget: TextView = view.findViewById(R.id.blueprintBudget)
         val clientName: TextView = view.findViewById(R.id.clientName)
         val trackBtn: Button = view.findViewById(R.id.trackBtn)
+        val deleteBtn: Button = view.findViewById(R.id.deleteBtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,10 +50,25 @@ class ArchitectProjectAdapter(
             holder.blueprintImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
 
+        // ------------------------------------------------------------------
+        // ✅ Show/hide DELETE button based on project status
+        // ------------------------------------------------------------------
+        if (item.project_Status == "Ongoing") {
+            holder.deleteBtn.visibility = View.VISIBLE
+        } else {
+            holder.deleteBtn.visibility = View.GONE
+        }
+
+        // DELETE BUTTON CLICK
+        holder.deleteBtn.setOnClickListener {
+            onDeleteClick(item.project_Id)
+        }
+
         holder.trackBtn.setOnClickListener {
             val intent = Intent(context, ArchitectProjectTrackerActivity::class.java)
             intent.putExtra("projectId", item.project_Id)
-            intent.putExtra("blueprintId", item.blueprint_Id) // ✅ Add this line
+            intent.putExtra("blueprintId", item.blueprint_Id)
+            intent.putExtra("projectStatus", item.project_Status)
             context.startActivity(intent)
         }
     }

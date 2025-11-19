@@ -34,7 +34,8 @@ class ArchitectStepFinalizationFragment : Fragment() {
             blueprintId: Int,
             projectTrackId: Int,
             status: String,
-            finalBlueprintUrl: String?
+            finalBlueprintUrl: String?,
+            projectStatus: String?
         ): ArchitectStepFinalizationFragment {
             val fragment = ArchitectStepFinalizationFragment()
             val args = Bundle()
@@ -43,6 +44,7 @@ class ArchitectStepFinalizationFragment : Fragment() {
             args.putInt("projectTrackId", projectTrackId)
             args.putString("status", status)
             args.putString("finalBlueprintUrl", finalBlueprintUrl)
+            args.putString("projectStatus", projectStatus)
             fragment.arguments = args
             return fragment
         }
@@ -129,6 +131,13 @@ class ArchitectStepFinalizationFragment : Fragment() {
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
+        }
+
+        val projectStatus = arguments?.getString("projectStatus") ?: ""
+        if (projectStatus == "Finished") {
+            saveNotesBtn.visibility = View.GONE
+            finalizeBtn.visibility = View.GONE
+            notesEditText.isEnabled = false
         }
 
         return view

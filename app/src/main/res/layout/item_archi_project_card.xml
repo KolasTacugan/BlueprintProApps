@@ -68,6 +68,15 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/accent"
                 android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/deleteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:backgroundTint="#DB1402"
+                android:textColor="@android:color/white"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
