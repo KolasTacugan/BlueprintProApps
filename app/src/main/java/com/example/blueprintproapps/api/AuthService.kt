@@ -242,4 +242,26 @@ interface ApiService {
         @Path("blueprintId") blueprintId: Int
     ): Call<ResponseBody>
 
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/DeleteProject")
+    fun deleteProject(
+        @Field("id") projectId: String
+    ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/RestoreProject")
+    fun restoreProject(
+        @Field("id") projectId: String
+    ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("api/MobileArchitect/PermanentlyDeleteProject")
+    fun permanentlyDeleteProject(
+        @Field("id") projectId: String
+    ): Call<ResponseBody>
+
+    @GET("api/MobileArchitect/DeletedProjects")
+    fun getDeletedProjects(
+        @Query("architectId") architectId: String
+    ): Call<List<DeletedProjectResponse>>
 }

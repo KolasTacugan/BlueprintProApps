@@ -21,6 +21,7 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
     private lateinit var stepProgress: LinearProgressIndicator
     private var trackerStatus: String? = null
     private var projectId: String = ""
+    private var projectStatus: String = ""
     private var blueprintId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +33,7 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
 
         projectId = intent.getStringExtra("projectId") ?: ""
         blueprintId = intent.getIntExtra("blueprintId", 0)
+        projectStatus = intent.getStringExtra("projectStatus") ?: ""
 
         if (blueprintId == 0) {
             Log.e("TrackerError", "❌ Missing blueprintId in Intent.")
@@ -90,46 +92,47 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
                 blueprintId = blueprintId,
                 projectTrackId = projectTrackId,
                 status = status,
-                finalBlueprintUrl = currentFilePath)
+                finalBlueprintUrl = currentFilePath,
+                projectStatus = projectStatus)
         )
 
         val adapter = ArchitectProjectTrackerAdapter(this, fragments)
         viewPager.adapter = adapter
         viewPager.isUserInputEnabled = false // disable swiping
 
+        applyStatusUI(status)
+    }
+
+    private fun applyStatusUI(status: String) {
+
         val btnReview = findViewById<Button>(R.id.btnReview)
         val btnCompliance = findViewById<Button>(R.id.btnCompliance)
         val btnFinalization = findViewById<Button>(R.id.btnFinalization)
 
-        // Define which buttons are enabled based on project status
-        when (status) {
-            "Review" -> {
-                btnReview.isEnabled = true
-                btnCompliance.isEnabled = false
-                btnFinalization.isEnabled = false
-                viewPager.currentItem = 0
-            }
-            "Compliance" -> {
-                btnReview.isEnabled = true
-                btnCompliance.isEnabled = true
-                btnFinalization.isEnabled = false
-                viewPager.currentItem = 1
-            }
-            "Finalization" -> {
-                btnReview.isEnabled = true
-                btnCompliance.isEnabled = true
-                btnFinalization.isEnabled = true
-                viewPager.currentItem = 2
-            }
-            else -> {
-                btnReview.isEnabled = true
-                btnCompliance.isEnabled = false
-                btnFinalization.isEnabled = false
-                viewPager.currentItem = 0
-            }
+        val stepIndex = when (status) {
+            "Review" -> 0
+            "Compliance" -> 1
+            "Finalization" -> 2
+            else -> 0
         }
 
-        // Button click listeners
+        // Enable/disable buttons
+        btnReview.isEnabled = true
+        btnCompliance.isEnabled = stepIndex >= 1
+        btnFinalization.isEnabled = stepIndex >= 2
+
+        // Set correct page BEFORE showing it
+        viewPager.setCurrentItem(stepIndex, false)
+
+        // Set progress bar
+        stepProgress.progress = when (stepIndex) {
+            0 -> 33
+            1 -> 66
+            2 -> 100
+            else -> 33
+        }
+
+        // Listener for step navigation
         btnReview.setOnClickListener { viewPager.currentItem = 0 }
         btnCompliance.setOnClickListener {
             if (btnCompliance.isEnabled) viewPager.currentItem = 1
@@ -138,16 +141,14 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
             if (btnFinalization.isEnabled) viewPager.currentItem = 2
         }
 
-        // Progress bar updates
+        // Update progress when swiping (if swiping ever enabled)
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                val progress = ((position + 1) / 3f) * 100
-                stepProgress.progress = progress.toInt()
+                stepProgress.progress = ((position + 1) / 3f * 100).toInt()
             }
         })
     }
-
     fun reloadTrackerData() {
         loadTrackerData(blueprintId)
     }

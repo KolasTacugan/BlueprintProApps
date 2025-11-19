@@ -70,17 +70,48 @@
             tools:listitem="@layout/item_archi_project_card" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Add Blueprint Floating Button -->
+    <!-- EXPAND FAB: More Options (3 dots) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addProjectBtn"
+        android:id="@+id/moreOptionsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Add Blueprint"
-        android:src="@drawable/ic_add"
+        android:contentDescription="More Options"
+        android:src="@drawable/ic_more_vert"
         app:backgroundTint="#0D3C80"
         app:tint="@android:color/white"
         app:layout_anchor="@id/recyclerViewBlueprints"
         app:layout_anchorGravity="bottom|end"
         android:layout_margin="24dp"/>
+
+    <!-- Hidden: Add Project Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addProjectBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Add Project"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="#0D3C80"
+        app:tint="@android:color/white"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="84dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/recyclerViewBlueprints"
+        app:layout_anchorGravity="bottom|end"/>
+
+    <!-- Hidden: Deleted Projects Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deletedProjectsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Deleted Projects"
+        android:src="@drawable/ic_delete"
+        app:backgroundTint="#C62828"
+        app:tint="@android:color/white"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="144dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/recyclerViewBlueprints"
+        app:layout_anchorGravity="bottom|end"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

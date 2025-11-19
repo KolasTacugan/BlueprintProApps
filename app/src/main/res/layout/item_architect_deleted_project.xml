@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Project Title -->
+        <TextView
+            android:id="@+id/deletedProjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Title"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#091635"/>
+
+        <!-- Client Name -->
+        <TextView
+            android:id="@+id/deletedProjectClient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Client Name"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:textColor="#333"/>
+
+        <!-- Deleted Date -->
+        <TextView
+            android:id="@+id/deletedProjectDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deleted: Jan 01, 2025"
+            android:textSize="12sp"
+            android:textColor="#888"
+            android:layout_marginTop="2dp"/>
+
+        <!-- Action Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp">
+
+            <!-- Restore button -->
+            <ImageButton
+                android:id="@+id/restoreBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_green"
+                android:padding="8dp"
+                android:src="@drawable/ic_restore"
+                app:tint="@android:color/white"
+                android:contentDescription="Restore"/>
+
+            <!-- Delete Forever button -->
+            <ImageButton
+                android:id="@+id/deleteForeverBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/circle_red"
+                android:padding="8dp"
+                android:src="@drawable/ic_delete"
+                app:tint="@android:color/white"
+                android:contentDescription="Delete Forever"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
