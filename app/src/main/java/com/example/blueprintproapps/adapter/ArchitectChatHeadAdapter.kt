@@ -49,12 +49,15 @@ class ArchitectChatHeadAdapter(
         val match = chatHeads[position]
         holder.txtName.text = match.clientName ?: "Unknown Client"
 
-        val photoUrl = match.clientPhoto?.replace("~", "https://yourdomain.com")
+        val photoUrl = match.clientPhoto  // already a full URL from API
+
         Glide.with(holder.itemView.context)
             .load(photoUrl ?: R.drawable.sample_profile)
             .placeholder(R.drawable.sample_profile)
+            .error(R.drawable.sample_profile)
             .into(holder.imgProfile)
     }
+
 
     override fun getItemCount(): Int = chatHeads.size
 }
