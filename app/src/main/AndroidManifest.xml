@@ -16,6 +16,12 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".network.ClientProjectsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".network.ClientProjectTrackerActivity"
+            android:exported="false" />
+        <activity
             android:name=".network.ArchitectDeletedProjectsActivity"
             android:exported="false" />
         <!-- ✅ WebViewActivity: handles subscription success/cancel -->

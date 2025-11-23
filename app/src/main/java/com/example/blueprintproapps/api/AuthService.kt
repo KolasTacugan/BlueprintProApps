@@ -80,8 +80,10 @@ interface ApiService {
         @Body request: CompletePurchaseRequest
     ): Call<GenericResponse>
 
-    @GET("api/MobileClient/Projects")
-    fun getProjects(): Call<List<ProjectResponse>>
+    @GET("api/MobileClient/getClientProjects/{clientId}")
+    fun getClientProjects(
+        @Path("clientId") clientId: String
+    ): Call<List<ClientProjectResponse>>
 
     @GET("api/MobileClient/Matches")
     fun getMatches(
@@ -111,9 +113,17 @@ interface ApiService {
         @Body request: MessageRequest
     ): Call<GenericResponse>
 
+    // Fetch tracker by blueprint id (GET only)
+    @GET("api/MobileClient/ProjectTracker/{blueprintId}")
+    fun getProjectTracker(@Path("blueprintId") blueprintId: Int): Call<ClientProjectTrackerResponse>
 
-    @GET("api/MobileClient/ProjectTracker/{id}")
-    fun getProjectTracker(@Path("id") projectId: Int): Call<ProjectTrackerResponse>
+    // Submit rating from client
+    @FormUrlEncoded
+    @POST("api/MobileClient/SubmitRating")
+    fun submitRating(
+        @Field("projectId") projectId: String,
+        @Field("rating") rating: Int
+    ): Call<ClientApiResponse>
 
 
     //ARCHITECT CALLS

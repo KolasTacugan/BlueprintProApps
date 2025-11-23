@@ -30,6 +30,8 @@ class ClientDashboardActivity : AppCompatActivity() {
         val marketplaceBtn = findViewById<LinearLayout>(R.id.marketplaceBtn)
         val chatIcon = findViewById<ImageView>(R.id.chatIcon)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val clientId = prefs.getString("clientId", null)
 
         chatIcon.setOnClickListener {
             val intent = Intent(this, MessagesActivity::class.java)
@@ -53,11 +55,15 @@ class ClientDashboardActivity : AppCompatActivity() {
                     true
                 }
 
-//                R.id.nav_project -> {
-//                    val intent = Intent(this, ProjectListActivity::class.java)
-//                    startActivity(intent)
-//                    true
-//                }
+                R.id.nav_project -> {
+                    val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    val clientId = prefs.getString("clientId", null)
+
+                    val intent = Intent(this, ClientProjectsActivity::class.java)
+                    intent.putExtra("clientId", clientId)
+                    startActivity(intent)
+                    true
+                }
 
                 R.id.nav_profile -> {
                     val intent = Intent(this, ProfileActivity::class.java)
