@@ -8,6 +8,7 @@ data class BlueprintResponse(
     val blueprintName: String,
     val blueprintImage: String?,
     val blueprintPrice: Double,
+    val blueprintDescription: String?,
     val blueprintIsForSale: Boolean,
     val blueprintStyle: String?,
     var isAddedToCart: Boolean = false

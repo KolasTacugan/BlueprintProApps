@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.MatchResponse
 
-class MatchAdapter(private val onRequestClick: (String) -> Unit) :
+class MatchAdapter(private val onRequestClick: (String) -> Unit,
+                   private val onProfileClick: (MatchResponse) -> Unit) :
     ListAdapter<MatchResponse, MatchAdapter.MatchViewHolder>(MatchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
@@ -21,6 +22,7 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
 
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
         holder.bind(getItem(position))
+
     }
 
     inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,6 +38,10 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
             btnMatch.text = if (match.matchStatus == "Pending") "Pending..." else "Match"
             btnMatch.isEnabled = match.matchStatus != "Pending"
             btnMatch.setOnClickListener { onRequestClick(match.architectId) }
+
+            itemView.setOnClickListener {
+                onProfileClick(match)
+            }
         }
     }
 }

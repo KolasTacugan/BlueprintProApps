@@ -19,6 +19,7 @@ import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.GenericResponse
 import com.example.blueprintproapps.models.MatchRequest
 import com.example.blueprintproapps.models.MatchResponse
+import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,9 +52,15 @@ class MatchClientActivity : AppCompatActivity() {
         // RecyclerView setup
         matchRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        matchAdapter = MatchAdapter { architectId ->
-            sendMatchRequest(architectId)
-        }
+        matchAdapter = MatchAdapter(
+            onRequestClick = { architectId ->
+                sendMatchRequest(architectId)
+            },
+            onProfileClick = { match ->
+                showArchitectBottomSheet(match)
+            }
+        )
+
         matchRecyclerView.adapter = matchAdapter
 
         // Initial load
@@ -70,6 +77,10 @@ class MatchClientActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter what you're looking for.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    private fun showArchitectBottomSheet(match: MatchResponse) {
+        val sheet = ArchitectDetailBottomSheet(match)
+        sheet.show(supportFragmentManager, "ArchitectDetailBottomSheet")
     }
 
     /**

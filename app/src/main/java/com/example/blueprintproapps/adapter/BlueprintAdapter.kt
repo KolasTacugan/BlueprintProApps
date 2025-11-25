@@ -9,12 +9,14 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.BlueprintResponse
 import com.example.blueprintproapps.models.CartRequest
 import com.example.blueprintproapps.models.CartResponse
+import com.example.blueprintproapps.utils.BlueprintDetailsBottomSheet
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,6 +37,7 @@ class BlueprintAdapter(
         val blueprintName: TextView = view.findViewById(R.id.blueprintName)
         val blueprintPrice: TextView = view.findViewById(R.id.blueprintPrice)
         val blueprintImage: ImageView = view.findViewById(R.id.blueprintImage)
+        val blueprintDescription: TextView = view.findViewById(R.id.blueprintDescription)
         val addToCartBtn: Button = view.findViewById(R.id.addToCartBtn)
     }
 
@@ -57,6 +60,14 @@ class BlueprintAdapter(
 
         holder.blueprintName.text = item.blueprintName
         holder.blueprintPrice.text = "₱${item.blueprintPrice}"
+
+        holder.blueprintDescription.text =
+            item.blueprintDescription ?: "No description available"
+
+        holder.itemView.setOnClickListener {
+            val bottomSheet = BlueprintDetailsBottomSheet(item)
+            bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BlueprintDetails")
+        }
 
         if (!item.blueprintImage.isNullOrEmpty()) {
             Picasso.get()
