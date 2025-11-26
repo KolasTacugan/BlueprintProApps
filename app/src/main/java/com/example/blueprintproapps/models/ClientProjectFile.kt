@@ -6,13 +6,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ClientProjectFile(
-    val projectFile_Id: Int,
-    val project_Id: String,
-    val projectFile_fileName: String,
-    val projectFile_Path: String,
-    val projectFile_Version: Int,
-    val projectFile_uploadedDate: String
+
+    @SerializedName("fileName")
+    val FileName: String,
+
+    @SerializedName("version")
+    val Version: Int,
+
+    @SerializedName("uploadedDate")
+    val UploadedDate: String,
+
+    @SerializedName("filePath")
+    val FilePath: String,
+
+    val projectFile_Id: Int? = null,
+    val project_Id: String? = null
 ) : Parcelable
-
-
-
