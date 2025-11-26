@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
@@ -32,17 +33,35 @@ class ClientRevisionHistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val revision = revisionList[position]
 
-        holder.revisionName.text = "Revision_ver.${revision.projectFile_Version}"
+        holder.revisionName.text = "Revision_ver.${revision.Version}"
 
         holder.openBtn.setOnClickListener {
-            val filePath = revision.projectFile_Path ?: return@setOnClickListener
-            val url = if (!filePath.startsWith("http"))
-                "http://10.0.2.2:5169/$filePath"
-            else filePath
-            holder.itemView.context.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            )
+            val rawPath = revision.FilePath?.trim()
+
+            if (rawPath.isNullOrEmpty()) {
+                Toast.makeText(holder.itemView.context, "No file path available", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            try {
+                // Build correct URL
+                val uri = if (!rawPath.startsWith("http")) {
+                    val cleanPath = rawPath.removePrefix("/")   // prevent double slash
+                    Uri.parse("http://10.0.2.2:5169/$cleanPath")
+                } else {
+                    Uri.parse(rawPath)
+                }
+
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                holder.itemView.context.startActivity(intent)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(holder.itemView.context, "Unable to open file", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 }
 
