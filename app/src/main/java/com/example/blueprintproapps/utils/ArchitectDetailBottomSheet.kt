@@ -1,5 +1,7 @@
 package com.example.blueprintproapps.utils
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Response   // ✅ Correct Response import
+import retrofit2.Response
 
 class ArchitectDetailBottomSheet(private val match: MatchResponse) :
     BottomSheetDialogFragment() {
@@ -71,8 +73,23 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
                     val data = response.body()?.data ?: return
 
                     email.text = "Email: ${data.email ?: "N/A"}"
-                    credentials.text = "Credentials: ${data.credentialsFilePath ?: "None"}"
 
+                    // Show credentials file
+                    if (!data.credentialsFilePath.isNullOrEmpty()) {
+
+                        credentials.text = "View Credentials"
+
+                        // Make it look clickable
+                        credentials.setTextColor(resources.getColor(android.R.color.holo_blue_dark))
+                        credentials.setOnClickListener {
+                            openCredentialsInBrowser(data.credentialsFilePath!!)
+                        }
+
+                    } else {
+                        credentials.text = "Credentials: None"
+                    }
+
+                    // Load profile picture
                     if (!data.profilePhoto.isNullOrEmpty()) {
                         Picasso.get().load(data.profilePhoto).into(image)
                     }
@@ -82,5 +99,14 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
                     Toast.makeText(requireContext(), t.message ?: "Error", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun openCredentialsInBrowser(url: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Cannot open credentials file", Toast.LENGTH_SHORT).show()
+        }
     }
 }

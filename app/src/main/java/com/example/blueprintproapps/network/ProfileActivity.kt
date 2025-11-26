@@ -16,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.app.Dialog
+import android.net.Uri
 import com.example.blueprintproapps.WebViewActivity
 import com.example.blueprintproapps.models.ArchitectSubscriptionRequest
 import com.example.blueprintproapps.models.ArchitectSubscriptionResponse
@@ -34,6 +35,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private lateinit var btnFavorites: Button
     private lateinit var btnSubscription: Button
+    private var credentialsFilePath: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,23 @@ class ProfileActivity : AppCompatActivity() {
         btnSettings = findViewById(R.id.btnSettings)
         btnFavorites = findViewById(R.id.btnFavorites)
         btnSubscription = findViewById(R.id.btnSubscription)
+
+        tvCredentialsFile.setOnClickListener {
+            val url = credentialsFilePath?.trim()
+
+            if (url.isNullOrEmpty()) {
+                Toast.makeText(this, "No file available", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(url)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+
+            startActivity(intent)
+        }
+
 
         btnSubscription.setOnClickListener {
             val dialog = Dialog(this)
@@ -218,6 +238,7 @@ class ProfileActivity : AppCompatActivity() {
                         tvPhone.text = profile.phoneNumber ?: "N/A"
                         tvCredentialsFile.text = profile.credentialsFilePath ?: "N/A"
 
+                        credentialsFilePath = profile.credentialsFilePath
                         // ✅ Load profile photo safely
                         if (!profile.profilePhoto.isNullOrEmpty()) {
                             Glide.with(this@ProfileActivity)
