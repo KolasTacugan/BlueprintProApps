@@ -1,5 +1,7 @@
 package com.example.blueprintproapps.models
 
+import com.google.gson.annotations.SerializedName
+
 data class ClientProjectResponse(
     val project_Id: String,
     val project_Title: String,
@@ -10,5 +12,6 @@ data class ClientProjectResponse(
     val blueprint_Id: Int,
     val blueprint_Name: String,
     val blueprint_ImageUrl: String?,
+
     val architectName: String
 )

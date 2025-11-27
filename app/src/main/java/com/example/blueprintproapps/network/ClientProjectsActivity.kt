@@ -30,8 +30,13 @@ class ClientProjectsActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewClientProjects)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // 🔥 ATTACH EMPTY ADAPTER FIRST
+        adapter = ClientProjectAdapter(projectList, this) {}
+        recyclerView.adapter = adapter
+
         fetchProjects()
     }
+
     private fun fetchProjects() {
 
         if (clientId.isNullOrEmpty()) {
@@ -47,12 +52,14 @@ class ClientProjectsActivity : AppCompatActivity() {
                 response: Response<List<ClientProjectResponse>>
             ) {
                 if (response.isSuccessful) {
-                    projectList = ArrayList(response.body() ?: emptyList())
-                    adapter = ClientProjectAdapter(
-                        projectList,
-                        this@ClientProjectsActivity
-                    ) { project -> }
-                    recyclerView.adapter = adapter
+
+                    // 🔥 UPDATE EXISTING LIST INSTEAD OF REPLACING IT
+                    projectList.clear()
+                    projectList.addAll(response.body() ?: emptyList())
+
+                    // 🔥 TELL RECYCLER TO RE-RENDER
+                    adapter.notifyDataSetChanged()
+
                 } else {
                     Toast.makeText(this@ClientProjectsActivity, "Failed to load", Toast.LENGTH_SHORT).show()
                 }
