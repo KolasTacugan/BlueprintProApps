@@ -25,7 +25,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         val pagerAdapter = CartPagerAdapter(this)
         binding.cartViewPager.adapter = pagerAdapter
         TabLayoutMediator(binding.cartTabs, binding.cartViewPager) { tab, position ->
-            tab.text = if (position == 0) "Cart" else "Saved"
+            tab.text = "Cart"
         }.attach()
 
         // Close button → dismiss the sheet

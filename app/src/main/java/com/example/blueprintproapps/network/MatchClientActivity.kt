@@ -3,6 +3,7 @@ package com.example.blueprintproapps.network
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -31,6 +32,8 @@ class MatchClientActivity : AppCompatActivity() {
     private lateinit var clientPrompt: EditText
     private lateinit var sendButton: ImageButton
     private lateinit var chatContainer: LinearLayout
+    private lateinit var loadingSection: LinearLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,8 @@ class MatchClientActivity : AppCompatActivity() {
         )
 
         matchRecyclerView.adapter = matchAdapter
+
+        loadingSection = findViewById(R.id.loadingSection)
 
         // Initial load
         fetchMatches()
@@ -111,11 +116,18 @@ class MatchClientActivity : AppCompatActivity() {
      * Fetch architects with optional query
      */
     private fun fetchMatches(query: String? = null) {
+
+        loadingSection.visibility = View.VISIBLE
+        matchRecyclerView.visibility = View.GONE
+
         ApiClient.instance.getMatches(query).enqueue(object : Callback<List<MatchResponse>> {
             override fun onResponse(
                 call: Call<List<MatchResponse>>,
                 response: Response<List<MatchResponse>>
             ) {
+                loadingSection.visibility = View.GONE
+                matchRecyclerView.visibility = View.VISIBLE
+
                 if (response.isSuccessful && response.body() != null) {
                     val matches = response.body()!!
                     matchAdapter.submitList(matches)
@@ -134,6 +146,8 @@ class MatchClientActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
+                loadingSection.visibility = View.GONE
+                matchRecyclerView.visibility = View.GONE
                 Log.e("MatchClientActivity", "Network error", t)
                 Toast.makeText(
                     this@MatchClientActivity,

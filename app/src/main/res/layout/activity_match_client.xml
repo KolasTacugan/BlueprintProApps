@@ -19,6 +19,31 @@
         android:textStyle="bold"
         android:textSize="18sp"
         android:padding="16dp" />
+    <!-- Loading Section -->
+    <LinearLayout
+        android:id="@+id/loadingSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/architectLoadingSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finding architects..."
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matchRecyclerView"
