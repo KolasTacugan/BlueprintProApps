@@ -11,17 +11,15 @@ import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ProfileApiResponse
-import com.example.blueprintproapps.models.ProfileResponse
+import com.example.blueprintproapps.models.ArchitectSubscriptionRequest
+import com.example.blueprintproapps.models.ArchitectSubscriptionResponse
+import com.example.blueprintproapps.models.GenericResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.app.Dialog
 import android.net.Uri
 import com.example.blueprintproapps.WebViewActivity
-import com.example.blueprintproapps.models.ArchitectSubscriptionRequest
-import com.example.blueprintproapps.models.ArchitectSubscriptionResponse
-import com.example.blueprintproapps.models.GenericResponse
-
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -35,6 +33,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private lateinit var btnFavorites: Button
     private lateinit var btnSubscription: Button
+
     private var credentialsFilePath: String? = null
 
 
@@ -49,7 +48,7 @@ class ProfileActivity : AppCompatActivity() {
             insets
         }
 
-        // ✅ Initialize Views
+        // Initialize Views
         tvFullName = findViewById(R.id.tvFullName)
         tvEmail = findViewById(R.id.tvEmail)
         tvPhone = findViewById(R.id.tvPhone)
@@ -57,76 +56,38 @@ class ProfileActivity : AppCompatActivity() {
         tvProBadge = findViewById(R.id.tvProBadge)
         imgProfile = findViewById(R.id.imgProfile)
         btnEditProfile = findViewById(R.id.btnEditProfile)
-        btnSettings = findViewById(R.id.btnSettings)
-        btnFavorites = findViewById(R.id.btnFavorites)
         btnSubscription = findViewById(R.id.btnSubscription)
 
+        // Open credentials
         tvCredentialsFile.setOnClickListener {
             val url = credentialsFilePath?.trim()
-
             if (url.isNullOrEmpty()) {
                 Toast.makeText(this, "No file available", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         }
 
-
-        btnSubscription.setOnClickListener {
-            val dialog = Dialog(this)
-            dialog.setContentView(R.layout.subscription_modal)
-            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog.setCancelable(true)
-
-            val btnFree = dialog.findViewById<Button>(R.id.btnFreeCurrent)
-            val btnUpgrade = dialog.findViewById<Button>(R.id.btnUpgradePro)
-
-            val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-            val isPro = prefs.getBoolean("isPro", false)
-
-            if (isPro) {
-                // ✅ Already PRO → allow downgrade
-                btnFree.text = "Downgrade to Free"
-                btnFree.isEnabled = true
-                btnFree.alpha = 1f
-
-                btnFree.setOnClickListener {
-                    downgradeToFree()
-                    dialog.dismiss()
-                }
-
-                btnUpgrade.text = "Current Plan"
-                btnUpgrade.isEnabled = false
-                btnUpgrade.alpha = 0.5f
-
-            } else {
-                // ✅ Currently Free → allow upgrade
-                btnFree.text = "Current Plan"
-                btnFree.isEnabled = false
-                btnFree.alpha = 0.5f
-
-                btnUpgrade.text = "Get Started"
-                btnUpgrade.isEnabled = true
-                btnUpgrade.alpha = 1f
-
-                btnUpgrade.setOnClickListener {
-                    upgradeToPro()
-                    dialog.dismiss()
-                }
-            }
-
-            dialog.show()
-        }
-
-        // ✅ Get userId depending on role
+        // Get userType ONCE
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val userType = prefs.getString("userType", null)
+
+        // Enable or disable subscription button based on user role
+        if (userType == "Client") {
+            btnSubscription.isEnabled = false
+            btnSubscription.alpha = 0.5f
+        } else {
+            btnSubscription.isEnabled = true
+            btnSubscription.alpha = 1f
+        }
+
+        // Subscription modal
+        btnSubscription.setOnClickListener {
+            showSubscriptionDialog()
+        }
+
+        // Get correct userId ONCE
         val userId = when (userType) {
             "Architect" -> prefs.getString("architectId", null)
             "Client" -> prefs.getString("clientId", null)
@@ -140,10 +101,14 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         btnEditProfile.setOnClickListener {
-            val intent = Intent(this, EditProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, EditProfileActivity::class.java))
         }
-        // ✅ Fetch Profile
+
+        val btnLogout = findViewById<Button>(R.id.btnLogout)
+
+        btnLogout.setOnClickListener {
+            logoutUser()
+        }
         loadProfile(userId)
     }
 
@@ -152,7 +117,6 @@ class ProfileActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val userType = prefs.getString("userType", null)
-
         val userId = when (userType) {
             "Architect" -> prefs.getString("architectId", null)
             "Client" -> prefs.getString("clientId", null)
@@ -164,14 +128,59 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+
+    // -------------------------------------
+    // SUBSCRIPTION MODAL
+    // -------------------------------------
+    private fun showSubscriptionDialog() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.subscription_modal)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(true)
+
+        val btnFree = dialog.findViewById<Button>(R.id.btnFreeCurrent)
+        val btnUpgrade = dialog.findViewById<Button>(R.id.btnUpgradePro)
+
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val isPro = prefs.getBoolean("isPro", false)
+
+        if (isPro) {
+            btnFree.text = "Downgrade to Free"
+            btnFree.isEnabled = true
+            btnFree.alpha = 1f
+            btnFree.setOnClickListener {
+                downgradeToFree()
+                dialog.dismiss()
+            }
+
+            btnUpgrade.text = "Current Plan"
+            btnUpgrade.isEnabled = false
+            btnUpgrade.alpha = 0.5f
+
+        } else {
+            btnFree.text = "Current Plan"
+            btnFree.isEnabled = false
+            btnFree.alpha = 0.5f
+
+            btnUpgrade.text = "Get Started"
+            btnUpgrade.isEnabled = true
+            btnUpgrade.alpha = 1f
+            btnUpgrade.setOnClickListener {
+                upgradeToPro()
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+
+    // -------------------------------------
+    // UPGRADE TO PRO
+    // -------------------------------------
     private fun upgradeToPro() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val architectId = prefs.getString("architectId", null)
-
-        if (architectId == null) {
-            Toast.makeText(this, "Architect ID not found", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val architectId = prefs.getString("architectId", null) ?: return
 
         val request = ArchitectSubscriptionRequest(architectId)
 
@@ -186,10 +195,10 @@ class ProfileActivity : AppCompatActivity() {
                     if (response.isSuccessful && body?.success == true) {
                         val paymentUrl = body.paymentUrl ?: return
 
-                        // ✅ Open Stripe Checkout in WebView
                         val intent = Intent(this@ProfileActivity, WebViewActivity::class.java)
                         intent.putExtra("url", paymentUrl)
                         startActivity(intent)
+
                     } else {
                         Toast.makeText(this@ProfileActivity, "Cannot create subscription session", Toast.LENGTH_SHORT).show()
                     }
@@ -200,6 +209,11 @@ class ProfileActivity : AppCompatActivity() {
                 }
             })
     }
+
+
+    // -------------------------------------
+    // DOWNGRADE
+    // -------------------------------------
     private fun downgradeToFree() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val architectId = prefs.getString("architectId", null) ?: return
@@ -211,7 +225,7 @@ class ProfileActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(this@ProfileActivity, "Downgraded successfully", Toast.LENGTH_SHORT).show()
-                        loadProfile(architectId) // ✅ refresh UI
+                        loadProfile(architectId)
                     } else {
                         Toast.makeText(this@ProfileActivity, "Failed to downgrade", Toast.LENGTH_SHORT).show()
                     }
@@ -223,15 +237,19 @@ class ProfileActivity : AppCompatActivity() {
             })
     }
 
+
+    // -------------------------------------
+    // LOAD PROFILE FROM API
+    // -------------------------------------
     private fun loadProfile(userId: String) {
-        ApiClient.instance.getProfile(userId).enqueue(object : Callback<ProfileApiResponse> {
-            override fun onResponse(
-                call: Call<ProfileApiResponse>,
-                response: Response<ProfileApiResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val profile = response.body()?.data
-                    if (profile != null) {
+        ApiClient.instance.getProfile(userId)
+            .enqueue(object : Callback<ProfileApiResponse> {
+                override fun onResponse(
+                    call: Call<ProfileApiResponse>,
+                    response: Response<ProfileApiResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val profile = response.body()?.data ?: return
 
                         tvFullName.text = "${profile.firstName ?: ""} ${profile.lastName ?: ""}"
                         tvEmail.text = profile.email ?: "N/A"
@@ -239,7 +257,7 @@ class ProfileActivity : AppCompatActivity() {
                         tvCredentialsFile.text = profile.credentialsFilePath ?: "N/A"
 
                         credentialsFilePath = profile.credentialsFilePath
-                        // ✅ Load profile photo safely
+
                         if (!profile.profilePhoto.isNullOrEmpty()) {
                             Glide.with(this@ProfileActivity)
                                 .load(profile.profilePhoto)
@@ -247,27 +265,42 @@ class ProfileActivity : AppCompatActivity() {
                                 .into(imgProfile)
                         }
 
-                        // ✅ Save subscription status for modal
+                        // Save PRO status
                         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
                         prefs.edit()
                             .putBoolean("isPro", profile.isPro)
                             .apply()
 
-                        // ✅ Show PRO badge if subscribed
+                        // Show or hide PRO badge
                         tvProBadge.visibility = if (profile.isPro) TextView.VISIBLE else TextView.GONE
-                    }
-                    else {
-                        Toast.makeText(this@ProfileActivity, "No profile data found", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this@ProfileActivity, "Failed to load profile (${response.code()})", Toast.LENGTH_SHORT).show()
-                }
-            }
 
-            override fun onFailure(call: Call<ProfileApiResponse>, t: Throwable) {
-                Toast.makeText(this@ProfileActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                    } else {
+                        Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ProfileApiResponse>, t: Throwable) {
+                    Toast.makeText(this@ProfileActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+    private fun logoutUser() {
+
+        // Clear all saved user data inside MyAppPrefs
+        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        sharedPref.edit().clear().apply()
+
+        // Go back to login screen
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        )
+
+        startActivity(intent)
+
+        finish()
     }
 
 
