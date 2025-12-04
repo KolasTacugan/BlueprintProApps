@@ -36,6 +36,14 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    // 🛡️ THIS IS WHAT BLOCKS SCREENSHOTS FOR THE BOTTOM SHEET
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.addFlags(
+            android.view.WindowManager.LayoutParams.FLAG_SECURE
+        )
+    }
+
     // ✅ Proper place to trigger the refresh callback
     override fun onDismiss(dialog: android.content.DialogInterface) {
         super.onDismiss(dialog)
