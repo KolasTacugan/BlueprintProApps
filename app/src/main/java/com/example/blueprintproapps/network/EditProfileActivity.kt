@@ -54,7 +54,18 @@ class EditProfileActivity : AppCompatActivity() {
             insets
         }
 
+
         initViews()
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userType = prefs.getString("userType", null)
+
+        if (userType == "Client") {
+            btnUploadPdf.isEnabled = false
+            btnUploadPdf.alpha = 0.5f
+        } else {
+            btnUploadPdf.isEnabled = true
+            btnUploadPdf.alpha = 1f
+        }
         loadExistingProfile()
         setupClicks()
     }
@@ -110,7 +121,8 @@ class EditProfileActivity : AppCompatActivity() {
                     // ✅ Load profile image
                     if (!data.profilePhoto.isNullOrEmpty()) {
                         Glide.with(this@EditProfileActivity)
-                            .load("YOUR_BASE_URL" + data.profilePhoto)
+                            .load(data.profilePhoto)
+                            .placeholder(R.drawable.ic_user_placeholder)
                             .into(imgProfile)
                     }
 
