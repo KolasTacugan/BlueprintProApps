@@ -19,6 +19,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.google.android.material.tabs.TabLayout
+import android.view.WindowManager
+
 
 class MarketPlaceActivity : AppCompatActivity() {
 
@@ -33,6 +35,12 @@ class MarketPlaceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.setFlags(
+            android.view.WindowManager.LayoutParams.FLAG_SECURE,
+            android.view.WindowManager.LayoutParams.FLAG_SECURE
+        )
+
         setContentView(R.layout.activity_market_place)
 
         recyclerView = findViewById(R.id.blueprintRecyclerView)
