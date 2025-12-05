@@ -12,12 +12,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.models.ProfileApiResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.example.blueprintproapps.models.ProfileApiResponse
-
 
 class ClientDashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,31 +87,30 @@ class ClientDashboardActivity : AppCompatActivity() {
     private fun fetchClientProfile(clientId: String?, tvUserName: TextView) {
         if (clientId == null) return
 
-        ApiClient.instance.getProfile(clientId).enqueue(object : Callback<ProfileApiResponse> {
+        ApiClient.instance.getProfile(clientId)
+            .enqueue(object : Callback<ProfileApiResponse> {
 
-            override fun onResponse(
-                call: Call<ProfileApiResponse>,
-                response: Response<ProfileApiResponse>
-            ) {
-                val body = response.body()
+                override fun onResponse(
+                    call: Call<ProfileApiResponse>,
+                    response: Response<ProfileApiResponse>
+                ) {
+                    val body = response.body()
 
-                if (body != null && body.success && body.data != null) {
+                    if (body != null && body.success && body.data != null) {
 
-                    val firstName = body.data.firstName ?: "User"
+                        val firstName = body.data.firstName ?: "User"
 
-                    // Save to SharedPreferences
-                    val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    prefs.edit().putString("firstName", firstName).apply()
+                        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                        prefs.edit().putString("firstName", firstName).apply()
 
-                    // Update UI
-                    tvUserName.text = firstName
+                        tvUserName.text = firstName
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ProfileApiResponse>, t: Throwable) {
-                // Handle error
-            }
-        })
+                override fun onFailure(call: Call<ProfileApiResponse>, t: Throwable) {
+                    // Optional error handling
+                }
+            })
     }
 
 }

@@ -18,7 +18,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class ArchitectDashboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +78,6 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         }
 
         bottomNavigation.selectedItemId = R.id.nav_home
-
     }
 
     private fun fetchArchitectProfile(architectId: String?, tvUserName: TextView) {
