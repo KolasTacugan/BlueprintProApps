@@ -59,8 +59,8 @@ class ArchitectChatActivity : AppCompatActivity() {
         }
 
         // ✅ Get client ID from Intent extras
-        clientId = intent.getStringExtra("clientId") ?: run {
-            Toast.makeText(this, "No client specified", Toast.LENGTH_SHORT).show()
+        clientId = intent.getStringExtra("receiverId") ?: run {
+        Toast.makeText(this, "No client specified", Toast.LENGTH_SHORT).show()
             finish()
             return
         }

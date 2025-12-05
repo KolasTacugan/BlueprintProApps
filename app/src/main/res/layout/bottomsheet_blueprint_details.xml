@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Large Image -->
+        <ImageView
+            android:id="@+id/detailsImage"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:scaleType="centerCrop"
+            android:background="#EEEEEE"/>
+
+        <!-- Blueprint Name -->
+        <TextView
+            android:id="@+id/detailsName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingTop="12dp"/>
+
+        <!-- Style -->
+        <TextView
+            android:id="@+id/detailsStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#666"
+            android:paddingTop="4dp"/>
+
+        <!-- Price -->
+        <TextView
+            android:id="@+id/detailsPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:paddingTop="10dp"/>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/detailsDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#333"
+            android:paddingTop="10dp"
+            android:paddingBottom="16dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
