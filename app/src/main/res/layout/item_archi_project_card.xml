@@ -56,7 +56,8 @@
                 android:layout_height="wrap_content"
                 android:text="Client Name"
                 android:textSize="13sp"
-                android:textColor="@color/gray"
+                android:textColor="@color/primary"
+                android:textStyle="bold"
                 android:layout_marginTop="4dp" />
 
             <!-- 📍 Track Button -->
@@ -80,3 +81,5 @@
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+
+

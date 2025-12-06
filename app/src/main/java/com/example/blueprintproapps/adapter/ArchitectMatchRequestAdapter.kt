@@ -12,7 +12,8 @@ import com.example.blueprintproapps.models.ArchitectMatchRequest
 class ArchitectMatchRequestAdapter(
     private val requests: List<ArchitectMatchRequest>,
     private val onAccept: (String) -> Unit,
-    private val onDecline: (String) -> Unit
+    private val onDecline: (String) -> Unit,
+    private val onProfileClick: (String) -> Unit      // ✅ NEW
 ) : RecyclerView.Adapter<ArchitectMatchRequestAdapter.MatchViewHolder>() {
 
     inner class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,8 +30,11 @@ class ArchitectMatchRequestAdapter(
 
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
         val request = requests[position]
+
+        // Set client name
         holder.clientName.text = request.clientName
 
+        // Accept & Decline
         holder.btnAccept.setOnClickListener { onAccept(request.matchId) }
         holder.btnDecline.setOnClickListener { onDecline(request.matchId) }
     }
