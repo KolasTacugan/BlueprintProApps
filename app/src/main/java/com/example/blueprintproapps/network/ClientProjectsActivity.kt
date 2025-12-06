@@ -1,8 +1,11 @@
 package com.example.blueprintproapps.network
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +24,8 @@ class ClientProjectsActivity : AppCompatActivity() {
     private var projectList = ArrayList<ClientProjectResponse>()
     private var clientId: String? = null
 
+    private lateinit var backBtn: ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client_projects)
@@ -29,10 +34,24 @@ class ClientProjectsActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerViewClientProjects)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
+        backBtn = findViewById(R.id.backButton)
         // 🔥 ATTACH EMPTY ADAPTER FIRST
         adapter = ClientProjectAdapter(projectList, this) {}
         recyclerView.adapter = adapter
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(this@ClientProjectsActivity, ClientDashboardActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                startActivity(intent)
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
+
+        backBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         fetchProjects()
     }
