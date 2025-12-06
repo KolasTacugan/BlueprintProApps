@@ -41,4 +41,12 @@ class BlueprintDetailsBottomSheet(private val blueprint: BlueprintResponse) :
 
         return view
     }
+
+    // 🛡️ Add FLAG_SECURE here to block screenshots & screen recording
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.addFlags(
+            android.view.WindowManager.LayoutParams.FLAG_SECURE
+        )
+    }
 }

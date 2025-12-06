@@ -2,7 +2,6 @@ package com.example.blueprintproapps.network
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +10,8 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.architect.ArchitectMatchRequestAdapter
 import com.example.blueprintproapps.models.ArchitectMatchRequest
+import com.example.blueprintproapps.models.ClientProfileResponse
+import com.example.blueprintproapps.utils.ClientProfileBottomSheet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -75,7 +76,8 @@ class ArchitectMatchActivity : AppCompatActivity() {
                         adapter = ArchitectMatchRequestAdapter(
                             requests,
                             onAccept = { matchId -> respondToMatch(matchId, true) },
-                            onDecline = { matchId -> respondToMatch(matchId, false) }
+                            onDecline = { matchId -> respondToMatch(matchId, false) },
+                            onProfileClick = { clientId -> openClientProfile(clientId) }
                         )
                         recyclerView.adapter = adapter
                     } else {
@@ -88,6 +90,24 @@ class ArchitectMatchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<List<ArchitectMatchRequest>>, t: Throwable) {
+                    Toast.makeText(this@ArchitectMatchActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+    private fun openClientProfile(clientId: String) {
+        ApiClient.instance.getClientProfile(clientId)
+            .enqueue(object : Callback<ClientProfileResponse> {
+                override fun onResponse(
+                    call: Call<ClientProfileResponse>,
+                    response: Response<ClientProfileResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val sheet = ClientProfileBottomSheet(response.body()!!)
+                        sheet.show(supportFragmentManager, "ClientProfileBottomSheet")
+                    }
+                }
+
+                override fun onFailure(call: Call<ClientProfileResponse>, t: Throwable) {
                     Toast.makeText(this@ArchitectMatchActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
