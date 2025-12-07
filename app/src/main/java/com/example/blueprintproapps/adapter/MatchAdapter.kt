@@ -1,10 +1,12 @@
 package com.example.blueprintproapps.network
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
@@ -32,15 +34,60 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
         private val btnMatch: Button = itemView.findViewById(R.id.matchButton)
 
         fun bind(match: MatchResponse) {
+
+            // Basic data
             tvName.text = match.architectName
             tvStyle.text = match.architectStyle ?: "No style specified"
             tvBudget.text = "Budget: ${match.architectBudget ?: "Not specified"}"
-            btnMatch.text = if (match.matchStatus == "Pending") "Pending..." else "Match"
-            btnMatch.isEnabled = match.matchStatus != "Pending"
-            btnMatch.setOnClickListener { onRequestClick(match.architectId) }
 
-            itemView.setOnClickListener {
-                onProfileClick(match)
+            // --- MATCH STATUS LOGIC (Same as Web Version) ---
+            when (match.realMatchStatus) {
+
+                // No relationship yet → "Match"
+                null, "", "None" -> {
+                    btnMatch.text = "Match"
+                    btnMatch.isEnabled = true
+                    btnMatch.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.primary)
+                    )
+                }
+
+                // Pending → Disable + Yellow button
+                "Pending" -> {
+                    btnMatch.text = "Pending"
+                    btnMatch.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.black)
+                    )
+                    btnMatch.isEnabled = false
+                    btnMatch.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.warning)
+                    )
+                }
+
+                // Approved → Disable + Green button
+                "Approved" -> {
+                    btnMatch.text = "Matched"
+                    btnMatch.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.black)
+                    )
+                    btnMatch.isEnabled = false
+                    btnMatch.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.success)
+                    )
+                }
+
+                else -> {
+                    btnMatch.text = "Match"
+                    btnMatch.isEnabled = true
+                    btnMatch.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.primary)
+                    )
+                }
+            }
+
+            // Request button press
+            btnMatch.setOnClickListener {
+                onRequestClick(match.architectId)
             }
         }
     }

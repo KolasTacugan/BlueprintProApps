@@ -116,46 +116,58 @@ class MatchClientActivity : AppCompatActivity() {
      * Fetch architects with optional query
      */
     private fun fetchMatches(query: String? = null) {
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val clientId = prefs.getString("clientId", null)
+
+        if (clientId == null) {
+            Toast.makeText(this, "Client not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         loadingSection.visibility = View.VISIBLE
         matchRecyclerView.visibility = View.GONE
 
-        ApiClient.instance.getMatches(query).enqueue(object : Callback<List<MatchResponse>> {
-            override fun onResponse(
-                call: Call<List<MatchResponse>>,
-                response: Response<List<MatchResponse>>
-            ) {
-                loadingSection.visibility = View.GONE
-                matchRecyclerView.visibility = View.VISIBLE
+        ApiClient.instance.getMatches(clientId, query)
+            .enqueue(object : Callback<List<MatchResponse>> {
+                override fun onResponse(
+                    call: Call<List<MatchResponse>>,
+                    response: Response<List<MatchResponse>>
+                ) {
 
-                if (response.isSuccessful && response.body() != null) {
-                    val matches = response.body()!!
-                    matchAdapter.submitList(matches)
+                    loadingSection.visibility = View.GONE
+                    matchRecyclerView.visibility = View.VISIBLE
 
-                    // Add system message about loaded results
-                    addChatMessage("Found ${matches.size} architect(s) for: ${query ?: "all"}", isClient = false)
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("MatchClientActivity", "Failed to load matches: ${response.code()} - $errorBody")
+                    if (response.isSuccessful && response.body() != null) {
+                        val matches = response.body()!!
+                        matchAdapter.submitList(matches)
+
+                        addChatMessage(
+                            "Found ${matches.size} architect(s) for: ${query ?: "all"}",
+                            isClient = false
+                        )
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("MatchClientActivity", "Failed: ${response.code()} - $errorBody")
+                        Toast.makeText(
+                            this@MatchClientActivity,
+                            "Failed to load matches (${response.code()})",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
+                    loadingSection.visibility = View.GONE
+                    matchRecyclerView.visibility = View.GONE
+                    Log.e("MatchClientActivity", "Network error", t)
+
                     Toast.makeText(
                         this@MatchClientActivity,
-                        "Failed to load matches (${response.code()})",
+                        "Network error: ${t.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-
-            override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
-                loadingSection.visibility = View.GONE
-                matchRecyclerView.visibility = View.GONE
-                Log.e("MatchClientActivity", "Network error", t)
-                Toast.makeText(
-                    this@MatchClientActivity,
-                    "Network error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+            })
     }
 
     /**

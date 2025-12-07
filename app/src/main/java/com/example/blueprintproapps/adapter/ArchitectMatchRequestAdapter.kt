@@ -10,7 +10,7 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectMatchRequest
 
 class ArchitectMatchRequestAdapter(
-    private val requests: List<ArchitectMatchRequest>,
+    private val requests: MutableList<ArchitectMatchRequest>,
     private val onAccept: (String) -> Unit,
     private val onDecline: (String) -> Unit,
     private val onProfileClick: (String) -> Unit      // ✅ NEW
@@ -37,6 +37,12 @@ class ArchitectMatchRequestAdapter(
         // Accept & Decline
         holder.btnAccept.setOnClickListener { onAccept(request.matchId) }
         holder.btnDecline.setOnClickListener { onDecline(request.matchId) }
+    }
+
+    fun updateData(newRequests: List<ArchitectMatchRequest>) {
+        requests.clear()
+        requests.addAll(newRequests)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = requests.size
