@@ -2,7 +2,6 @@ package com.example.blueprintproapps.network
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +10,8 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.architect.ArchitectMatchRequestAdapter
 import com.example.blueprintproapps.models.ArchitectMatchRequest
+import com.example.blueprintproapps.models.ClientProfileResponse
+import com.example.blueprintproapps.utils.ClientProfileBottomSheet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +44,13 @@ class ArchitectMatchActivity : AppCompatActivity() {
             architectId = storedArchitectId
         }
 
+        adapter = ArchitectMatchRequestAdapter(
+            mutableListOf(),                    // <-- START EMPTY
+            onAccept = { matchId -> respondToMatch(matchId, true) },
+            onDecline = { matchId -> respondToMatch(matchId, false) }
+        )
+        recyclerView.adapter = adapter
+
         // ✅ Load pending requests
         fetchPendingRequests()
 
@@ -55,7 +63,8 @@ class ArchitectMatchActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_profile -> {
-                    Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
@@ -70,20 +79,9 @@ class ArchitectMatchActivity : AppCompatActivity() {
                     call: Call<List<ArchitectMatchRequest>>,
                     response: Response<List<ArchitectMatchRequest>>
                 ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val requests = response.body()!!
-                        adapter = ArchitectMatchRequestAdapter(
-                            requests,
-                            onAccept = { matchId -> respondToMatch(matchId, true) },
-                            onDecline = { matchId -> respondToMatch(matchId, false) }
-                        )
-                        recyclerView.adapter = adapter
-                    } else {
-                        Toast.makeText(
-                            this@ArchitectMatchActivity,
-                            "No pending match requests.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    if (response.isSuccessful) {
+                        val newList = response.body()!!
+                        adapter.updateData(newList)   // ← THIS IS THE KEY
                     }
                 }
 
@@ -103,7 +101,7 @@ class ArchitectMatchActivity : AppCompatActivity() {
                             if (approve) "Request accepted!" else "Request declined!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        fetchPendingRequests() // Refresh list
+                        fetchPendingRequests()
                     } else {
                         Toast.makeText(
                             this@ArchitectMatchActivity,

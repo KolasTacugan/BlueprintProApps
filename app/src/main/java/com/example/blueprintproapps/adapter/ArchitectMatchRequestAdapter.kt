@@ -10,7 +10,7 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectMatchRequest
 
 class ArchitectMatchRequestAdapter(
-    private val requests: List<ArchitectMatchRequest>,
+    private val requests: MutableList<ArchitectMatchRequest>,
     private val onAccept: (String) -> Unit,
     private val onDecline: (String) -> Unit
 ) : RecyclerView.Adapter<ArchitectMatchRequestAdapter.MatchViewHolder>() {
@@ -29,10 +29,19 @@ class ArchitectMatchRequestAdapter(
 
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
         val request = requests[position]
+
+        // Set client name
         holder.clientName.text = request.clientName
 
+        // Accept & Decline
         holder.btnAccept.setOnClickListener { onAccept(request.matchId) }
         holder.btnDecline.setOnClickListener { onDecline(request.matchId) }
+    }
+
+    fun updateData(newRequests: List<ArchitectMatchRequest>) {
+        requests.clear()
+        requests.addAll(newRequests)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = requests.size

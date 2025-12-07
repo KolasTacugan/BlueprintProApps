@@ -3,6 +3,7 @@ package com.example.blueprintproapps.network
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -19,6 +20,7 @@ import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.GenericResponse
 import com.example.blueprintproapps.models.MatchRequest
 import com.example.blueprintproapps.models.MatchResponse
+import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +32,8 @@ class MatchClientActivity : AppCompatActivity() {
     private lateinit var clientPrompt: EditText
     private lateinit var sendButton: ImageButton
     private lateinit var chatContainer: LinearLayout
+    private lateinit var loadingSection: LinearLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +55,18 @@ class MatchClientActivity : AppCompatActivity() {
         // RecyclerView setup
         matchRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        matchAdapter = MatchAdapter { architectId ->
-            sendMatchRequest(architectId)
-        }
+        matchAdapter = MatchAdapter(
+            onRequestClick = { architectId ->
+                sendMatchRequest(architectId)
+            },
+            onProfileClick = { match ->
+                showArchitectBottomSheet(match)
+            }
+        )
+
         matchRecyclerView.adapter = matchAdapter
+
+        loadingSection = findViewById(R.id.loadingSection)
 
         // Initial load
         fetchMatches()
@@ -70,6 +82,10 @@ class MatchClientActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter what you're looking for.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    private fun showArchitectBottomSheet(match: MatchResponse) {
+        val sheet = ArchitectDetailBottomSheet(match)
+        sheet.show(supportFragmentManager, "ArchitectDetailBottomSheet")
     }
 
     /**
@@ -100,37 +116,59 @@ class MatchClientActivity : AppCompatActivity() {
      * Fetch architects with optional query
      */
     private fun fetchMatches(query: String? = null) {
-        ApiClient.instance.getMatches(query).enqueue(object : Callback<List<MatchResponse>> {
-            override fun onResponse(
-                call: Call<List<MatchResponse>>,
-                response: Response<List<MatchResponse>>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    val matches = response.body()!!
-                    matchAdapter.submitList(matches)
 
-                    // Add system message about loaded results
-                    addChatMessage("Found ${matches.size} architect(s) for: ${query ?: "all"}", isClient = false)
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("MatchClientActivity", "Failed to load matches: ${response.code()} - $errorBody")
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val clientId = prefs.getString("clientId", null)
+
+        if (clientId == null) {
+            Toast.makeText(this, "Client not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        loadingSection.visibility = View.VISIBLE
+        matchRecyclerView.visibility = View.GONE
+
+        ApiClient.instance.getMatches(clientId, query)
+            .enqueue(object : Callback<List<MatchResponse>> {
+                override fun onResponse(
+                    call: Call<List<MatchResponse>>,
+                    response: Response<List<MatchResponse>>
+                ) {
+
+                    loadingSection.visibility = View.GONE
+                    matchRecyclerView.visibility = View.VISIBLE
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val matches = response.body()!!
+                        matchAdapter.submitList(matches)
+
+                        addChatMessage(
+                            "Found ${matches.size} architect(s) for: ${query ?: "all"}",
+                            isClient = false
+                        )
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("MatchClientActivity", "Failed: ${response.code()} - $errorBody")
+                        Toast.makeText(
+                            this@MatchClientActivity,
+                            "Failed to load matches (${response.code()})",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
+                    loadingSection.visibility = View.GONE
+                    matchRecyclerView.visibility = View.GONE
+                    Log.e("MatchClientActivity", "Network error", t)
+
                     Toast.makeText(
                         this@MatchClientActivity,
-                        "Failed to load matches (${response.code()})",
+                        "Network error: ${t.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-
-            override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
-                Log.e("MatchClientActivity", "Network error", t)
-                Toast.makeText(
-                    this@MatchClientActivity,
-                    "Network error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+            })
     }
 
     /**
