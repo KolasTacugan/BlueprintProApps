@@ -57,15 +57,6 @@
         android:gravity="center_vertical"
         android:layout_marginStart="8dp">
 
-        <Button
-            android:id="@+id/saveBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:textSize="14sp"
-            android:backgroundTint="@color/primary"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="4dp"/>
 
         <Button
             android:id="@+id/removeBtn"

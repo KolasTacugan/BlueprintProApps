@@ -41,12 +41,14 @@
         android:gravity="center_vertical">
 
         <ImageView
+            android:id="@+id/imgUserProfile"
             android:layout_width="54dp"
             android:layout_height="54dp"
             android:src="@drawable/profile_pic"
             android:scaleType="centerCrop"
             android:background="@drawable/circle_mask"
             android:clipToOutline="true" />
+
 
         <EditText
             android:layout_width="0dp"

@@ -126,8 +126,14 @@ interface ApiService {
         @Field("rating") rating: Int
     ): Call<ClientApiResponse>
 
+    @GET("api/MobileClient/getArchitectProfile/{id}")
+    fun getArchitectProfile(@Path("id") id: String): Call<ArchitectProfileResponse>
+
 
     //ARCHITECT CALLS
+    @GET("api/MobileArchitect/getClientProfile/{clientId}")
+    fun getClientProfile(@Path("clientId") clientId: String): Call<ClientProfileResponse>
+
     @GET("api/MobileArchitect/blueprints/{architectId}")
     fun getArchitectBlueprints(
         @Path("architectId") architectId: String

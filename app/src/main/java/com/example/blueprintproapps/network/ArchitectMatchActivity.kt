@@ -90,6 +90,24 @@ class ArchitectMatchActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun openClientProfile(clientId: String) {
+        ApiClient.instance.getClientProfile(clientId)
+            .enqueue(object : Callback<ClientProfileResponse> {
+                override fun onResponse(
+                    call: Call<ClientProfileResponse>,
+                    response: Response<ClientProfileResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val sheet = ClientProfileBottomSheet(response.body()!!)
+                        sheet.show(supportFragmentManager, "ClientProfileBottomSheet")
+                    }
+                }
+
+                override fun onFailure(call: Call<ClientProfileResponse>, t: Throwable) {
+                    Toast.makeText(this@ArchitectMatchActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
 
     private fun respondToMatch(matchId: String, approve: Boolean) {
         ApiClient.instance.respondMatch(matchId, approve)

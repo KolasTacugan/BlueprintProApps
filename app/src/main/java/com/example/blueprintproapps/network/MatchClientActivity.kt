@@ -116,7 +116,6 @@ class MatchClientActivity : AppCompatActivity() {
      * Fetch architects with optional query
      */
     private fun fetchMatches(query: String? = null) {
-
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val clientId = prefs.getString("clientId", null)
 

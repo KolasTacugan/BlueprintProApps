@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Profile Photo -->
+        <ImageView
+            android:id="@+id/archPhoto"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_background"
+            android:layout_marginBottom="16dp"
+            android:clipToOutline="true" />
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/archName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="12dp" />
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/archEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp" />
+
+        <!-- Phone -->
+        <TextView
+            android:id="@+id/archPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp" />
+
+        <!-- License -->
+        <TextView
+            android:id="@+id/archLicense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp" />
+
+        <!-- Style -->
+        <TextView
+            android:id="@+id/archStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp" />
+
+        <!-- Specialization -->
+        <TextView
+            android:id="@+id/archSpecialization"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp" />
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/archLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp"
+            android:paddingBottom="20dp" />
+
+        <TextView
+            android:id="@+id/archCredentials"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#444"
+            android:paddingTop="4dp"
+            android:paddingBottom="20dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
