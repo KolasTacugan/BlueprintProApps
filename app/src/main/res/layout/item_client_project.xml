@@ -1,60 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp"
-    android:padding="10dp">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/blueprintImage"
+        <!-- Project Image with Status Overlay -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:background="@color/light_gray"
-            android:contentDescription="Project image" />
+            android:layout_height="200dp">
 
-        <TextView
-            android:id="@+id/projectTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Project Title"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:paddingTop="8dp"/>
+            <ImageView
+                android:id="@+id/blueprintImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:contentDescription="Project image" />
 
-        <TextView
-            android:id="@+id/projectStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Status: Ongoing"
-            android:textSize="14sp" />
+            <!-- Status Badge Overlay -->
+            <TextView
+                android:id="@+id/projectStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="12dp"
+                android:text="Status: Ongoing"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:fontFamily="@font/raleway_bold"
+                android:background="@drawable/card_modern"
+                android:backgroundTint="#0D3C80"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:elevation="4dp" />
 
-        <TextView
-            android:id="@+id/architectName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Architect: John Doe"
-            android:textColor="@color/primary"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:paddingBottom="6dp" />
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/trackBtn"
+        <!-- Content Section -->
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Track"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/accent"
-            android:textColor="@color/white" />
+            android:padding="20dp">
 
+            <!-- Project Title -->
+            <TextView
+                android:id="@+id/projectTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Project Title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#0D3C80"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.01"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Architect Name with Label -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Architect: "
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
+                    android:letterSpacing="0.01" />
+
+                <TextView
+                    android:id="@+id/architectName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Architect: John Doe"
+                    android:textSize="14sp"
+                    android:textColor="#0D3C80"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Track Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/trackBtn"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Track"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.01"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#0D3C80"
+                app:rippleColor="#1E40AF" />
+
+        </LinearLayout>
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
