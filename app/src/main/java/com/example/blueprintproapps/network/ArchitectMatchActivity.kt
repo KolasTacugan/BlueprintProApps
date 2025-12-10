@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
+import com.example.blueprintproapps.adapter.ArchitectMatchRequestAdapter
 import com.example.blueprintproapps.api.ApiClient
-import com.example.blueprintproapps.architect.ArchitectMatchRequestAdapter
 import com.example.blueprintproapps.models.ArchitectMatchRequest
 import com.example.blueprintproapps.models.ClientProfileResponse
 import com.example.blueprintproapps.utils.ClientProfileBottomSheet

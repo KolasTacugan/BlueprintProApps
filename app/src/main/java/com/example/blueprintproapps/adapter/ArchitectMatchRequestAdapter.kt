@@ -1,4 +1,4 @@
-package com.example.blueprintproapps.architect
+package com.example.blueprintproapps.adapter
 
 import android.view.LayoutInflater
 import android.view.View
