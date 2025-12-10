@@ -12,8 +12,7 @@ import com.example.blueprintproapps.models.ArchitectMatchRequest
 class ArchitectMatchRequestAdapter(
     private val requests: MutableList<ArchitectMatchRequest>,
     private val onAccept: (String) -> Unit,
-    private val onDecline: (String) -> Unit,
-    private val onProfileClick: (String) -> Unit      // ✅ NEW
+    private val onDecline: (String) -> Unit
 ) : RecyclerView.Adapter<ArchitectMatchRequestAdapter.MatchViewHolder>() {
 
     inner class MatchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
