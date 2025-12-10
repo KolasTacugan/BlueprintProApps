@@ -59,48 +59,6 @@
             android:layout_marginTop="6dp" />
     </LinearLayout>
 
-    <!-- 🔍 Search Bar -->
-    <LinearLayout
-        android:id="@+id/architectSearchBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="16dp"
-        android:gravity="center_vertical"
-        android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/architectTopBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/architectProfilePic"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:src="@drawable/profile_pic"
-            android:scaleType="centerCrop"
-            android:background="@drawable/circle_mask"
-            android:clipToOutline="true"
-            android:elevation="1dp" />
-
-        <EditText
-            android:id="@+id/architectSearchField"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:hint="Search conversations"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
-            android:background="@drawable/bg_search_field"
-            android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="8dp"
-            android:textSize="15sp"
-            android:fontFamily="@font/raleway_regular"
-            android:textColor="#091635"
-            android:textColorHint="#6B7280" />
-    </LinearLayout>
-
     <!-- 🧑‍💬 Chat Heads -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/architectRecyclerChatHeads"
@@ -111,7 +69,7 @@
         android:overScrollMode="never"
         android:background="@android:color/white"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/architectSearchBar"
+        app:layout_constraintTop_toBottomOf="@id/architectTopBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
