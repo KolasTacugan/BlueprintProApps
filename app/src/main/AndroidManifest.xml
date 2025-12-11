@@ -61,12 +61,14 @@
             android:exported="false" />
         <activity
             android:name=".network.ArchitectChatActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".network.ArchitectMessagesActivity"
             android:exported="false" />
         <activity
             android:name=".network.ChatActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".network.MessagesActivity"
