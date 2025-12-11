@@ -40,6 +40,10 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
             tvStyle.text = match.architectStyle ?: "No style specified"
             tvBudget.text = "Budget: ${match.architectBudget ?: "Not specified"}"
 
+            itemView.setOnClickListener {
+                onProfileClick(match)
+            }
+
             // --- MATCH STATUS LOGIC (Same as Web Version) ---
             when (match.realMatchStatus) {
 

@@ -83,7 +83,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matchRecyclerView"
         android:layout_width="0dp"
-        android:layout_height="260dp"
+        android:layout_height="240dp"
         android:paddingHorizontal="16dp"
         android:paddingTop="12dp"
         android:clipToPadding="false"
