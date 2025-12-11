@@ -39,13 +39,13 @@ class ArchitectMessagesActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val architectProfileUrl = sharedPref.getString("profilePhoto", null)
 
-        architectProfileUrl?.let {
-            Glide.with(this)
-                .load(it)
-                .placeholder(R.drawable.profile_pic)
-                .circleCrop()
-                .into(binding.architectProfilePic)
-        }
+//        architectProfileUrl?.let {
+//            Glide.with(this)
+//                .load(it)
+//                .placeholder(R.drawable.profile_pic)
+//                .circleCrop()
+//                .into(binding.architectProfilePic)
+//        }
 
 
         val architectId = sharedPref.getString("architectId", null)

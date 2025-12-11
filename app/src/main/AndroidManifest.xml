@@ -107,6 +107,7 @@
             android:exported="false" />
         <activity
             android:name=".network.MatchClientActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".network.ClientDashboardActivity"

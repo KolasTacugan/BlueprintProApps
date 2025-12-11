@@ -88,6 +88,11 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
             // Request button press
             btnMatch.setOnClickListener {
                 onRequestClick(match.architectId)
+
+                val updated = match.copy(realMatchStatus = "Pending")
+                val updatedList = currentList.toMutableList()
+                updatedList[adapterPosition] = updated
+                submitList(updatedList)
             }
         }
     }
