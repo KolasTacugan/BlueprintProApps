@@ -33,13 +33,13 @@ class MessagesActivity : AppCompatActivity() {
         // ✅ Load logged-in user's profile photo in the top search bar
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val userProfileUrl = sharedPref.getString("profilePhoto", null)
-        userProfileUrl?.let {
-            Glide.with(this)
-                .load(it)
-                .placeholder(R.drawable.profile_pic) // default fallback
-                .circleCrop() // optional: make it circular
-                .into(binding.imgUserProfile) // make sure this matches your ImageView ID
-        }
+//        userProfileUrl?.let {
+//            Glide.with(this)
+//                .load(it)
+//                .placeholder(R.drawable.profile_pic) // default fallback
+//                .circleCrop() // optional: make it circular
+//                .into(binding.imgUserProfile) // make sure this matches your ImageView ID
+//        }
 
         // ✅ Setup RecyclerViews
         binding.recyclerMessages.layoutManager = LinearLayoutManager(this)
