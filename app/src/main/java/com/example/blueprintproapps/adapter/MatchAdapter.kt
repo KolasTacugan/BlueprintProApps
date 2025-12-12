@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.MatchResponse
 
-class MatchAdapter(private val onRequestClick: (String) -> Unit) :
+class MatchAdapter(private val onRequestClick: (String) -> Unit,
+                   private val onProfileClick: (MatchResponse) -> Unit) :
     ListAdapter<MatchResponse, MatchAdapter.MatchViewHolder>(MatchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
@@ -23,6 +24,7 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
 
     override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
         holder.bind(getItem(position))
+
     }
 
     inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,6 +32,7 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
         private val tvStyle: TextView = itemView.findViewById(R.id.architectStyle)
         private val tvBudget: TextView = itemView.findViewById(R.id.architectBudget)
         private val btnMatch: Button = itemView.findViewById(R.id.matchButton)
+        private val tvSimilarity: TextView = itemView.findViewById(R.id.similarityScore)
 
         fun bind(match: MatchResponse) {
 
@@ -37,6 +40,13 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
             tvName.text = match.architectName
             tvStyle.text = match.architectStyle ?: "No style specified"
             tvBudget.text = "Budget: ${match.architectBudget ?: "Not specified"}"
+
+            val percent = match.similarityPercentage ?: 0.0
+            tvSimilarity.text = "${percent}%"
+
+            itemView.setOnClickListener {
+                onProfileClick(match)
+            }
 
             // --- MATCH STATUS LOGIC (Same as Web Version) ---
             when (match.realMatchStatus) {
@@ -86,6 +96,11 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit) :
             // Request button press
             btnMatch.setOnClickListener {
                 onRequestClick(match.architectId)
+
+                val updated = match.copy(realMatchStatus = "Pending")
+                val updatedList = currentList.toMutableList()
+                updatedList[adapterPosition] = updated
+                submitList(updatedList)
             }
         }
     }
