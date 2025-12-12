@@ -15,7 +15,6 @@
         android:padding="20dp">
 
         <!-- Header Section with Icon -->
-        <!-- Header Section with Icon -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

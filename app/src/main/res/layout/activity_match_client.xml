@@ -1,100 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/light_gray"
     tools:context=".network.MatchClientActivity">
 
-    <!-- Architect Matches (Top Section) -->
-    <TextView
-        android:id="@+id/matchTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Architect Matches"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:padding="16dp" />
 
+    <!-- 🧭 Top App Bar -->
+    <LinearLayout
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="16dp"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/matchTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Architect Matches"
+            android:textColor="#091635"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/raleway_bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find the perfect architect for your project"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="6dp" />
+    </LinearLayout>
+
+
+    <!-- 🔄 Loading Section (always above RecyclerView) -->
+    <LinearLayout
+        android:id="@+id/loadingSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ProgressBar
+            android:id="@+id/architectLoadingSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="#0D3C80" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finding architects..."
+            android:textSize="15sp"
+            android:textColor="#6B7280"
+            android:fontFamily="@font/raleway_regular"
+            android:paddingTop="12dp" />
+    </LinearLayout>
+
+
+    <!-- 👥 Architect Matches RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matchRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:paddingHorizontal="12dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/light_gray"
-        android:layout_marginVertical="4dp" />
-
-    <!-- Chat Section -->
-    <TextView
-        android:id="@+id/chatTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chat"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
         android:paddingHorizontal="16dp"
-        android:paddingTop="4dp" />
+        android:paddingTop="12dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/loadingSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+
+    <!-- 💬 Chat Section Header -->
+    <LinearLayout
+        android:id="@+id/chatHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
+        android:background="@android:color/white"
+        android:elevation="1dp"
+        app:layout_constraintTop_toBottomOf="@id/matchRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/chatTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:textColor="#091635"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:fontFamily="@font/raleway_bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discuss your project requirements"
+            android:textColor="#6B7280"
+            android:textSize="13sp"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+
+    <!-- 💬 Chat Messages -->
     <ScrollView
         android:id="@+id/chatScroll"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="12dp"
-        android:fillViewport="true">
+        android:padding="16dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/chatHeader"
+        app:layout_constraintBottom_toTopOf="@id/inputSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:id="@+id/chatContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
-
     </ScrollView>
 
-    <!-- Input and Send Button -->
+
+    <!-- ✏️ Input Bar -->
     <LinearLayout
         android:id="@+id/inputSection"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="20dp"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="@color/white"
-        android:elevation="4dp">
+        android:gravity="center_vertical"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
             android:id="@+id/clientPrompt"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:hint="Describe what you're looking for..."
-            android:background="@drawable/rounded_edittext"
-            android:padding="12dp"
-            android:maxLines="3" />
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            android:background="@drawable/bg_search_field"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="3"
+            android:textSize="15sp"
+            android:fontFamily="@font/raleway_regular"
+            android:textColor="#091635"
+            android:textColorHint="#6B7280" />
 
         <ImageButton
             android:id="@+id/sendButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
             android:background="@drawable/rounded_button"
+            android:backgroundTint="#0D3C80"
             android:contentDescription="Send"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
+            android:padding="14dp"
             android:src="@drawable/ic_send"
-            app:tint="#FFFFFF" />
-
+            app:tint="@android:color/white" />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

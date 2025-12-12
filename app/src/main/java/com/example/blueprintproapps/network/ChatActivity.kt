@@ -2,6 +2,7 @@ package com.example.blueprintproapps.network
 
 import android.content.Context
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -29,21 +30,24 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var btnSend: Button
     private lateinit var adapter: ChatMessagesAdapter
     private val messages = mutableListOf<MessageResponse>()
-
+    private var refreshHandler = android.os.Handler()
+    private lateinit var refreshRunnable: Runnable
     private lateinit var senderId: String
     private lateinit var receiverId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(R.layout.activity_chat)
 
         // Handle window insets for edge-to-edge layout
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         recyclerMessages = findViewById(R.id.recyclerMessages)
         edtMessage = findViewById(R.id.edtMessage)
@@ -79,6 +83,7 @@ class ChatActivity : AppCompatActivity() {
 
         // ✅ Load chat messages
         getMessages()
+        startAutoRefresh()
 
         // ✅ Send message on button click
         btnSend.setOnClickListener {
@@ -87,6 +92,19 @@ class ChatActivity : AppCompatActivity() {
                 sendMessage(messageText)
             }
         }
+    }
+
+    private fun startAutoRefresh() {
+        refreshRunnable = Runnable {
+            getMessages()  // fetch new messages repeatedly
+            refreshHandler.postDelayed(refreshRunnable, 1500) // every 1.5 seconds
+        }
+        refreshHandler.post(refreshRunnable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        refreshHandler.removeCallbacks(refreshRunnable)
     }
 
     // ✅ Fetch all messages between sender and receiver

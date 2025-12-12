@@ -2,8 +2,10 @@ package com.example.blueprintproapps.network
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -24,6 +26,7 @@ import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.ScrollView
 
 class MatchClientActivity : AppCompatActivity() {
 
@@ -37,14 +40,16 @@ class MatchClientActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(R.layout.activity_match_client)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+//            insets
+//        }
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         // Initialize views
         matchRecyclerView = findViewById(R.id.matchRecyclerView)
@@ -96,27 +101,37 @@ class MatchClientActivity : AppCompatActivity() {
         val chatView = inflater.inflate(R.layout.item_chat_message, chatContainer, false)
 
         val textView = chatView.findViewById<TextView>(R.id.chatMessage)
+        val bubbleContainer = chatView.findViewById<LinearLayout>(R.id.bubbleContainer)
+
         textView.text = message
 
-        // Differentiate style for client vs system messages
-        val layoutParams = textView.layoutParams as LinearLayout.LayoutParams
+        // Align bubble left or right
+        val params = bubbleContainer.layoutParams as LinearLayout.LayoutParams
+
         if (isClient) {
-            layoutParams.marginEnd = 60
+            params.gravity = Gravity.END
+            bubbleContainer.gravity = Gravity.END
             textView.setBackgroundResource(R.drawable.bg_client_message)
         } else {
-            layoutParams.marginStart = 60
+            params.gravity = Gravity.START
+            bubbleContainer.gravity = Gravity.START
             textView.setBackgroundResource(R.drawable.bg_system_message)
         }
 
-        textView.layoutParams = layoutParams
+        bubbleContainer.layoutParams = params
+
         chatContainer.addView(chatView)
+
+        // Auto-scroll to bottom
+        val scroll = findViewById<ScrollView>(R.id.chatScroll)
+        scroll.post { scroll.fullScroll(View.FOCUS_DOWN) }
     }
+
 
     /**
      * Fetch architects with optional query
      */
     private fun fetchMatches(query: String? = null) {
-
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val clientId = prefs.getString("clientId", null)
 
@@ -125,6 +140,7 @@ class MatchClientActivity : AppCompatActivity() {
             return
         }
 
+        // Show loading UI
         loadingSection.visibility = View.VISIBLE
         matchRecyclerView.visibility = View.GONE
 
@@ -142,10 +158,21 @@ class MatchClientActivity : AppCompatActivity() {
                         val matches = response.body()!!
                         matchAdapter.submitList(matches)
 
-                        addChatMessage(
-                            "Found ${matches.size} architect(s) for: ${query ?: "all"}",
-                            isClient = false
-                        )
+                        // Scroll to start
+                        matchAdapter.submitList(matches) {
+                            matchRecyclerView.post {
+                                matchRecyclerView.scrollToPosition(0)
+                            }
+                        }
+
+                        // ⭐ ONLY show chat message if user actually searched
+                        if (query != null) {
+                            addChatMessage(
+                                "Found ${matches.size} architect(s) for: $query",
+                                isClient = false
+                            )
+                        }
+
                     } else {
                         val errorBody = response.errorBody()?.string()
                         Log.e("MatchClientActivity", "Failed: ${response.code()} - $errorBody")
@@ -195,7 +222,7 @@ class MatchClientActivity : AppCompatActivity() {
                         body.message ?: "Match request sent!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    fetchMatches()
+                    //fetchMatches()
                 } else {
                     val message = body?.message ?: "Failed to send request"
                     Log.e("MatchClientActivity", "Match request failed: $message")
