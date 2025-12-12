@@ -74,7 +74,7 @@ class MatchClientActivity : AppCompatActivity() {
         loadingSection = findViewById(R.id.loadingSection)
 
         // Initial load
-        fetchMatches()
+       // fetchMatches()
 
         // Handle send button click
         sendButton.setOnClickListener {

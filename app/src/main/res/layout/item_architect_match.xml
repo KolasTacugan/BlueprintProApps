@@ -36,25 +36,51 @@
                     android:layout_gravity="center"
                     android:src="@android:drawable/ic_menu_myplaces"
                     app:tint="#0D3C80" />
-
             </FrameLayout>
 
-            <!-- Architect Name -->
-            <TextView
-                android:id="@+id/architectName"
+            <!-- Name + Similarity Row -->
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_weight="1"
-                android:text="John Santos"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#0D3C80"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:maxLines="1"
-                android:ellipsize="end" />
+                android:gravity="center_vertical">
+
+                <!-- Architect Name -->
+                <TextView
+                    android:id="@+id/architectName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="John Santos"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#0D3C80"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <!-- ⭐ Similarity Percentage Badge -->
+                <TextView
+                    android:id="@+id/similarityScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="82%"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#0D3C80"
+                    android:fontFamily="@font/raleway_bold"
+                    android:background="@drawable/similarity_badge"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
 
         </LinearLayout>
+
 
         <!-- Style Info -->
         <LinearLayout

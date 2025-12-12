@@ -32,6 +32,7 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
         private val tvStyle: TextView = itemView.findViewById(R.id.architectStyle)
         private val tvBudget: TextView = itemView.findViewById(R.id.architectBudget)
         private val btnMatch: Button = itemView.findViewById(R.id.matchButton)
+        private val tvSimilarity: TextView = itemView.findViewById(R.id.similarityScore)
 
         fun bind(match: MatchResponse) {
 
@@ -39,6 +40,9 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
             tvName.text = match.architectName
             tvStyle.text = match.architectStyle ?: "No style specified"
             tvBudget.text = "Budget: ${match.architectBudget ?: "Not specified"}"
+
+            val percent = match.similarityPercentage ?: 0.0
+            tvSimilarity.text = "${percent}%"
 
             itemView.setOnClickListener {
                 onProfileClick(match)
