@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.DeletedProjectResponse
+import com.google.android.material.button.MaterialButton
 
 class ArchitectDeletedProjectsAdapter(
     private val list: List<DeletedProjectResponse>,
@@ -18,8 +19,8 @@ class ArchitectDeletedProjectsAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val projectName: TextView = itemView.findViewById(R.id.deletedProjectName)
         val clientName: TextView = itemView.findViewById(R.id.deletedProjectClient)
-        val restoreBtn: ImageButton = itemView.findViewById(R.id.restoreBtn)
-        val deleteBtn: ImageButton = itemView.findViewById(R.id.deleteForeverBtn)
+        val restoreBtn: MaterialButton = itemView.findViewById(R.id.restoreBtn)
+        val deleteBtn: MaterialButton = itemView.findViewById(R.id.deleteForeverBtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
