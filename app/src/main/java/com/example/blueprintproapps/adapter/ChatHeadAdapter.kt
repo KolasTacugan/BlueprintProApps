@@ -22,6 +22,7 @@ class ChatHeadAdapter(
         init {
             itemView.setOnClickListener {
                 onItemClick?.invoke(chatHeads[adapterPosition])
+
             }
         }
     }
@@ -36,7 +37,14 @@ class ChatHeadAdapter(
         val match = chatHeads[position]
 
         // Display name or fallback
-        holder.txtName.text = match.architectName ?: "Unknown Architect"
+        val firstName = match.architectName
+            ?.trim()
+            ?.split(" ")
+            ?.firstOrNull()
+            ?: "Unknown"
+
+        holder.txtName.text = firstName
+
 
         // Handle possible relative photo URL
         val photoUrl = match.architectPhoto // API should now return full URL

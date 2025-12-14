@@ -49,15 +49,6 @@
                 android:contentDescription="Profile"
                 android:padding="4dp" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect with your architect"
-            android:textColor="#6B7280"
-            android:textSize="14sp"
-            android:fontFamily="@font/raleway_regular"
-            android:layout_marginTop="6dp" />
     </LinearLayout>
 
     <!-- 💬 Messages RecyclerView -->

@@ -22,6 +22,7 @@ import com.example.blueprintproapps.models.MessageResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.TextView
 
 class ArchitectChatActivity : AppCompatActivity() {
 
@@ -46,12 +47,16 @@ class ArchitectChatActivity : AppCompatActivity() {
         //enableEdgeToEdge()
         setContentView(R.layout.activity_architect_chat)
 
-        // Window Insets
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
+        // 🔑 Get receiver data
+        val receiverId = intent.getStringExtra("receiverId") ?: run {
+            Toast.makeText(this, "No client specified", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        val receiverName = intent.getStringExtra("receiverName") ?: "Chat"
+        val txtChatTitle = findViewById<TextView>(R.id.txtChatTitle)
+        txtChatTitle.text = receiverName
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 

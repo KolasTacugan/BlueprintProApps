@@ -63,9 +63,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/architectRecyclerChatHeads"
         android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:paddingVertical="12dp"
-        android:paddingHorizontal="16dp"
+        android:layout_height="120dp"
+        android:paddingVertical="6dp"
+        android:paddingHorizontal="8dp"
         android:overScrollMode="never"
         android:background="@android:color/white"
         android:clipToPadding="false"

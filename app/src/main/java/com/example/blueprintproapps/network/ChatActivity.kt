@@ -22,6 +22,7 @@ import com.example.blueprintproapps.models.MessageResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.TextView
 
 class ChatActivity : AppCompatActivity() {
 
@@ -40,19 +41,15 @@ class ChatActivity : AppCompatActivity() {
         //enableEdgeToEdge()
         setContentView(R.layout.activity_chat)
 
-        // Handle window insets for edge-to-edge layout
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-//            insets
-//        }
-
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         recyclerMessages = findViewById(R.id.recyclerMessages)
         edtMessage = findViewById(R.id.edtMessage)
         btnSend = findViewById(R.id.btnSend)
 
+        val txtChatTitle = findViewById<TextView>(R.id.txtChatTitle)
+        val receiverName = intent.getStringExtra("receiverName") ?: "Chat"
+        txtChatTitle.text = receiverName
 
         // ✅ Get current user ID (client or architect) from SharedPreferences
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)

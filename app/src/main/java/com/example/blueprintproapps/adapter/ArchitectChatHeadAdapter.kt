@@ -47,7 +47,14 @@ class ArchitectChatHeadAdapter(
 
     override fun onBindViewHolder(holder: ChatHeadViewHolder, position: Int) {
         val match = chatHeads[position]
-        holder.txtName.text = match.clientName ?: "Unknown Client"
+        val firstName = match.clientName
+            ?.trim()
+            ?.split(" ")
+            ?.firstOrNull()
+            ?: "Unknown"
+
+        holder.txtName.text = firstName
+
 
         val photoUrl = match.clientPhoto  // already a full URL from API
 
