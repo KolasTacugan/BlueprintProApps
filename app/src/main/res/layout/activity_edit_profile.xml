@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:clipToPadding="false">
 
         <!-- 🔙 Back and Title -->
         <LinearLayout
@@ -22,25 +22,28 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingBottom="12dp">
+            android:layout_marginBottom="20dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:background="@drawable/bg_circle_primary"
                 android:src="@drawable/ic_arrow_back"
                 app:tint="@color/white"
-                android:contentDescription="Back" />
+                android:contentDescription="Back"
+                android:padding="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="16dp"
                 android:text="Edit Profile"
                 android:textColor="@color/primary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.005" />
         </LinearLayout>
 
         <!-- 🧍 Profile Image -->
@@ -49,7 +52,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="16dp">
+            android:background="@drawable/rounded_white_card"
+            android:padding="24dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="20dp">
 
             <ImageView
                 android:id="@+id/imgProfile"
@@ -57,20 +63,23 @@
                 android:layout_height="120dp"
                 android:src="@drawable/ic_user_placeholder"
                 android:scaleType="centerCrop"
-                android:background="@drawable/bg_circle_white"
+                android:background="@drawable/bg_profile_image_border"
                 android:clipToOutline="true" />
 
             <Button
                 android:id="@+id/btnChangePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="Change Photo"
                 android:textAllCaps="false"
                 android:textColor="@color/primary"
+                android:textSize="15sp"
+                android:fontFamily="@font/raleway_bold"
                 android:backgroundTint="@color/white"
                 android:drawableLeft="@drawable/ic_camera"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
                 style="?attr/materialButtonOutlinedStyle" />
         </LinearLayout>
 
@@ -79,8 +88,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="20dp"
+            android:background="@drawable/bg_button_outlined"
+            android:padding="24dp"
             android:elevation="2dp"
             android:layout_marginBottom="20dp">
 
@@ -89,49 +98,75 @@
                 android:layout_height="wrap_content"
                 android:text="@string/personal_information"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:textColor="#091635"
+                android:textSize="18sp"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.005"
+                android:layout_marginBottom="16dp" />
 
-            <EditText
-                android:id="@+id/etFirstName"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/firstNameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="First Name"
-                android:inputType="textPersonName"
-                android:background="@drawable/bg_input"
-                android:padding="12dp" />
+                android:layout_marginBottom="12dp">
 
-            <EditText
-                android:id="@+id/etLastName"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:fontFamily="@font/raleway_regular" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastNameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Last Name"
-                android:inputType="textPersonName"
-                android:background="@drawable/bg_input"
-                android:padding="12dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginBottom="12dp">
 
-            <EditText
-                android:id="@+id/etEmail"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:fontFamily="@font/raleway_regular" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
-                android:inputType="textEmailAddress"
-                android:background="@drawable/bg_input"
-                android:padding="12dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginBottom="12dp">
 
-            <EditText
-                android:id="@+id/etPhone"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:fontFamily="@font/raleway_regular" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone Number (11 digits)"
-                android:inputType="phone"
-                android:maxLength="11"
-                android:background="@drawable/bg_input"
-                android:padding="12dp"
-                android:layout_marginTop="8dp" />
+                android:hint="Phone Number (11 digits)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:fontFamily="@font/raleway_regular" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <!-- 🏗️ Architect Credentials -->
@@ -140,18 +175,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="20dp"
-            android:elevation="2dp">
+            android:background="@drawable/rounded_white_card"
+            android:padding="24dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/architect_credentials"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:textColor="#091635"
+                android:textSize="18sp"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.005"
+                android:layout_marginBottom="16dp" />
 
             <Button
                 android:id="@+id/btnUploadPdf"
@@ -159,18 +197,24 @@
                 android:layout_height="wrap_content"
                 android:text="Upload Credentials PDF"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/white"
-                android:drawableLeft="@drawable/ic_file_upload" />
+                android:textColor="@color/primary"
+                android:textSize="15sp"
+                android:fontFamily="@font/raleway_bold"
+                android:backgroundTint="@color/white"
+                android:drawableLeft="@drawable/ic_file_upload"
+                android:paddingVertical="12dp"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:id="@+id/tvUploadedFile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="No file selected"
-                android:textColor="@color/dark_gray"
-                android:textSize="13sp"
-                android:layout_marginTop="6dp" />
+                android:textColor="#6c757d"
+                android:textSize="14sp"
+                android:fontFamily="@font/raleway_regular"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <!-- 💾 Save Button -->
@@ -180,11 +224,14 @@
             android:layout_height="wrap_content"
             android:text="Save Changes"
             android:textAllCaps="false"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/white"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp"
-            android:padding="12dp" />
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/raleway_bold"
+            android:background="@drawable/gradient_button"
+            android:paddingVertical="14dp"
+            android:letterSpacing="0.01"
+            android:elevation="2dp"
+            android:layout_marginBottom="32dp" />
 
     </LinearLayout>
 </ScrollView>

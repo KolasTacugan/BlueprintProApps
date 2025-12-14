@@ -9,7 +9,7 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.MessageResponse
 
 class ArchitectChatMessagesAdapter(
-    private val messages: List<MessageResponse>,
+    private val messages: MutableList<MessageResponse>,
     private val currentArchitectId: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -17,8 +17,10 @@ class ArchitectChatMessagesAdapter(
     private val TYPE_RECEIVED = 2
 
     override fun getItemViewType(position: Int): Int {
-        // ✅ Architect is sender if senderId matches architectId
-        return if (messages[position].senderId == currentArchitectId) TYPE_SENT else TYPE_RECEIVED
+        return if (messages[position].senderId == currentArchitectId)
+            TYPE_SENT
+        else
+            TYPE_RECEIVED
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -51,5 +53,12 @@ class ArchitectChatMessagesAdapter(
 
     inner class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtMessage: TextView = itemView.findViewById(R.id.txtMessageReceived)
+    }
+
+    // ✅ Real-time updating method
+    fun updateMessages(newList: List<MessageResponse>) {
+        messages.clear()
+        messages.addAll(newList)
+        notifyDataSetChanged()
     }
 }

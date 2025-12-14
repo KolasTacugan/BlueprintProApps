@@ -23,6 +23,7 @@ import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.ScrollView
 
 class MatchClientActivity : AppCompatActivity() {
 
@@ -116,6 +117,7 @@ class MatchClientActivity : AppCompatActivity() {
     private fun performSearch(query: String) {
         lockSearchInput()
 
+        // Show loading UI
         loadingSection.visibility = View.VISIBLE
         matchRecyclerView.visibility = View.GONE
 
