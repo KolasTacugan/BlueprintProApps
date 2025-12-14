@@ -2,23 +2,22 @@ package com.example.blueprintproapps.network
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
-import com.example.blueprintproapps.models.GenericResponse
-import com.example.blueprintproapps.models.MatchRequest
 import com.example.blueprintproapps.models.MatchResponse
 import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
@@ -27,202 +26,171 @@ import retrofit2.Response
 
 class MatchClientActivity : AppCompatActivity() {
 
+    private lateinit var root: ConstraintLayout
+    private lateinit var appLogo: ImageView
+    private lateinit var clientPrompt: EditText
+    private lateinit var loadingSection: LinearLayout
     private lateinit var matchRecyclerView: RecyclerView
     private lateinit var matchAdapter: MatchAdapter
-    private lateinit var clientPrompt: EditText
-    private lateinit var sendButton: ImageButton
-    private lateinit var chatContainer: LinearLayout
-    private lateinit var loadingSection: LinearLayout
 
+    private var hasSearched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_match_client)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { v, insets ->
+            val topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(
+                v.paddingLeft,
+                topInset,
+                v.paddingRight,
+                v.paddingBottom
+            )
             insets
         }
 
-        // Initialize views
-        matchRecyclerView = findViewById(R.id.matchRecyclerView)
-        clientPrompt = findViewById(R.id.clientPrompt)
-        sendButton = findViewById(R.id.sendButton)
-        chatContainer = findViewById(R.id.chatContainer)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-        // RecyclerView setup
-        matchRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        root = findViewById(R.id.root)
+        appLogo = findViewById(R.id.appLogo)
+        clientPrompt = findViewById(R.id.clientPrompt)
+        loadingSection = findViewById(R.id.loadingSection)
+        matchRecyclerView = findViewById(R.id.matchRecyclerView)
+
+        matchRecyclerView.layoutManager = LinearLayoutManager(this)
         matchAdapter = MatchAdapter(
             onRequestClick = { architectId ->
                 sendMatchRequest(architectId)
             },
-            onProfileClick = { match ->
-                showArchitectBottomSheet(match)
-            }
+            onProfileClick = { ArchitectDetailBottomSheet(it)
+                .show(supportFragmentManager, "ArchitectDetail") }
         )
-
         matchRecyclerView.adapter = matchAdapter
 
-        loadingSection = findViewById(R.id.loadingSection)
-
-        // Initial load
-       // fetchMatches()
-
-        // Handle send button click
-        sendButton.setOnClickListener {
-            val query = clientPrompt.text.toString().trim()
-            if (query.isNotEmpty()) {
-                addChatMessage(query, isClient = true) // Add to chat
-                fetchMatches(query) // Refresh matches
-                clientPrompt.text.clear()
-            } else {
-                Toast.makeText(this, "Please enter what you're looking for.", Toast.LENGTH_SHORT).show()
-            }
+        clientPrompt.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                val query = clientPrompt.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    if (!hasSearched) animateToSearchState()
+                    performSearch(query)
+                }
+                true
+            } else false
         }
     }
-    private fun showArchitectBottomSheet(match: MatchResponse) {
-        val sheet = ArchitectDetailBottomSheet(match)
-        sheet.show(supportFragmentManager, "ArchitectDetailBottomSheet")
+
+    private fun animateToSearchState() {
+        hasSearched = true
+
+        findViewById<View>(R.id.searchTitle).visibility = View.GONE
+        findViewById<View>(R.id.searchSubtitle).visibility = View.GONE
+
+        val set = ConstraintSet()
+        set.clone(root)
+
+        // Logo: force top-left
+        set.clear(appLogo.id, ConstraintSet.BOTTOM)
+        set.clear(appLogo.id, ConstraintSet.END)
+
+        set.connect(appLogo.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 34)
+        set.connect(appLogo.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 10)
+
+        set.constrainWidth(appLogo.id, 86)
+        set.constrainHeight(appLogo.id, 86)
+
+        // Search bar beside logo
+        set.clear(clientPrompt.id, ConstraintSet.TOP)
+        set.clear(clientPrompt.id, ConstraintSet.START)
+
+        set.connect(clientPrompt.id, ConstraintSet.START, appLogo.id, ConstraintSet.END, 12)
+        set.connect(clientPrompt.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 12)
+        set.connect(clientPrompt.id, ConstraintSet.TOP, appLogo.id, ConstraintSet.TOP)
+        set.connect(clientPrompt.id, ConstraintSet.BOTTOM, appLogo.id, ConstraintSet.BOTTOM)
+
+        set.applyTo(root)
     }
 
-    /**
-     * Add a chat message to the chat container dynamically
-     */
-    private fun addChatMessage(message: String, isClient: Boolean) {
-        val inflater = LayoutInflater.from(this)
-        val chatView = inflater.inflate(R.layout.item_chat_message, chatContainer, false)
-
-        val textView = chatView.findViewById<TextView>(R.id.chatMessage)
-        textView.text = message
-
-        // Differentiate style for client vs system messages
-        val layoutParams = textView.layoutParams as LinearLayout.LayoutParams
-        if (isClient) {
-            layoutParams.marginEnd = 60
-            textView.setBackgroundResource(R.drawable.bg_client_message)
-        } else {
-            layoutParams.marginStart = 60
-            textView.setBackgroundResource(R.drawable.bg_system_message)
-        }
-
-        textView.layoutParams = layoutParams
-        chatContainer.addView(chatView)
-    }
-
-    /**
-     * Fetch architects with optional query
-     */
-    private fun fetchMatches(query: String? = null) {
-
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val clientId = prefs.getString("clientId", null)
-
-        if (clientId == null) {
-            Toast.makeText(this, "Client not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
+    private fun performSearch(query: String) {
+        lockSearchInput()
 
         loadingSection.visibility = View.VISIBLE
         matchRecyclerView.visibility = View.GONE
 
+        val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            .getString("clientId", null) ?: return
+
         ApiClient.instance.getMatches(clientId, query)
             .enqueue(object : Callback<List<MatchResponse>> {
+
                 override fun onResponse(
                     call: Call<List<MatchResponse>>,
                     response: Response<List<MatchResponse>>
                 ) {
-
                     loadingSection.visibility = View.GONE
                     matchRecyclerView.visibility = View.VISIBLE
+                    matchAdapter.submitList(response.body())
 
-                    if (response.isSuccessful && response.body() != null) {
-                        val matches = response.body()!!
-                        matchAdapter.submitList(matches)
-
-                        addChatMessage(
-                            "Found ${matches.size} architect(s) for: ${query ?: "all"}",
-                            isClient = false
-                        )
-                    } else {
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("MatchClientActivity", "Failed: ${response.code()} - $errorBody")
-                        Toast.makeText(
-                            this@MatchClientActivity,
-                            "Failed to load matches (${response.code()})",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    unlockSearchInput() // ✅ allow user to tap again
                 }
 
                 override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
                     loadingSection.visibility = View.GONE
-                    matchRecyclerView.visibility = View.GONE
-                    Log.e("MatchClientActivity", "Network error", t)
+                    Log.e("MatchClientActivity", "Error", t)
 
-                    Toast.makeText(
-                        this@MatchClientActivity,
-                        "Network error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    unlockSearchInput() // ✅ also unlock on failure
                 }
             })
     }
 
-    /**
-     * Send a match request ensuring clientId is from login
-     */
     private fun sendMatchRequest(architectId: String) {
-        val clientId = getClientIdFromPreferences()
-        if (clientId.isEmpty()) {
-            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            .getString("clientId", "") ?: ""
 
-        val request = MatchRequest(architectId, clientId)
+        if (clientId.isEmpty()) return
 
-        ApiClient.instance.requestMatch(request).enqueue(object : Callback<GenericResponse> {
+        ApiClient.instance.requestMatch(
+            com.example.blueprintproapps.models.MatchRequest(architectId, clientId)
+        ).enqueue(object : Callback<com.example.blueprintproapps.models.GenericResponse> {
+
             override fun onResponse(
-                call: Call<GenericResponse>,
-                response: Response<GenericResponse>
+                call: Call<com.example.blueprintproapps.models.GenericResponse>,
+                response: Response<com.example.blueprintproapps.models.GenericResponse>
             ) {
-                val body = response.body()
-                if (response.isSuccessful && body?.success == true) {
-                    Toast.makeText(
-                        this@MatchClientActivity,
-                        body.message ?: "Match request sent!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    fetchMatches()
-                } else {
-                    val message = body?.message ?: "Failed to send request"
-                    Log.e("MatchClientActivity", "Match request failed: $message")
-                    Toast.makeText(
-                        this@MatchClientActivity,
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                if (response.isSuccessful) {
+                    // Optional: refresh list so Pending comes from backend
+                    // performSearch(clientPrompt.text.toString())
                 }
             }
 
-            override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
-                Log.e("MatchClientActivity", "Error sending match request", t)
-                Toast.makeText(
-                    this@MatchClientActivity,
-                    "Error: ${t.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            override fun onFailure(call: Call<com.example.blueprintproapps.models.GenericResponse>, t: Throwable) {
+                Log.e("MatchClientActivity", "Match request failed", t)
             }
         })
     }
 
-    /**
-     * Read clientId stored at login
-     */
-    private fun getClientIdFromPreferences(): String {
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        return prefs.getString("clientId", "") ?: ""
+    private fun lockSearchInput() {
+        // Remove focus and hide keyboard
+        root.requestFocus()
+
+        clientPrompt.clearFocus()
+        clientPrompt.isFocusable = false
+        clientPrompt.isFocusableInTouchMode = false
+        clientPrompt.isCursorVisible = false
+
+        val imm = getSystemService(INPUT_METHOD_SERVICE)
+                as android.view.inputmethod.InputMethodManager
+        imm.hideSoftInputFromWindow(clientPrompt.windowToken, 0)
     }
+
+    private fun unlockSearchInput() {
+        // Keep it unfocused, but allow tapping again
+        clientPrompt.isFocusable = true
+        clientPrompt.isFocusableInTouchMode = true
+        clientPrompt.isCursorVisible = true
+    }
+
+
 }

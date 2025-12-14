@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
+import java.util.Locale
 
 class BlueprintAdapter(
     private val items: List<BlueprintResponse>,
@@ -50,7 +52,7 @@ class BlueprintAdapter(
         val item = items[position]
 
         holder.blueprintName.text = item.blueprintName
-        holder.blueprintPrice.text = "₱${item.blueprintPrice}"
+        holder.blueprintPrice.text = formatPeso(item.blueprintPrice)
 
         if (!item.blueprintImage.isNullOrEmpty()) {
             Picasso.get().load(item.blueprintImage).into(holder.blueprintImage)
@@ -64,6 +66,12 @@ class BlueprintAdapter(
             val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
             val clientId = sharedPrefs.getString("clientId", null)
 
+    private fun formatPeso(amount: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.US)
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return "₱${formatter.format(amount)}"
+    }
 
             if (clientId == null) {
                 Toast.makeText(context, "Please log in first.", Toast.LENGTH_SHORT).show()
