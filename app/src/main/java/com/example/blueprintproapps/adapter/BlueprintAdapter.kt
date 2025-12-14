@@ -96,13 +96,6 @@ class BlueprintAdapter(
             val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
             val clientId = sharedPrefs.getString("clientId", null)
 
-    private fun formatPeso(amount: Double): String {
-        val formatter = NumberFormat.getNumberInstance(Locale.US)
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        return "₱${formatter.format(amount)}"
-    }
-
             if (clientId == null) {
                 Toast.makeText(context, "Please log in first.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -140,7 +133,12 @@ class BlueprintAdapter(
             })
         }
     }
-
+    private fun formatPeso(amount: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.US)
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return "₱${formatter.format(amount)}"
+    }
 
 
 }
