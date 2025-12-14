@@ -2,26 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:layout_marginEnd="12dp">
 
-    <ImageView
-        android:id="@+id/imgProfile"
+    <FrameLayout
         android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:background="@drawable/story_ring"
-        android:padding="5dp"
-        android:scaleType="centerCrop"
-        android:clipToOutline="true" />
+        android:layout_height="68dp">
+
+        <!-- Circular image -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="34dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Ring overlay -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/story_ring" />
+
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/txtName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@android:color/black"
         android:textSize="12sp"
+        android:gravity="center"
         android:ellipsize="end"
         android:maxLines="1" />
 </LinearLayout>

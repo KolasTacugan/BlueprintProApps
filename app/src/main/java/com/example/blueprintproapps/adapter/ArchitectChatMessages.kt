@@ -30,6 +30,7 @@ class ArchitectChatMessagesAdapter(
             val view = inflater.inflate(R.layout.item_chat_received, parent, false)
             ReceivedMessageViewHolder(view)
         }
+
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

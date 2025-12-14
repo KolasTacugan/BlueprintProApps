@@ -2,6 +2,7 @@ package com.example.blueprintproapps.network
 
 import android.content.Context
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectChatMessagesAdapter
-
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.GenericResponse
 import com.example.blueprintproapps.models.MessageListResponse
@@ -22,6 +22,7 @@ import com.example.blueprintproapps.models.MessageResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.TextView
 
 class ArchitectChatActivity : AppCompatActivity() {
 
@@ -31,26 +32,39 @@ class ArchitectChatActivity : AppCompatActivity() {
     private lateinit var adapter: ArchitectChatMessagesAdapter
     private val messages = mutableListOf<MessageResponse>()
 
+    private val handler = android.os.Handler()
+    private val refreshRunnable = object : Runnable {
+        override fun run() {
+            getMessages()
+            handler.postDelayed(this, 2000)
+        }
+    }
     private lateinit var architectId: String
     private lateinit var clientId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContentView(R.layout.activity_architect_chat)
 
-        // Handle window insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        // 🔑 Get receiver data
+        val receiverId = intent.getStringExtra("receiverId") ?: run {
+            Toast.makeText(this, "No client specified", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
+
+        val receiverName = intent.getStringExtra("receiverName") ?: "Chat"
+        val txtChatTitle = findViewById<TextView>(R.id.txtChatTitle)
+        txtChatTitle.text = receiverName
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         recyclerMessages = findViewById(R.id.recyclerMessages)
         edtMessage = findViewById(R.id.edtMessage)
         btnSend = findViewById(R.id.btnSend)
 
-        // ✅ Get architect ID from SharedPreferences
+        // Get architect ID
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         architectId = sharedPref.getString("architectId", null) ?: run {
             Toast.makeText(this, "Architect not logged in", Toast.LENGTH_SHORT).show()
@@ -58,33 +72,38 @@ class ArchitectChatActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ Get client ID from Intent extras
-        clientId = intent.getStringExtra("clientId") ?: run {
+        // Get client ID
+        clientId = intent.getStringExtra("receiverId") ?: run {
             Toast.makeText(this, "No client specified", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // ✅ Setup RecyclerView
+        // RecyclerView setup
         adapter = ArchitectChatMessagesAdapter(messages, architectId)
         recyclerMessages.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
         recyclerMessages.adapter = adapter
 
-        // ✅ Load chat messages
+        // Load chat messages initially
         getMessages()
+        startAutoRefresh()
 
-        // ✅ Send message on button click
+        // Send message
         btnSend.setOnClickListener {
-            val messageText = edtMessage.text.toString().trim()
-            if (messageText.isNotEmpty()) {
-                sendMessage(messageText)
+            val msg = edtMessage.text.toString().trim()
+            if (msg.isNotEmpty()) {
+                sendMessage(msg)
             }
         }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(refreshRunnable)
+    }
 
-    // ✅ Fetch all messages between architect and client
+    // Fetch chat messages
     private fun getMessages() {
         ApiClient.instance.getArchitectMessages(clientId, architectId)
             .enqueue(object : Callback<MessageListResponse> {
@@ -93,10 +112,14 @@ class ArchitectChatActivity : AppCompatActivity() {
                     response: Response<MessageListResponse>
                 ) {
                     if (response.isSuccessful && response.body()?.success == true) {
+
+                        val newMessages = response.body()!!.messages
+
                         messages.clear()
-                        messages.addAll(response.body()!!.messages)
+                        messages.addAll(newMessages)
                         adapter.notifyDataSetChanged()
                         recyclerMessages.scrollToPosition(messages.size - 1)
+
                     } else {
                         Toast.makeText(
                             this@ArchitectChatActivity,
@@ -116,27 +139,36 @@ class ArchitectChatActivity : AppCompatActivity() {
             })
     }
 
-    // ✅ Send message
+    private fun startAutoRefresh() {
+        handler.post(refreshRunnable)
+    }
+
+
+    // Sending a message
     private fun sendMessage(messageText: String) {
         btnSend.isEnabled = false
 
-        val messageRequest = MessageRequest(
+        val messageReq = MessageRequest(
             clientId = clientId,
             architectId = architectId,
             senderId = architectId,
             messageBody = messageText
         )
 
-        ApiClient.instance.sendArchitectMessage(messageRequest)
+        ApiClient.instance.sendArchitectMessage(messageReq)
             .enqueue(object : Callback<GenericResponse> {
                 override fun onResponse(
                     call: Call<GenericResponse>,
                     response: Response<GenericResponse>
                 ) {
                     btnSend.isEnabled = true
+
                     if (response.isSuccessful && response.body()?.success == true) {
                         edtMessage.text.clear()
+
+                        // Refresh messages immediately
                         getMessages()
+
                     } else {
                         Toast.makeText(
                             this@ArchitectChatActivity,

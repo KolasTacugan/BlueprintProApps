@@ -45,7 +45,14 @@ class ArchitectChatHeadAdapter(
 
     override fun onBindViewHolder(holder: ChatHeadViewHolder, position: Int) {
         val match = chatHeads[position]
-        holder.txtName.text = match.clientName ?: "Unknown Client"
+        val firstName = match.clientName
+            ?.trim()
+            ?.split(" ")
+            ?.firstOrNull()
+            ?: "Unknown"
+
+        holder.txtName.text = firstName
+
 
         val photoUrl = match.clientPhoto?.replace("~", "https://yourdomain.com")
         Glide.with(holder.itemView.context)
