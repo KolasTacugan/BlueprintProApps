@@ -32,7 +32,7 @@ class ArchitectMessagesAdapter(
 
                 // ✅ Open ArchitectChatActivity with clientId and name
                 val intent = Intent(context, ArchitectChatActivity::class.java)
-                intent.putExtra("clientId", conversation.clientId)
+                intent.putExtra("receiverId", conversation.clientId)
                 intent.putExtra("clientName", conversation.clientName)
                 context.startActivity(intent)
 

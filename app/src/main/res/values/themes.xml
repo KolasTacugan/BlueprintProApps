@@ -8,6 +8,9 @@
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="colorSecondary">#6C757D</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
 </resources>

@@ -29,7 +29,7 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_architect_project_tracker)
 
         viewPager = findViewById(R.id.stepViewPager)
-        stepProgress = findViewById(R.id.stepProgress)
+//        stepProgress = findViewById(R.id.stepProgress)
 
         projectId = intent.getStringExtra("projectId") ?: ""
         blueprintId = intent.getIntExtra("blueprintId", 0)

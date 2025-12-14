@@ -1,90 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="24dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F9FAFB"
+    android:fillViewport="true">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp">
 
+        <!-- Header Section -->
         <TextView
             android:id="@+id/stepTitle"
             android:text="Compliance"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:gravity="left"
-            android:layout_marginBottom="24dp"
+            android:textColor="#091635"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- ✅ File Type Selector -->
-        <RadioGroup
-            android:id="@+id/fileTypeGroup"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/zoningRadio"
-                android:text="Zoning"
-                android:checked="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/otherRadio"
-                android:text="Others"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RadioGroup>
-
-        <!-- ✅ Single Upload Button -->
-        <Button
-            android:id="@+id/uploadComplianceBtn"
-            android:text="Upload Selected File"
-            android:layout_marginBottom="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- ✅ Zoning Files List -->
         <TextView
-            android:text="Zoning Files:"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload required compliance documents"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp" />
 
-        <LinearLayout
-            android:id="@+id/zoningFilesContainer"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- ✅ Others Files List -->
-        <TextView
-            android:text="Other Files:"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/otherFilesContainer"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button android:id="@+id/nextBtn"
-            android:layout_marginTop="12dp"
-            android:text="Next Step"
+        <!-- File Type Selector Card -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#4CAF50"
-            android:textColor="@android:color/white" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select File Type"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="16dp" />
+
+                <RadioGroup
+                    android:id="@+id/fileTypeGroup"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/zoningRadio"
+                        android:text="Zoning"
+                        android:checked="true"
+                        android:textColor="#091635"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingVertical="8dp" />
+
+                    <RadioButton
+                        android:id="@+id/otherRadio"
+                        android:text="Others"
+                        android:textColor="#091635"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingVertical="8dp" />
+                </RadioGroup>
+
+                <!-- Upload Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadComplianceBtn"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Selected File"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01"
+                    android:textColor="@android:color/white"
+                    android:paddingVertical="14dp"
+                    android:layout_marginTop="12dp"
+                    app:cornerRadius="12dp"
+                    app:backgroundTint="#0D3C80"
+                    app:icon="@android:drawable/ic_menu_upload"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Zoning Files Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Zoning Files"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:id="@+id/zoningFilesContainer"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Other Files Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Other Files"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:id="@+id/otherFilesContainer"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Next Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nextBtn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Step"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01"
+            android:textColor="@android:color/white"
+            android:paddingVertical="16dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#4CAF50"
+            app:icon="@android:drawable/ic_media_play"
+            app:iconGravity="textEnd" />
 
     </LinearLayout>
 </ScrollView>

@@ -1,73 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#F9FAFB"
+    android:fillViewport="true">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp">
 
+        <!-- Header Section -->
         <TextView
             android:id="@+id/stepTitle"
             android:text="Finalization"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:gravity="left"
+            android:textColor="#091635"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete your project with final documents and notes"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Final Blueprint Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Final Blueprint"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/finalFileNameText"
+                    android:text="No final file uploaded yet"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Finalization Notes Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
 
-        <!-- 📄 Final Blueprint -->
-        <TextView
-            android:text="Final Blueprint"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
 
-        <TextView
-            android:id="@+id/finalFileNameText"
-            android:text="No final file uploaded yet"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/gray"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalization Notes"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
 
-        <!-- ✍️ Finalization Notes -->
-        <TextView
-            android:text="Finalization Notes"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/finalizationNotesEditText"
+                    android:hint="Write finalization notes here..."
+                    android:inputType="textMultiLine"
+                    android:gravity="top|start"
+                    android:minHeight="150dp"
+                    android:textSize="14sp"
+                    android:textColor="#091635"
+                    android:textColorHint="#9CA3AF"
+                    android:fontFamily="@font/raleway_regular"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/finalizationNotesEditText"
-            android:hint="    Write finalization notes here..."
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:minHeight="150dp"
-            android:background="@drawable/edittext_bg"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveNotesBtn"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Save Notes"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01"
+                    android:textColor="@android:color/white"
+                    android:paddingVertical="14dp"
+                    android:layout_marginTop="12dp"
+                    app:cornerRadius="12dp"
+                    app:backgroundTint="#0D3C80"
+                    app:icon="@android:drawable/ic_menu_save"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp" />
 
-        <Button
-            android:id="@+id/saveNotesBtn"
-            android:text="Save Notes"
-            android:layout_marginTop="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <Button
+        <!-- Finish Project Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/finalizeProjectBtn"
-            android:text="Finish Project"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#2E6F40"
-            android:textColor="@color/white"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Finish Project"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01"
+            android:textColor="@android:color/white"
+            android:paddingVertical="16dp"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#4CAF50"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconGravity="textEnd" />
+
     </LinearLayout>
 </ScrollView>

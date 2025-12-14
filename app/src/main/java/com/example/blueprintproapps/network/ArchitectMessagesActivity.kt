@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectChatHeadAdapter
 import com.example.blueprintproapps.adapter.ArchitectMessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
@@ -22,7 +24,7 @@ class ArchitectMessagesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityArchitectMessagesBinding
     private lateinit var messageAdapter: ArchitectMessagesAdapter
     private lateinit var chatHeadAdapter: ArchitectChatHeadAdapter
-
+    private var lastRefreshTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityArchitectMessagesBinding.inflate(layoutInflater)
@@ -35,6 +37,17 @@ class ArchitectMessagesActivity : AppCompatActivity() {
 
         // ✅ Get architectId from SharedPreferences
         val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val architectProfileUrl = sharedPref.getString("profilePhoto", null)
+
+//        architectProfileUrl?.let {
+//            Glide.with(this)
+//                .load(it)
+//                .placeholder(R.drawable.profile_pic)
+//                .circleCrop()
+//                .into(binding.architectProfilePic)
+//        }
+
+
         val architectId = sharedPref.getString("architectId", null)
 
         if (architectId.isNullOrEmpty()) {
@@ -65,7 +78,21 @@ class ArchitectMessagesActivity : AppCompatActivity() {
         loadConversations(architectId)
         loadMatches(architectId)
     }
+    override fun onResume() {
+        super.onResume()
 
+        val now = System.currentTimeMillis()
+        if (now - lastRefreshTime > 3000) { // refresh only if at least 3 seconds passed
+            val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+            val architectId = sharedPref.getString("architectId", null)
+
+            if (!architectId.isNullOrEmpty()) {
+                loadConversations(architectId)
+                loadMatches(architectId)
+            }
+            lastRefreshTime = now
+        }
+    }
     // 🗨️ Load all conversations for architect
     private fun loadConversations(architectId: String) {
         ApiClient.instance.getAllMessagesForArchitect(architectId)

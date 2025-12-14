@@ -40,6 +40,7 @@ class RegisterArchitectActivity : AppCompatActivity() {
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
         val confirmPasswordInput = findViewById<TextInputEditText>(R.id.confirmPasswordInput)
         val licenseNoInput = findViewById<TextInputEditText>(R.id.licenseNoInput)
+        val phoneNumber = findViewById<TextInputEditText>(R.id.phoneNumberInput)
 
         val spinnerStyle = findViewById<Spinner>(R.id.spinnerStyle)
         val spinnerBudget = findViewById<Spinner>(R.id.spinnerBudget)
@@ -65,11 +66,13 @@ class RegisterArchitectActivity : AppCompatActivity() {
             val password = passwordInput.text.toString().trim()
             val confirmPassword = confirmPasswordInput.text.toString().trim()
             val licenseNo = licenseNoInput.text.toString().trim()
+            val phone = phoneNumber.text.toString().trim()
+
 
             // Validation
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
-                password.isEmpty() || confirmPassword.isEmpty() || licenseNo.isEmpty()
-            ) {
+                phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || licenseNo.isEmpty()
+            ){
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -85,7 +88,7 @@ class RegisterArchitectActivity : AppCompatActivity() {
                 lastName = lastName,
                 email = email,
                 password = password,
-                phoneNumber = "",
+                phoneNumber = phone,
                 role = role ?: "Architect",
                 licenseNo = licenseNo,
                 style = spinnerStyle.selectedItem.toString(),
