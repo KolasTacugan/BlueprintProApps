@@ -7,12 +7,15 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ClientProjectAdapter
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ClientProjectResponse
+import com.example.blueprintproapps.utils.ArchitectProfileBottomSheet
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +39,15 @@ class ClientProjectsActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         backBtn = findViewById(R.id.backButton)
         // 🔥 ATTACH EMPTY ADAPTER FIRST
-        adapter = ClientProjectAdapter(projectList, this) {}
+        adapter = ClientProjectAdapter(projectList, this,
+            onItemClick = { project ->
+                // existing code
+            },
+            onArchitectNameClick = { architectId ->
+                openArchitectProfileBottomSheet(architectId)
+            }
+        )
+
         recyclerView.adapter = adapter
 
         val callback = object : OnBackPressedCallback(true) {
@@ -54,6 +65,11 @@ class ClientProjectsActivity : AppCompatActivity() {
         }
 
         fetchProjects()
+    }
+
+    private fun openArchitectProfileBottomSheet(architectId: String) {
+        val sheet = ArchitectProfileBottomSheet(architectId)
+        sheet.show(supportFragmentManager, "ArchitectProfile")
     }
 
     private fun fetchProjects() {

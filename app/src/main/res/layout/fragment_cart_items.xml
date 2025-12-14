@@ -1,56 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cartFragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
-    android:padding="16dp">
+    android:background="#F9FAFB">
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false" />
 
     <!-- Empty cart text -->
-    <TextView
+    <LinearLayout
         android:id="@+id/emptyCartText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Your cart is empty"
-        android:textSize="16sp"
-        android:textColor="@color/dark_gray"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
         android:gravity="center"
-        android:padding="8dp"
-        android:visibility="gone" />
+        android:padding="32dp"
+        android:visibility="gone">
 
-    <!-- Footer: Total + Checkout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="12dp">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_shopping_cart"
+            android:alpha="0.3"
+            app:tint="#6B7280"
+            android:contentDescription="Empty cart"
+            android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/cartTotalText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Total: ₱0.00"
-            android:textStyle="bold"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/checkoutBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Checkout"
-            android:enabled="false"
-            android:backgroundTint="@color/primary"
-            android:textColor="@android:color/white" />
+            android:text="Your cart is empty"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#091635"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add blueprints from the marketplace"
+            android:textSize="14sp"
+            android:textColor="#6B7280"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
+
+    <!-- Footer: Total + Checkout -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="8dp"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="20dp">
+
+            <!-- Subtotal Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Amount"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular" />
+
+                <TextView
+                    android:id="@+id/cartTotalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱0.00"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:textColor="#091635"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01" />
+
+            </LinearLayout>
+
+            <!-- Checkout Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/checkoutBtn"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Proceed to Checkout"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.01"
+                android:textColor="@android:color/white"
+                android:enabled="false"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#0D3C80"
+                app:rippleColor="#1E40AF"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

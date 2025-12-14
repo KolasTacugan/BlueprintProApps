@@ -1,15 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
-    android:padding="8dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="4dp">
 
-    <TextView
-        android:id="@+id/txtMessageSent"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_background_sent"
-        android:textColor="@android:color/white"
-        android:padding="10dp"
-        android:text="Sample message" />
+        android:layout_gravity="end"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="#0D3C80">
+
+        <TextView
+            android:id="@+id/txtMessageSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_background_sent"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/raleway_regular"
+            android:letterSpacing="0.005"
+            android:lineSpacingExtra="2dp"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:maxWidth="280dp"
+            android:text="Sample message" />
+
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>

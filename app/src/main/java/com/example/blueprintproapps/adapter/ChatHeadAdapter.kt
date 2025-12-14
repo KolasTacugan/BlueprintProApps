@@ -39,7 +39,7 @@ class ChatHeadAdapter(
         holder.txtName.text = match.architectName ?: "Unknown Architect"
 
         // Handle possible relative photo URL
-        val photoUrl = match.architectPhoto?.replace("~", "https://yourdomain.com")
+        val photoUrl = match.architectPhoto // API should now return full URL
 
         Glide.with(holder.itemView.context)
             .load(photoUrl ?: R.drawable.sample_profile)
