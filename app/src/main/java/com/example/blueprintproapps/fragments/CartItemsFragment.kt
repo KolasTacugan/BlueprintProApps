@@ -17,7 +17,8 @@ import com.example.blueprintproapps.models.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import java.text.NumberFormat
+import java.util.Locale
 class CartItemsFragment : Fragment() {
 
     private var _binding: FragmentCartItemsBinding? = null
@@ -61,6 +62,13 @@ class CartItemsFragment : Fragment() {
         return binding.root
     }
 
+    private fun formatPeso(amount: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.US)
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return "₱${formatter.format(amount)}"
+    }
+
     private fun fetchCart(clientId: String) {
         api.getCart(clientId).enqueue(object : Callback<List<CartItem>> {
             override fun onResponse(call: Call<List<CartItem>>, response: Response<List<CartItem>>) {
@@ -72,7 +80,7 @@ class CartItemsFragment : Fragment() {
                         cartAdapter.submitList(cartItems)
 
                         val totalPrice = cartItems.sumOf { it.blueprintPrice }
-                        binding.cartTotalText.text = "Total: ₱${"%.2f".format(totalPrice)}"
+                        binding.cartTotalText.text = formatPeso(totalPrice)
                         binding.checkoutBtn.isEnabled = totalPrice > 0
                     } else showEmptyCart()
                 } else showEmptyCart()

@@ -51,34 +51,37 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
             // --- MATCH STATUS LOGIC (Same as Web Version) ---
             when (match.realMatchStatus) {
 
-                // No relationship yet → "Match"
+                // No relationship yet → Match (WHITE text)
                 null, "", "None" -> {
                     btnMatch.text = "Match"
                     btnMatch.isEnabled = true
+                    btnMatch.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.white)
+                    )
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.primary)
                     )
                 }
 
-                // Pending → Disable + Yellow button
+                // Pending → BLACK text
                 "Pending" -> {
                     btnMatch.text = "Pending"
+                    btnMatch.isEnabled = false
                     btnMatch.setTextColor(
                         ContextCompat.getColor(itemView.context, R.color.black)
                     )
-                    btnMatch.isEnabled = false
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.warning)
                     )
                 }
 
-                // Approved → Disable + Green button
+                // Approved → BLACK text
                 "Approved" -> {
                     btnMatch.text = "Matched"
+                    btnMatch.isEnabled = false
                     btnMatch.setTextColor(
                         ContextCompat.getColor(itemView.context, R.color.black)
                     )
-                    btnMatch.isEnabled = false
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.success)
                     )
@@ -87,11 +90,15 @@ class MatchAdapter(private val onRequestClick: (String) -> Unit,
                 else -> {
                     btnMatch.text = "Match"
                     btnMatch.isEnabled = true
+                    btnMatch.setTextColor(
+                        ContextCompat.getColor(itemView.context, R.color.white)
+                    )
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.primary)
                     )
                 }
             }
+
 
             // Request button press
             btnMatch.setOnClickListener {

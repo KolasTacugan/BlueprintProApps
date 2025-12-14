@@ -47,15 +47,21 @@
                 android:id="@+id/blueprintName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Blueprint Name"
                 android:textStyle="bold"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="#091635"
                 android:fontFamily="@font/raleway_bold"
                 android:letterSpacing="0.005"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:lineSpacingExtra="2dp" />
+                android:lineSpacingExtra="2dp"
+
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeStepGranularity="1sp" />
 
             <TextView
                 android:id="@+id/blueprintPrice"

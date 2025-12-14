@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.databinding.ItemCartBinding
 import com.example.blueprintproapps.models.CartItem
+import java.text.NumberFormat
+import java.util.Locale
 
 class CartAdapter(
     private val onRemoveClick: (CartItem) -> Unit // ✅ You forgot this constructor parameter
@@ -19,7 +21,7 @@ class CartAdapter(
         fun bind(item: CartItem) {
             binding.blueprintName.text = item.blueprintName
             binding.quantity.text = "Qty: ${item.quantity}"
-            binding.blueprintPrice.text = "₱${"%.2f".format(item.blueprintPrice)}"
+            binding.blueprintPrice.text = formatPeso(item.blueprintPrice)
 
             // 🖼 Load image or show a temporary built-in placeholder
             if (item.blueprintImage.endsWith(".docx", true)) {
@@ -47,6 +49,14 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    private fun formatPeso(amount: Double): String {
+        val formatter = NumberFormat.getNumberInstance(Locale.US)
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return "₱${formatter.format(amount)}"
+    }
+
 
     class DiffCallback : DiffUtil.ItemCallback<CartItem>() {
         override fun areItemsTheSame(oldItem: CartItem, newItem: CartItem) =
