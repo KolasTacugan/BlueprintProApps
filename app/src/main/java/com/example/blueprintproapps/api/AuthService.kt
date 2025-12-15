@@ -90,6 +90,10 @@ interface ApiService {
         @Query("clientId") clientId: String,
         @Query("query") query: String? = null
     ): Call<List<MatchResponse>>
+    @POST("api/MobileClient/ExplainMatch")
+    fun explainMatch(
+        @Body request: ExplainMatchRequest
+    ): Call<ExplainMatchResponse>
 
     // ✅ Send a match request
     @POST("api/MobileClient/RequestMatch")

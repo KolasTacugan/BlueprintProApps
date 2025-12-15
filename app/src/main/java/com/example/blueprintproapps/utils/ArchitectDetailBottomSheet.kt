@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.models.ExplainMatchResponse
 import com.example.blueprintproapps.models.MatchResponse
 import com.example.blueprintproapps.models.ProfileApiResponse
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,8 +20,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ArchitectDetailBottomSheet(private val match: MatchResponse) :
-    BottomSheetDialogFragment() {
+class ArchitectDetailBottomSheet(
+    private val match: MatchResponse,
+    private val clientQuery: String
+) : BottomSheetDialogFragment() {
+
 
     private lateinit var name: TextView
     private lateinit var style: TextView
@@ -28,6 +32,9 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
     private lateinit var email: TextView
     private lateinit var credentials: TextView
     private lateinit var image: ImageView
+    private var explanationText: TextView? = null
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +53,7 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
         email = view.findViewById(R.id.detailsEmail)
         credentials = view.findViewById(R.id.detailsCredentials)
         image = view.findViewById(R.id.detailsImage)
+        explanationText = view.findViewById(R.id.archMatchExplanation)
 
         // Initial Match Data
         name.text = match.architectName
@@ -54,6 +62,37 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
 
         // Load full profile (photo, email, credentials)
         loadProfile(match.architectId)
+        loadMatchExplanation(clientQuery)
+
+    }
+
+    private fun loadMatchExplanation(clientQuery: String) {
+
+        ApiClient.instance.explainMatch(
+            com.example.blueprintproapps.models.ExplainMatchRequest(
+                architectId = match.architectId,
+                query = clientQuery
+            )
+        ).enqueue(object : Callback<com.example.blueprintproapps.models.ExplainMatchResponse> {
+
+            override fun onResponse(
+                call: Call<ExplainMatchResponse>,
+                response: Response<ExplainMatchResponse>
+            ) {
+                explanationText?.text =
+                    response.body()?.explanation
+                        ?: "This recommendation aligns with your project needs."
+            }
+
+
+            override fun onFailure(
+                call: Call<ExplainMatchResponse>,
+                t: Throwable
+            ) {
+                explanationText?.text =
+                    "This recommendation aligns with your project needs."
+            }
+        })
     }
 
 
@@ -108,5 +147,10 @@ class ArchitectDetailBottomSheet(private val match: MatchResponse) :
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Cannot open credentials file", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        explanationText = null
     }
 }

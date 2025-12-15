@@ -73,6 +73,26 @@
             android:textColor="#091635"
             android:fontFamily="@font/raleway_regular"
             android:paddingTop="8dp" />
+        <TextView
+            android:id="@+id/archMatchExplanationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Why this matches your needs"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#091635"
+            android:paddingTop="12dp" />
+
+        <TextView
+            android:id="@+id/archMatchExplanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading explanation..."
+            android:textSize="15sp"
+            android:textColor="#091635"
+            android:paddingTop="6dp"
+            android:paddingBottom="12dp" />
+
 
     </LinearLayout>
 </ScrollView>

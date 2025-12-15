@@ -64,8 +64,11 @@ class MatchClientActivity : AppCompatActivity() {
             onRequestClick = { architectId ->
                 sendMatchRequest(architectId)
             },
-            onProfileClick = { ArchitectDetailBottomSheet(it)
-                .show(supportFragmentManager, "ArchitectDetail") }
+            onProfileClick = { ArchitectDetailBottomSheet(
+                match = it,
+                clientQuery = clientPrompt.text.toString()
+            ).show(supportFragmentManager, "ArchitectDetail")
+            }
         )
         matchRecyclerView.adapter = matchAdapter
 
