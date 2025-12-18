@@ -24,6 +24,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.ScrollView
+import android.widget.TextView
+import com.example.blueprintproapps.models.MatchesApiResponse
 
 class MatchClientActivity : AppCompatActivity() {
 
@@ -33,6 +35,9 @@ class MatchClientActivity : AppCompatActivity() {
     private lateinit var loadingSection: LinearLayout
     private lateinit var matchRecyclerView: RecyclerView
     private lateinit var matchAdapter: MatchAdapter
+    private lateinit var aiFeedbackContainer: LinearLayout
+    private lateinit var aiFeedbackText: TextView
+
 
     private var hasSearched = false
 
@@ -58,6 +63,10 @@ class MatchClientActivity : AppCompatActivity() {
         clientPrompt = findViewById(R.id.clientPrompt)
         loadingSection = findViewById(R.id.loadingSection)
         matchRecyclerView = findViewById(R.id.matchRecyclerView)
+
+        aiFeedbackContainer = findViewById(R.id.aiFeedbackContainer)
+        aiFeedbackText = findViewById(R.id.aiFeedbackText)
+
 
         matchRecyclerView.layoutManager = LinearLayoutManager(this)
         matchAdapter = MatchAdapter(
@@ -128,27 +137,65 @@ class MatchClientActivity : AppCompatActivity() {
             .getString("clientId", null) ?: return
 
         ApiClient.instance.getMatches(clientId, query)
-            .enqueue(object : Callback<List<MatchResponse>> {
+            .enqueue(object : Callback<MatchesApiResponse> {
 
                 override fun onResponse(
-                    call: Call<List<MatchResponse>>,
-                    response: Response<List<MatchResponse>>
+                    call: Call<MatchesApiResponse>,
+                    response: Response<MatchesApiResponse>
                 ) {
                     loadingSection.visibility = View.GONE
-                    matchRecyclerView.visibility = View.VISIBLE
-                    matchAdapter.submitList(response.body())
 
-                    unlockSearchInput() // ✅ allow user to tap again
+                    val body = response.body()
+                    if (body == null) {
+                        unlockSearchInput()
+                        return
+                    }
+
+                    // Reset UI
+                    aiFeedbackContainer.visibility = View.GONE
+                    matchRecyclerView.visibility = View.GONE
+
+                    when {
+                        body.outOfScope -> {
+                            aiFeedbackContainer.visibility = View.VISIBLE
+                            aiFeedbackText.text =
+                                "This request seems unrelated to architecture. Try describing a building or space you want to design."
+                        }
+
+                        body.showFeedback -> {
+                            aiFeedbackContainer.visibility = View.VISIBLE
+                            aiFeedbackText.text =
+                                "Not seeing strong matches yet. Try refining your project description."
+                        }
+
+                        else -> {
+                            // ✅ Valid results (includes lacksDetails case)
+                            matchAdapter.submitList(body.matches)
+                            matchRecyclerView.visibility = View.VISIBLE
+
+                            if (body.lacksDetails) {
+                                aiFeedbackContainer.visibility = View.VISIBLE
+                                aiFeedbackText.text =
+                                    "You’ll get better matches if you add more details like style, budget, or location."
+                            }
+                        }
+                    }
+
+                    unlockSearchInput()
                 }
 
-                override fun onFailure(call: Call<List<MatchResponse>>, t: Throwable) {
+
+                override fun onFailure(
+                    call: Call<MatchesApiResponse>,
+                    t: Throwable
+                ) {
                     loadingSection.visibility = View.GONE
                     Log.e("MatchClientActivity", "Error", t)
-
-                    unlockSearchInput() // ✅ also unlock on failure
+                    unlockSearchInput()
                 }
             })
-    }
+
+        }
 
     private fun sendMatchRequest(architectId: String) {
         val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
