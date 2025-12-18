@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_white_card"
+    android:elevation="8dp"
+    android:clipToOutline="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Header -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="20dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tvModalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Your Plan"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#091635"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01" />
+
+        <TextView
+            android:id="@+id/tvModalSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select the subscription that fits your needs"
+            android:textSize="14sp"
+            android:textColor="#6B7280"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="6dp"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Plans Container -->
+    <LinearLayout
+        android:id="@+id/plansContainer"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="24dp">
+
+        <!-- Free Plan -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/planFree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E5E7EB">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:text="Free"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#091635"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="₱0 / month"
+                    android:textSize="15sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="Standard AI matching"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFreeCurrent"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Current Plan"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:textColor="#6B7280"
+                    app:cornerRadius="10dp"
+                    app:strokeColor="#E5E7EB"
+                    app:strokeWidth="1dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Pro Plan -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/planPro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="#0D3C80">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:text="Pro"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#091635"
+                        android:fontFamily="@font/raleway_bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="POPULAR"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:fontFamily="@font/raleway_bold"
+                        android:background="@drawable/card_modern"
+                        android:backgroundTint="#0D3C80"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:text="₱180 / month"
+                    android:textSize="15sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:text="• Priority AI matching"
+                        android:textSize="14sp"
+                        android:textColor="#6B7280"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_marginBottom="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="• Premium analytics and insights"
+                        android:textSize="14sp"
+                        android:textColor="#6B7280"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_marginBottom="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="• Cancel anytime"
+                        android:textSize="14sp"
+                        android:textColor="#6B7280"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpgradePro"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Get Started"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:textColor="@android:color/white"
+                    app:cornerRadius="10dp"
+                    app:backgroundTint="#0D3C80"
+                    app:rippleColor="#1E40AF"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</LinearLayout>

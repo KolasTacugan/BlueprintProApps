@@ -43,6 +43,9 @@ class ProfileActivity : AppCompatActivity() {
     private var credentialsFilePath: String? = null
 
 
+    private var credentialsFilePath: String? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

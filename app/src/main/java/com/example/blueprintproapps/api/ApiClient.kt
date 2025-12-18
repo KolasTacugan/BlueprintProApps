@@ -11,6 +11,7 @@ object ApiClient {
     // Emulator localhost URL
     private const val BASE_URL = "https://blueprintpro-gvarb3d6ayb0d5f3.southeastasia-01.azurewebsites.net/"
 
+
     // Logging interceptor for debugging
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

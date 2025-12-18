@@ -28,7 +28,9 @@ class ArchitectChatHeadAdapter(
 
                 // ✅ Launch ArchitectChatActivity with clientId
                 val intent = Intent(context, ArchitectChatActivity::class.java)
-                intent.putExtra("clientId", match.clientId) // <-- crucial line
+                intent.putExtra("receiverId", match.clientId)
+                intent.putExtra("receiverName", match.clientName)
+
                 context.startActivity(intent)
 
                 // Optional callback if you still use it elsewhere
@@ -54,12 +56,15 @@ class ArchitectChatHeadAdapter(
         holder.txtName.text = firstName
 
 
-        val photoUrl = match.clientPhoto?.replace("~", "https://yourdomain.com")
+        val photoUrl = match.clientPhoto  // already a full URL from API
+
         Glide.with(holder.itemView.context)
             .load(photoUrl ?: R.drawable.sample_profile)
             .placeholder(R.drawable.sample_profile)
+            .error(R.drawable.sample_profile)
             .into(holder.imgProfile)
     }
+
 
     override fun getItemCount(): Int = chatHeads.size
 }
