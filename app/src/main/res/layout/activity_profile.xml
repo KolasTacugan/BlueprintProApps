@@ -154,8 +154,24 @@
                 android:layout_marginTop="24dp"
                 android:elevation="2dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Purchased Blueprints"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:textSize="18sp"
+                android:paddingTop="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPurchasedBlueprints"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
             <!-- Architect Credentials -->
             <LinearLayout
+                android:id="@+id/layoutArchitectCredentials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

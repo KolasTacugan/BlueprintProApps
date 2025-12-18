@@ -19,7 +19,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.app.Dialog
 import android.net.Uri
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.WebViewActivity
+import com.example.blueprintproapps.adapter.ClientPurchasedBlueprintAdapter
+import com.example.blueprintproapps.models.ClientPurchasedBlueprint
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -33,6 +38,10 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private lateinit var btnFavorites: Button
     private lateinit var btnSubscription: Button
+    private lateinit var rvPurchasedBlueprints: RecyclerView
+
+    private var credentialsFilePath: String? = null
+
 
     private var credentialsFilePath: String? = null
 
@@ -47,8 +56,12 @@ class ProfileActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val layoutArchitectCredentials =
+            findViewById<LinearLayout>(R.id.layoutArchitectCredentials)
 
         // Initialize Views
+        rvPurchasedBlueprints = findViewById(R.id.rvPurchasedBlueprints)
+        rvPurchasedBlueprints.layoutManager = LinearLayoutManager(this)
         tvFullName = findViewById(R.id.tvFullName)
         tvEmail = findViewById(R.id.tvEmail)
         tvPhone = findViewById(R.id.tvPhone)
@@ -75,11 +88,13 @@ class ProfileActivity : AppCompatActivity() {
 
         // Enable or disable subscription button based on user role
         if (userType == "Client") {
-            btnSubscription.isEnabled = false
-            btnSubscription.alpha = 0.5f
+            btnSubscription.visibility = View.GONE
+            loadPurchasedBlueprints()
+            layoutArchitectCredentials.visibility = View.GONE
         } else {
             btnSubscription.isEnabled = true
             btnSubscription.alpha = 1f
+
         }
 
         // Subscription modal
@@ -127,7 +142,48 @@ class ProfileActivity : AppCompatActivity() {
             loadProfile(userId)
         }
     }
+    private fun loadPurchasedBlueprints() {
 
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val clientId = prefs.getString("clientId", null)
+
+        if (clientId == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        ApiClient.instance.getPurchasedBlueprints(clientId)
+            .enqueue(object : Callback<List<ClientPurchasedBlueprint>> {
+
+                override fun onResponse(
+                    call: Call<List<ClientPurchasedBlueprint>>,
+                    response: Response<List<ClientPurchasedBlueprint>>
+                ) {
+                    if (response.isSuccessful) {
+                        val list = response.body().orEmpty()
+                        rvPurchasedBlueprints.adapter =
+                            ClientPurchasedBlueprintAdapter(list)
+                    } else {
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "Failed to load purchased blueprints",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<List<ClientPurchasedBlueprint>>,
+                    t: Throwable
+                ) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
 
     // -------------------------------------
     // SUBSCRIPTION MODAL
