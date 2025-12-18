@@ -3,14 +3,12 @@ package com.example.blueprintproapps.network
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectProjectTrackerAdapter
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ArchitectProjectTrackerResponse
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,7 +16,6 @@ import retrofit2.Response
 class ArchitectProjectTrackerActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var stepProgress: LinearProgressIndicator
     private var trackerStatus: String? = null
     private var projectId: String = ""
     private var projectStatus: String = ""
@@ -29,7 +26,6 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_architect_project_tracker)
 
         viewPager = findViewById(R.id.stepViewPager)
-//        stepProgress = findViewById(R.id.stepProgress)
 
         projectId = intent.getStringExtra("projectId") ?: ""
         blueprintId = intent.getIntExtra("blueprintId", 0)
@@ -88,12 +84,14 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
         val fragments = listOf(
             ArchitectStepReviewFragment.newInstance(projectId, status, blueprintId, currentFilePath, revisionHistory),
             ArchitectStepComplianceFragment.newInstance(projectTrackId.toString(), blueprintId, status, projectId),
-            ArchitectStepFinalizationFragment.newInstance( projectId = projectId,
+            ArchitectStepFinalizationFragment.newInstance(
+                projectId = projectId,
                 blueprintId = blueprintId,
                 projectTrackId = projectTrackId,
                 status = status,
                 finalBlueprintUrl = currentFilePath,
-                projectStatus = projectStatus)
+                projectStatus = projectStatus
+            )
         )
 
         val adapter = ArchitectProjectTrackerAdapter(this, fragments)
@@ -124,31 +122,12 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
         // Set correct page BEFORE showing it
         viewPager.setCurrentItem(stepIndex, false)
 
-        // Set progress bar
-        stepProgress.progress = when (stepIndex) {
-            0 -> 33
-            1 -> 66
-            2 -> 100
-            else -> 33
-        }
-
-        // Listener for step navigation
+        // Step navigation buttons
         btnReview.setOnClickListener { viewPager.currentItem = 0 }
-        btnCompliance.setOnClickListener {
-            if (btnCompliance.isEnabled) viewPager.currentItem = 1
-        }
-        btnFinalization.setOnClickListener {
-            if (btnFinalization.isEnabled) viewPager.currentItem = 2
-        }
-
-        // Update progress when swiping (if swiping ever enabled)
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                stepProgress.progress = ((position + 1) / 3f * 100).toInt()
-            }
-        })
+        btnCompliance.setOnClickListener { if (btnCompliance.isEnabled) viewPager.currentItem = 1 }
+        btnFinalization.setOnClickListener { if (btnFinalization.isEnabled) viewPager.currentItem = 2 }
     }
+
     fun reloadTrackerData() {
         loadTrackerData(blueprintId)
     }
