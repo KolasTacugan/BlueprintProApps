@@ -1,6 +1,7 @@
 package com.example.blueprintproapps.api
 
 import com.example.blueprintproapps.MainActivity
+import com.example.blueprintproapps.models.ClientPurchasedBlueprint
 import com.example.blueprintproapps.models.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -57,11 +58,8 @@ interface ApiService {
     // CLIENT CALLS
     @GET("api/MobileClient/dashboard")
     fun getDashboard(): Call<DashboardResponse>
-
     @GET("api/MobileClient/marketplace")
     fun getMarketplace(): Call<MarketplaceResponse>
-
-
     @POST("api/MobileClient/AddToCart")
     fun addToCart(@Body request: CartRequest): Call<CartResponse>
     @GET("api/MobileClient/GetCart")
@@ -71,26 +69,26 @@ interface ApiService {
     fun getCartResponse(@Query("clientId") clientId: String): Call<CartResponse>
     @POST("api/MobileClient/RemoveFromCart")
     fun removeFromCart(@Body request: RemoveCartRequest): Call<GenericResponsee>
-
     @POST("api/MobileClient/CreateCheckoutSession")
     fun createCheckoutSession(@Body cart: List<CartItemRequest>): Call<CheckoutResponse>
-
     @POST("api/MobileClient/CompletePurchase")
     fun completePurchase(
         @Body request: CompletePurchaseRequest
     ): Call<GenericResponse>
-
     @GET("api/MobileClient/getClientProjects/{clientId}")
     fun getClientProjects(
         @Path("clientId") clientId: String
     ): Call<List<ClientProjectResponse>>
-
     @GET("api/MobileClient/Matches")
     fun getMatches(
-        @Query("clientId") clientId: String,
-        @Query("query") query: String? = null
-    ): Call<List<MatchResponse>>
+        @Query("clientId") clientId: String?,
+        @Query("query") query: String?
+    ): Call<MatchesApiResponse>
 
+    @POST("api/MobileClient/ExplainMatch")
+    fun explainMatch(
+        @Body request: ExplainMatchRequest
+    ): Call<ExplainMatchResponse>
     // ✅ Send a match request
     @POST("api/MobileClient/RequestMatch")
     fun requestMatch(
@@ -105,19 +103,15 @@ interface ApiService {
     ): Call<MessageListResponse>
     @GET("api/MobileClient/Messages/All")
     fun getAllMessages(@Query("clientId") clientId: String): Call<ConversationListResponse>
-
     @GET("api/MobileClient/AllMatches")
     fun getAllMatches(@Query("clientId") clientId: String): Call<MatchListResponse>
-
     @POST("api/MobileClient/SendMessage")
     fun sendMessage(
         @Body request: MessageRequest
     ): Call<GenericResponse>
-
     // Fetch tracker by blueprint id (GET only)
     @GET("api/MobileClient/ProjectTracker/{blueprintId}")
     fun getProjectTracker(@Path("blueprintId") blueprintId: Int): Call<ClientProjectTrackerResponse>
-
     // Submit rating from client
     @FormUrlEncoded
     @POST("api/MobileClient/SubmitRating")
@@ -125,9 +119,17 @@ interface ApiService {
         @Field("projectId") projectId: String,
         @Field("rating") rating: Int
     ): Call<ClientApiResponse>
-
+    @GET("api/MobileClient/getArchitectProfile/{id}")
+    fun getArchitectProfile(@Path("id") id: String): Call<ArchitectProfileResponse>
+    @GET("api/MobileClient/purchased-blueprints/{userId}")
+    fun getPurchasedBlueprints(
+        @Path("userId") userId: String
+    ): Call<List<ClientPurchasedBlueprint>>
 
     //ARCHITECT CALLS
+    @GET("api/MobileArchitect/getClientProfile/{clientId}")
+    fun getClientProfile(@Path("clientId") clientId: String): Call<ClientProfileResponse>
+
     @GET("api/MobileArchitect/blueprints/{architectId}")
     fun getArchitectBlueprints(
         @Path("architectId") architectId: String
