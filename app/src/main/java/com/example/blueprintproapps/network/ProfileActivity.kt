@@ -40,8 +40,6 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var btnSubscription: Button
     private lateinit var rvPurchasedBlueprints: RecyclerView
 
-    private var credentialsFilePath: String? = null
-
 
     private var credentialsFilePath: String? = null
 
