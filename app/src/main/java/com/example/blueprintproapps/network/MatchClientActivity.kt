@@ -26,6 +26,7 @@ import retrofit2.Response
 import android.widget.ScrollView
 import android.widget.TextView
 import com.example.blueprintproapps.models.MatchesApiResponse
+import com.example.blueprintproapps.models.MatchListItem
 
 class MatchClientActivity : AppCompatActivity() {
 
@@ -170,7 +171,24 @@ class MatchClientActivity : AppCompatActivity() {
 
                         else -> {
                             // ✅ Valid results (includes lacksDetails case)
-                            matchAdapter.submitList(body.matches)
+
+                            // Build combined list of MatchListItem
+                            val listWithFooter = mutableListOf<MatchListItem>()
+                            body.matches.forEach { match ->
+                                listWithFooter.add(MatchListItem.Architect(match))
+                            }
+
+                            // Add footer at the end
+                            listWithFooter.add(
+                                MatchListItem.Footer(
+                                    shown = body.matches.size,
+                                    total = body.totalArchitects
+                                )
+                            )
+
+                            // Submit the combined list to the adapter
+                            matchAdapter.submitList(listWithFooter)
+
                             matchRecyclerView.visibility = View.VISIBLE
 
                             if (body.lacksDetails) {
@@ -184,7 +202,6 @@ class MatchClientActivity : AppCompatActivity() {
                     unlockSearchInput()
                 }
 
-
                 override fun onFailure(
                     call: Call<MatchesApiResponse>,
                     t: Throwable
@@ -194,8 +211,8 @@ class MatchClientActivity : AppCompatActivity() {
                     unlockSearchInput()
                 }
             })
+    }
 
-        }
 
     private fun sendMatchRequest(architectId: String) {
         val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
