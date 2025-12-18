@@ -7,6 +7,9 @@ data class MatchesApiResponse(
     @SerializedName("matches")
     val matches: List<MatchResponse>,
 
+    @SerializedName("totalArchitects")
+    val totalArchitects: Int,
+
     @SerializedName("outOfScope")
     val outOfScope: Boolean,
 

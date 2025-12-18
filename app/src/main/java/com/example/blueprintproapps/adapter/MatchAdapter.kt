@@ -10,116 +10,153 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
+import com.example.blueprintproapps.models.MatchListDiffCallback
+import com.example.blueprintproapps.models.MatchListItem
 import com.example.blueprintproapps.models.MatchResponse
 
-class MatchAdapter(private val onRequestClick: (String) -> Unit,
-                   private val onProfileClick: (MatchResponse) -> Unit) :
-    ListAdapter<MatchResponse, MatchAdapter.MatchViewHolder>(MatchDiffCallback()) {
+class MatchAdapter(
+    private val onRequestClick: (String) -> Unit,
+    private val onProfileClick: (MatchResponse) -> Unit
+) : ListAdapter<MatchListItem, RecyclerView.ViewHolder>(MatchListDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_architect_match, parent, false)
-        return MatchViewHolder(view)
+    companion object {
+        private const val TYPE_MATCH = 0
+        private const val TYPE_FOOTER = 1
     }
 
-    override fun onBindViewHolder(holder: MatchViewHolder, position: Int) {
-        holder.bind(getItem(position))
-
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is MatchListItem.Architect -> TYPE_MATCH
+            is MatchListItem.Footer -> TYPE_FOOTER
+        }
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+
+        return when (viewType) {
+            TYPE_MATCH -> MatchViewHolder(
+                inflater.inflate(R.layout.item_architect_match, parent, false)
+            )
+            else -> FooterViewHolder(
+                inflater.inflate(R.layout.item_ranking_footer, parent, false)
+            )
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is MatchListItem.Architect ->
+                (holder as MatchViewHolder).bind(item.match)
+
+            is MatchListItem.Footer ->
+                (holder as FooterViewHolder).bind(
+                    item.shown,
+                    item.total
+                )
+        }
+    }
+
+    // 🔹 Public submit function (used by Activity)
+    fun submitMatches(matches: List<MatchResponse>, totalArchitects: Int) {
+        val items = mutableListOf<MatchListItem>()
+
+        matches.forEach {
+            items.add(MatchListItem.Architect(it))
+        }
+
+        if (matches.isNotEmpty()) {
+            items.add(
+                MatchListItem.Footer(
+                    shown = matches.size,
+                    total = totalArchitects
+                )
+            )
+        }
+
+        submitList(items)
+    }
+
+    // ===========================
+    // 🔹 MATCH VIEW HOLDER
+    // ===========================
     inner class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         private val tvName: TextView = itemView.findViewById(R.id.architectName)
         private val tvStyle: TextView = itemView.findViewById(R.id.architectStyle)
         private val tvBudget: TextView = itemView.findViewById(R.id.architectBudget)
-        private val btnMatch: Button = itemView.findViewById(R.id.matchButton)
         private val tvSimilarity: TextView = itemView.findViewById(R.id.similarityScore)
+        private val btnMatch: Button = itemView.findViewById(R.id.matchButton)
 
         fun bind(match: MatchResponse) {
 
-            // Basic data
             tvName.text = match.architectName
             tvStyle.text = match.architectStyle ?: "No style specified"
             tvBudget.text = "Budget: ${match.architectBudget ?: "Not specified"}"
 
-            val percent = match.similarityPercentage ?: 0.0
-            tvSimilarity.text = "${percent}%"
+            tvSimilarity.text = "${match.similarityPercentage ?: 0.0}%"
 
             itemView.setOnClickListener {
                 onProfileClick(match)
             }
 
-            // --- MATCH STATUS LOGIC (Same as Web Version) ---
             when (match.realMatchStatus) {
-
-                // No relationship yet → Match (WHITE text)
                 null, "", "None" -> {
                     btnMatch.text = "Match"
                     btnMatch.isEnabled = true
-                    btnMatch.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.white)
-                    )
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.primary)
                     )
+                    btnMatch.setTextColor(Color.WHITE)
                 }
 
-                // Pending → BLACK text
                 "Pending" -> {
                     btnMatch.text = "Pending"
                     btnMatch.isEnabled = false
-                    btnMatch.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.black)
-                    )
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.warning)
                     )
+                    btnMatch.setTextColor(Color.BLACK)
                 }
 
-                // Approved → BLACK text
                 "Approved" -> {
                     btnMatch.text = "Matched"
                     btnMatch.isEnabled = false
-                    btnMatch.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.black)
-                    )
                     btnMatch.setBackgroundColor(
                         ContextCompat.getColor(itemView.context, R.color.success)
                     )
-                }
-
-                else -> {
-                    btnMatch.text = "Match"
-                    btnMatch.isEnabled = true
-                    btnMatch.setTextColor(
-                        ContextCompat.getColor(itemView.context, R.color.white)
-                    )
-                    btnMatch.setBackgroundColor(
-                        ContextCompat.getColor(itemView.context, R.color.primary)
-                    )
+                    btnMatch.setTextColor(Color.BLACK)
                 }
             }
 
-
-            // Request button press
             btnMatch.setOnClickListener {
                 onRequestClick(match.architectId)
 
                 val updated = match.copy(realMatchStatus = "Pending")
-                val updatedList = currentList.toMutableList()
-                updatedList[adapterPosition] = updated
-                submitList(updatedList)
+                val newList = currentList.toMutableList()
+
+                val index = newList.indexOfFirst {
+                    it is MatchListItem.Architect &&
+                            it.match.architectId == match.architectId
+                }
+
+                if (index != -1) {
+                    newList[index] = MatchListItem.Architect(updated)
+                    submitList(newList)
+                }
             }
         }
     }
-}
 
-class MatchDiffCallback : androidx.recyclerview.widget.DiffUtil.ItemCallback<MatchResponse>() {
-    override fun areItemsTheSame(oldItem: MatchResponse, newItem: MatchResponse): Boolean {
-        return oldItem.architectId == newItem.architectId
+    // ===========================
+    // 🔹 FOOTER VIEW HOLDER
+    // ===========================
+    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val footerText: TextView = itemView.findViewById(R.id.footerText)
+
+        fun bind(shown: Int, total: Int) {
+            footerText.text =
+                        "Lower-ranked architects were omitted due to low relevance."
+        }
     }
-
-    override fun areContentsTheSame(oldItem: MatchResponse, newItem: MatchResponse): Boolean {
-        return oldItem == newItem
-    }
 }
-
