@@ -1,58 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
     android:background="@color/light_gray"
     tools:context=".network.ProfileActivity">
 
-    <!-- 🚀 Logout Button - Fixed at Bottom -->
-
+    <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scrollContent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintBottom_toTopOf="@id/btnLogout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Header -->
+            <!-- Title -->
             <TextView
                 android:id="@+id/tvProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.005"
                 android:text="Profile"
-                android:textColor="@color/primary"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/raleway_bold" />
 
             <!-- Profile Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
                 android:background="@drawable/bg_profile_card"
-                android:elevation="2dp"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:elevation="2dp">
 
                 <!-- Avatar -->
                 <FrameLayout
@@ -63,28 +57,26 @@
                         android:id="@+id/imgProfile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/bg_profile_image_border"
-                        android:contentDescription="Profile Picture"
+                        android:src="@drawable/ic_user_placeholder"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_user_placeholder" />
+                        android:background="@drawable/bg_profile_image_border" />
 
                     <TextView
                         android:id="@+id/tvProBadge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
-                        android:background="@drawable/bg_pro_badge"
-                        android:fontFamily="@font/raleway_bold"
-                        android:paddingHorizontal="6dp"
-                        android:paddingVertical="3dp"
                         android:text="PRO"
-                        android:textColor="@color/white"
                         android:textSize="10sp"
                         android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_pro_badge"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="3dp"
                         android:visibility="gone" />
                 </FrameLayout>
 
-                <!-- Info -->
+                <!-- User Info -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -97,76 +89,69 @@
                         android:id="@+id/tvFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:fontFamily="@font/raleway_bold"
-                        android:letterSpacing="0.005"
-                        android:maxLines="2"
                         android:text="John Doe"
-                        android:textColor="@color/primary"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/raleway_bold" />
 
                     <TextView
                         android:id="@+id/tvEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:ellipsize="end"
-                        android:fontFamily="@font/raleway_regular"
-                        android:maxLines="2"
-                        android:text="john.doe@email.com"
+                        android:text="john@email.com"
+                        android:textSize="12sp"
                         android:textColor="@color/dark_gray"
-                        android:textSize="12sp" />
+                        android:fontFamily="@font/raleway_regular" />
 
                     <TextView
                         android:id="@+id/tvPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:fontFamily="@font/raleway_regular"
-                        android:text="+63 912 345 6789"
+                        android:text="+63 9XX XXX XXXX"
+                        android:textSize="12sp"
                         android:textColor="@color/dark_gray"
-                        android:textSize="12sp" />
+                        android:fontFamily="@font/raleway_regular" />
                 </LinearLayout>
 
-                <!-- Edit -->
+                <!-- Edit Profile -->
                 <ImageButton
                     android:id="@+id/btnEditProfile"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/bg_edit_button"
-                    android:contentDescription="Edit Profile"
-                    android:padding="8dp"
                     android:src="@drawable/ic_edit"
+                    android:background="@drawable/bg_edit_button"
+                    android:padding="8dp"
                     app:tint="@color/white" />
             </LinearLayout>
 
-            <!-- Action Buttons (Favorites removed) -->
+            <!-- Subscription Button -->
             <Button
                 android:id="@+id/btnSubscription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_primary_button"
-                android:elevation="2dp"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:paddingVertical="14dp"
                 android:text="Subscription"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:background="@drawable/bg_primary_button"
+                android:fontFamily="@font/raleway_bold"
+                android:paddingVertical="14dp" />
 
+            <!-- Purchased Blueprints -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/raleway_bold"
                 android:text="Purchased Blueprints"
-                android:textColor="@color/primary"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/raleway_bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPurchasedBlueprints"
@@ -180,35 +165,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_profile_card"
-                android:elevation="2dp"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:background="@drawable/bg_profile_card"
+                android:padding="16dp"
+                android:elevation="2dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_bold"
-                    android:letterSpacing="0.005"
                     android:text="Architect Credentials"
-                    android:textColor="@color/primary"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/raleway_bold" />
 
                 <TextView
                     android:id="@+id/tvCredentialsFile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:fontFamily="@font/raleway_regular"
-                    android:lineSpacingExtra="2dp"
                     android:text="N/A"
-                    android:textColor="@color/dark_gray"
                     android:textSize="12sp"
-                    android:breakStrategy="balanced" />
+                    android:textColor="@color/dark_gray"
+                    android:fontFamily="@font/raleway_regular" />
             </LinearLayout>
 
-            <!-- Spacer for bottom padding -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
@@ -216,25 +197,24 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Logout Button -->
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:text="Log Out"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:fontFamily="@font/raleway_bold"
-        app:cornerRadius="12dp"
+        android:textColor="#DC2626"
+        android:backgroundTint="@android:color/white"
         app:strokeColor="#DC2626"
         app:strokeWidth="2dp"
-        android:textColor="#DC2626"
+        app:cornerRadius="12dp"
         app:rippleColor="#FEE2E2"
-        app:backgroundTint="@android:color/white"
         android:paddingVertical="14dp"
-        android:letterSpacing="0.01"
         android:elevation="4dp"
-        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
