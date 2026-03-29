@@ -1,6 +1,8 @@
 package com.example.blueprintproapps.models
 
+import com.google.gson.annotations.SerializedName
+
 data class ExplainMatchRequest(
-    val architectId: String,
-    val query: String
+    @SerializedName("architectId") val architectId: String,  // camelCase
+    @SerializedName("query")       val query: String         // camelCase
 )

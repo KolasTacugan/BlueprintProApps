@@ -128,19 +128,19 @@
             </LinearLayout>
 
             <!-- Subscription Button -->
-            <Button
-                android:id="@+id/btnSubscription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Subscription"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_primary_button"
-                android:fontFamily="@font/raleway_bold"
-                android:paddingVertical="14dp" />
+<!--            <Button-->
+<!--                android:id="@+id/btnSubscription"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:text="Subscription"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:background="@drawable/bg_primary_button"-->
+<!--                android:fontFamily="@font/raleway_bold"-->
+<!--                android:paddingVertical="14dp" />-->
 
             <!-- Purchased Blueprints -->
             <TextView

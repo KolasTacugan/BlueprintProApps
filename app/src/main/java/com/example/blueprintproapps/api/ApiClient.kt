@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
 
     // Emulator localhost URL
-    private const val BASE_URL = "http://10.0.2.2:5169/"
+    private const val BASE_URL = "https://blueprintproweb-production.up.railway.app/"
 
     // Logging interceptor for debugging
     private val logging = HttpLoggingInterceptor().apply {

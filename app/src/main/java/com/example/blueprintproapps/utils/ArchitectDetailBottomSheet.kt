@@ -67,7 +67,6 @@ class ArchitectDetailBottomSheet(
     }
 
     private fun loadMatchExplanation(clientQuery: String) {
-
         ApiClient.instance.explainMatch(
             com.example.blueprintproapps.models.ExplainMatchRequest(
                 architectId = match.architectId,

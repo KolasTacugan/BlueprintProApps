@@ -23,7 +23,6 @@ import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.widget.ScrollView
 import android.widget.TextView
 import com.example.blueprintproapps.models.MatchesApiResponse
 import com.example.blueprintproapps.models.MatchListItem
@@ -39,6 +38,10 @@ class MatchClientActivity : AppCompatActivity() {
     private lateinit var aiFeedbackContainer: LinearLayout
     private lateinit var aiFeedbackText: TextView
 
+    // ← Stores the last submitted query so it survives
+    //   lockSearchInput() and is always available when
+    //   the user taps an architect card.
+    private var lastQuery: String = ""
 
     private var hasSearched = false
 
@@ -48,43 +51,42 @@ class MatchClientActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { v, insets ->
             val topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            v.setPadding(
-                v.paddingLeft,
-                topInset,
-                v.paddingRight,
-                v.paddingBottom
-            )
+            v.setPadding(v.paddingLeft, topInset, v.paddingRight, v.paddingBottom)
             insets
         }
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-        root = findViewById(R.id.root)
-        appLogo = findViewById(R.id.appLogo)
-        clientPrompt = findViewById(R.id.clientPrompt)
-        loadingSection = findViewById(R.id.loadingSection)
-        matchRecyclerView = findViewById(R.id.matchRecyclerView)
-
+        root               = findViewById(R.id.root)
+        appLogo            = findViewById(R.id.appLogo)
+        clientPrompt       = findViewById(R.id.clientPrompt)
+        loadingSection     = findViewById(R.id.loadingSection)
+        matchRecyclerView  = findViewById(R.id.matchRecyclerView)
         aiFeedbackContainer = findViewById(R.id.aiFeedbackContainer)
-        aiFeedbackText = findViewById(R.id.aiFeedbackText)
-
+        aiFeedbackText     = findViewById(R.id.aiFeedbackText)
 
         matchRecyclerView.layoutManager = LinearLayoutManager(this)
+
         matchAdapter = MatchAdapter(
             onRequestClick = { architectId ->
                 sendMatchRequest(architectId)
             },
-            onProfileClick = { ArchitectDetailBottomSheet(
-                match = it,
-                clientQuery = clientPrompt.text.toString()
-            ).show(supportFragmentManager, "ArchitectDetail")
+            onProfileClick = { match ->
+                // ← Use lastQuery, not clientPrompt.text, which may be
+                //   empty or inaccessible after lockSearchInput()
+                ArchitectDetailBottomSheet(
+                    match = match,
+                    clientQuery = lastQuery
+                ).show(supportFragmentManager, "ArchitectDetail")
             }
         )
+
         matchRecyclerView.adapter = matchAdapter
 
         clientPrompt.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+                (event?.keyCode == KeyEvent.KEYCODE_ENTER &&
+                        event.action == KeyEvent.ACTION_DOWN)
             ) {
                 val query = clientPrompt.text.toString().trim()
                 if (query.isNotEmpty()) {
@@ -99,39 +101,34 @@ class MatchClientActivity : AppCompatActivity() {
     private fun animateToSearchState() {
         hasSearched = true
 
-        findViewById<View>(R.id.searchTitle).visibility = View.GONE
+        findViewById<View>(R.id.searchTitle).visibility    = View.GONE
         findViewById<View>(R.id.searchSubtitle).visibility = View.GONE
 
         val set = ConstraintSet()
         set.clone(root)
 
-        // Logo: force top-left
         set.clear(appLogo.id, ConstraintSet.BOTTOM)
         set.clear(appLogo.id, ConstraintSet.END)
-
-        set.connect(appLogo.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 34)
+        set.connect(appLogo.id, ConstraintSet.TOP,   ConstraintSet.PARENT_ID, ConstraintSet.TOP,   34)
         set.connect(appLogo.id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 10)
-
-        set.constrainWidth(appLogo.id, 86)
+        set.constrainWidth(appLogo.id,  86)
         set.constrainHeight(appLogo.id, 86)
 
-        // Search bar beside logo
         set.clear(clientPrompt.id, ConstraintSet.TOP)
         set.clear(clientPrompt.id, ConstraintSet.START)
-
-        set.connect(clientPrompt.id, ConstraintSet.START, appLogo.id, ConstraintSet.END, 12)
-        set.connect(clientPrompt.id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 12)
-        set.connect(clientPrompt.id, ConstraintSet.TOP, appLogo.id, ConstraintSet.TOP)
-        set.connect(clientPrompt.id, ConstraintSet.BOTTOM, appLogo.id, ConstraintSet.BOTTOM)
+        set.connect(clientPrompt.id, ConstraintSet.START,  appLogo.id,            ConstraintSet.END,    12)
+        set.connect(clientPrompt.id, ConstraintSet.END,    ConstraintSet.PARENT_ID, ConstraintSet.END,  12)
+        set.connect(clientPrompt.id, ConstraintSet.TOP,    appLogo.id,            ConstraintSet.TOP)
+        set.connect(clientPrompt.id, ConstraintSet.BOTTOM, appLogo.id,            ConstraintSet.BOTTOM)
 
         set.applyTo(root)
     }
 
     private fun performSearch(query: String) {
+        lastQuery = query // ← save before locking input
         lockSearchInput()
 
-        // Show loading UI
-        loadingSection.visibility = View.VISIBLE
+        loadingSection.visibility    = View.VISIBLE
         matchRecyclerView.visibility = View.GONE
 
         val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
@@ -152,15 +149,15 @@ class MatchClientActivity : AppCompatActivity() {
                         return
                     }
 
-                    // Reset UI
                     aiFeedbackContainer.visibility = View.GONE
-                    matchRecyclerView.visibility = View.GONE
+                    matchRecyclerView.visibility   = View.GONE
 
                     when {
                         body.outOfScope -> {
                             aiFeedbackContainer.visibility = View.VISIBLE
                             aiFeedbackText.text =
-                                "This request seems unrelated to architecture. Try describing a building or space you want to design."
+                                "This request seems unrelated to architecture. " +
+                                        "Try describing a building or space you want to design."
                         }
 
                         body.showFeedback -> {
@@ -170,32 +167,16 @@ class MatchClientActivity : AppCompatActivity() {
                         }
 
                         else -> {
-                            // ✅ Valid results (includes lacksDetails case)
-
-                            // Build combined list of MatchListItem
                             val listWithFooter = mutableListOf<MatchListItem>()
-                            body.matches.forEach { match ->
-                                listWithFooter.add(MatchListItem.Architect(match))
-                            }
-
-                            // Add footer at the end
+                            body.matches.forEach { listWithFooter.add(MatchListItem.Architect(it)) }
                             listWithFooter.add(
                                 MatchListItem.Footer(
                                     shown = body.matches.size,
                                     total = body.totalArchitects
                                 )
                             )
-
-                            // Submit the combined list to the adapter
                             matchAdapter.submitList(listWithFooter)
-
                             matchRecyclerView.visibility = View.VISIBLE
-
-                            if (body.lacksDetails) {
-                                aiFeedbackContainer.visibility = View.VISIBLE
-                                aiFeedbackText.text =
-                                    "You’ll get better matches if you add more details like style, budget, or location."
-                            }
                         }
                     }
 
@@ -207,47 +188,40 @@ class MatchClientActivity : AppCompatActivity() {
                     t: Throwable
                 ) {
                     loadingSection.visibility = View.GONE
-                    Log.e("MatchClientActivity", "Error", t)
+                    Log.e("MatchClientActivity", "Search failed", t)
                     unlockSearchInput()
                 }
             })
     }
 
-
     private fun sendMatchRequest(architectId: String) {
         val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
             .getString("clientId", "") ?: ""
-
         if (clientId.isEmpty()) return
 
         ApiClient.instance.requestMatch(
             com.example.blueprintproapps.models.MatchRequest(architectId, clientId)
         ).enqueue(object : Callback<com.example.blueprintproapps.models.GenericResponse> {
-
             override fun onResponse(
                 call: Call<com.example.blueprintproapps.models.GenericResponse>,
                 response: Response<com.example.blueprintproapps.models.GenericResponse>
-            ) {
-                if (response.isSuccessful) {
-                    // Optional: refresh list so Pending comes from backend
-                    // performSearch(clientPrompt.text.toString())
-                }
-            }
+            ) { }
 
-            override fun onFailure(call: Call<com.example.blueprintproapps.models.GenericResponse>, t: Throwable) {
+            override fun onFailure(
+                call: Call<com.example.blueprintproapps.models.GenericResponse>,
+                t: Throwable
+            ) {
                 Log.e("MatchClientActivity", "Match request failed", t)
             }
         })
     }
 
     private fun lockSearchInput() {
-        // Remove focus and hide keyboard
         root.requestFocus()
-
         clientPrompt.clearFocus()
-        clientPrompt.isFocusable = false
+        clientPrompt.isFocusable          = false
         clientPrompt.isFocusableInTouchMode = false
-        clientPrompt.isCursorVisible = false
+        clientPrompt.isCursorVisible      = false
 
         val imm = getSystemService(INPUT_METHOD_SERVICE)
                 as android.view.inputmethod.InputMethodManager
@@ -255,11 +229,8 @@ class MatchClientActivity : AppCompatActivity() {
     }
 
     private fun unlockSearchInput() {
-        // Keep it unfocused, but allow tapping again
-        clientPrompt.isFocusable = true
+        clientPrompt.isFocusable          = true
         clientPrompt.isFocusableInTouchMode = true
-        clientPrompt.isCursorVisible = true
+        clientPrompt.isCursorVisible      = true
     }
-
-
 }
