@@ -82,7 +82,8 @@ interface ApiService {
     @GET("api/MobileClient/Matches")
     fun getMatches(
         @Query("clientId") clientId: String?,
-        @Query("query") query: String?
+        @Query("query") query: String?,
+        @Query("clarifications") clarifications: String? = null
     ): Call<MatchesApiResponse>
 
     @POST("api/MobileClient/ExplainMatch")
