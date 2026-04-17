@@ -111,6 +111,7 @@ class MatchClientActivity : AppCompatActivity() {
         if (query.isNotEmpty()) {
             if (!hasSearched) animateToSearchState()
             performSearch(query)
+            clientPrompt.setText("")
         }
     }
 

@@ -1,168 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <!-- Header Section with Icon -->
+        <!-- ── Header row: avatar + name + badge ─────────────────────────── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp">
 
-            <!-- Icon Container -->
+            <!-- Circular avatar with initial letter -->
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/card_modern"
-                android:backgroundTint="#E8F0FE"
-                android:layout_marginEnd="16dp">
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_circle_primary"
+                android:layout_marginEnd="14dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_menu_myplaces"
-                    app:tint="#0D3C80" />
+                <TextView
+                    android:id="@+id/architectAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/raleway_bold"/>
             </FrameLayout>
 
-            <!-- Name + Similarity Row -->
+            <!-- Name + meta -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_weight="1"
-                android:gravity="center_vertical">
+                android:orientation="vertical">
 
-                <!-- Architect Name -->
-                <TextView
-                    android:id="@+id/architectName"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="John Santos"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#0D3C80"
-                    android:fontFamily="@font/raleway_bold"
-                    android:letterSpacing="0.01"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/architectName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#091635"
+                        android:fontFamily="@font/raleway_bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                    <!-- Similarity badge — color set programmatically in adapter -->
+                    <TextView
+                        android:id="@+id/similarityScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/raleway_bold"
+                        android:background="@drawable/similarity_badge"/>
+                </LinearLayout>
+
+                <!-- Style -->
+                <TextView
+                    android:id="@+id/architectStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
                     android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:ellipsize="end"/>
 
-                <!-- ⭐ Similarity Percentage Badge -->
+                <!-- Budget -->
                 <TextView
-                    android:id="@+id/similarityScore"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/architectBudget"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:text="82%"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#0D3C80"
-                    android:fontFamily="@font/raleway_bold"
-                    android:background="@drawable/similarity_badge"
-                    android:layout_marginStart="8dp" />
+                    android:layout_marginTop="2dp"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280"
+                    android:fontFamily="@font/raleway_regular"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
             </LinearLayout>
-
         </LinearLayout>
 
-
-        <!-- Style Info -->
-        <LinearLayout
+        <!-- ── Divider ───────────────────────────────────────────────────── -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_height="1dp"
+            android:background="#F0F4F8"
+            android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Style: "
-                android:textSize="14sp"
-                android:textColor="#6B7280"
-                android:fontFamily="@font/raleway_regular"
-                android:letterSpacing="0.01" />
-
-            <TextView
-                android:id="@+id/architectStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Modern / Minimalist"
-                android:textSize="14sp"
-                android:textColor="#091635"
-                android:fontFamily="@font/raleway_regular"
-                android:letterSpacing="0.01"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-        </LinearLayout>
-
-        <!-- Budget Info -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Budget: "
-                android:textSize="14sp"
-                android:textColor="#6B7280"
-                android:fontFamily="@font/raleway_regular"
-                android:letterSpacing="0.01" />
-
-            <TextView
-                android:id="@+id/architectBudget"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="₱300k - ₱500k"
-                android:textSize="14sp"
-                android:textColor="#091635"
-                android:fontFamily="@font/raleway_regular"
-                android:letterSpacing="0.01"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-        </LinearLayout>
-
-        <!-- Match Button -->
+        <!-- ── Match button ───────────────────────────────────────────────── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/matchButton"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="44dp"
             android:text="Match"
             android:textAllCaps="false"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:fontFamily="@font/raleway_bold"
-            android:letterSpacing="0.01"
             android:textColor="@android:color/white"
-            app:cornerRadius="12dp"
-            app:backgroundTint="#0D3C80"
-            app:rippleColor="#1E40AF" />
+            app:cornerRadius="10dp"
+            app:backgroundTint="#0A3D62"
+            app:rippleColor="#1E5276"/>
 
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>
