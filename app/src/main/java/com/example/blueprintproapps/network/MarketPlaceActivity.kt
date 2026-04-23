@@ -29,9 +29,8 @@ class MarketPlaceActivity : AppCompatActivity() {
     private val blueprintList = mutableListOf<BlueprintResponse>()
     private val displayedList = mutableListOf<BlueprintResponse>()
     // ✅ Cart badge elements
-    private lateinit var cartCountText: TextView
+    private lateinit var cartBtn: com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     private var cartItemCount = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,22 +45,21 @@ class MarketPlaceActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.blueprintRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        // ✅ Initialize cart badge
-        cartCountText = findViewById(R.id.cartCount)
-        cartCountText.text = cartItemCount.toString()
+        // ✅ Initialize cart button
+        cartBtn = findViewById(R.id.cartBtn)
+        cartBtn.text = "Cart ($cartItemCount)"
 
         // ✅ Initialize adapter with cart update listener
         adapter = BlueprintAdapter(displayedList, this, object : BlueprintAdapter.OnCartUpdateListener {
             override fun onItemAdded() {
                 cartItemCount++
-                cartCountText.text = cartItemCount.toString()
+                cartBtn.text = "Cart ($cartItemCount)"
             }
         })
 
         recyclerView.adapter = adapter
 
-        val cartIcon: ImageView = findViewById(R.id.cartIcon)
-        cartIcon.setOnClickListener {
+        cartBtn.setOnClickListener {
             val cartBottomSheet = CartBottomSheet()
 
             cartBottomSheet.onCartClosed = {
@@ -158,7 +156,7 @@ class MarketPlaceActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val cartItems = response.body() ?: emptyList()
                     cartItemCount = cartItems.size
-                    cartCountText.text = cartItemCount.toString()
+                    cartBtn.text = "Cart ($cartItemCount)"
                     Log.d("CartCount", "Cart count updated: $cartItemCount")
 
                     // 🟩 Mark items already in cart (no renames, works fine)

@@ -7,144 +7,155 @@
     android:layout_height="match_parent"
     tools:context=".network.LoginActivity">
 
-    <!-- Fullscreen Background Image -->
+    <!-- Immersive Background -->
     <ImageView
-        android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bldg_bg"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/app_name" />
+        android:src="@drawable/bg_auth"
+        android:scaleType="centerCrop" />
 
-    <!-- White Rounded Card -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_overlay" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         android:overScrollMode="never">
 
         <LinearLayout
-            android:id="@+id/cardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/rounded_white_card"
-            android:elevation="16dp"
             android:padding="24dp"
-            android:clipToOutline="true"
-            android:layout_marginBottom="24dp">
+            android:gravity="center">
 
-            <!-- Header -->
-            <LinearLayout
-                android:id="@+id/headerLayout"
+            <!-- Logo & Header -->
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/bpp_logo"
+                app:tint="?attr/colorOnPrimary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BlueprintPro"
+                android:textAppearance="?attr/textAppearanceHeadlineLarge"
+                android:textColor="?attr/colorOnPrimary"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Design your legacy"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnPrimary"
+                android:alpha="0.8"
+                android:layout_marginTop="4dp" />
+
+            <!-- Login Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="24dp">
+                android:layout_marginTop="48dp"
+                style="?attr/materialCardViewElevatedStyle"
+                app:cardBackgroundColor="#E6FFFFFF"> <!-- Glassmorphism effect -->
 
-                <TextView
-                    android:id="@+id/loginTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign In"
-                    android:textSize="26sp"
-                    android:textColor="#091635"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/raleway_bold" />
-
-                <TextView
-                    android:id="@+id/loginSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Welcome to BlueprintPro"
-                    android:textSize="15sp"
-                    android:textColor="#6c757d"
-                    android:fontFamily="@font/raleway_regular"
-                    android:layout_marginTop="6dp" />
-            </LinearLayout>
-
-            <!-- Email Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/emailInput"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:fontFamily="@font/raleway_regular" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="vertical"
+                    android:padding="28dp">
 
-            <!-- Password Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="8dp">
+                    <TextView
+                        android:id="@+id/loginTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sign In"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passwordInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:fontFamily="@font/raleway_regular" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:hint="Email"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-            <!-- Forgot Password -->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Password"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        app:passwordToggleEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/rememberMe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Remember me"
+                            android:textAppearance="?attr/textAppearanceLabelLarge" />
+
+                        <TextView
+                            android:id="@+id/forgotPassword"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="Forgot Password?"
+                            android:textAppearance="?attr/textAppearanceLabelLarge"
+                            android:textColor="?attr/colorPrimary"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </RelativeLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Sign In" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <TextView
-                android:id="@+id/forgotPassword"
+                android:id="@+id/tvRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot password?"
-                android:textColor="#0D3C80"
-                android:textSize="14sp"
-                android:layout_gravity="end"
-                android:fontFamily="@font/raleway_regular"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Remember Me -->
-            <CheckBox
-                android:id="@+id/rememberMe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remember Me"
-                android:fontFamily="@font/raleway_regular"
-                android:textColor="#333333"
-                android:layout_marginBottom="24dp"/>
-
-            <!-- Login Button -->
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                android:textColor="@android:color/white"
-                android:background="@drawable/gradient_button"
-                android:paddingVertical="12dp"
-                android:fontFamily="@font/raleway_bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Footer -->
-            <TextView
-                android:id="@+id/registerLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Don't have an account? Sign up"
-                android:textColor="#0D3C80"
-                android:textSize="14sp"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="@font/raleway_regular"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginTop="24dp"
+                android:text="Don't have an account? Sign Up"
+                android:textColor="?attr/colorOnPrimary"
+                android:textAppearance="?attr/textAppearanceLabelLarge" />
 
         </LinearLayout>
     </ScrollView>
-
 </FrameLayout>

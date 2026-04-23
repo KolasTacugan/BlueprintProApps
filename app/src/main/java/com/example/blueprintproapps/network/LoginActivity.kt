@@ -51,11 +51,22 @@ class  LoginActivity : AppCompatActivity() {
             insets
         }
 
-        val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
-        val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
-        val loginButton = findViewById<Button>(R.id.loginButton)
-        val rememberMe = findViewById<CheckBox>(R.id.rememberMe)
-        val registerLink = findViewById<TextView>(R.id.registerLink)
+        val emailInput = findViewById<TextInputEditText>(R.id.edtEmail)
+        val passwordInput = findViewById<TextInputEditText>(R.id.edtPassword)
+        val emailLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.layoutEmail)
+        val passwordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.layoutPassword)
+        
+        // Iconify migration
+        emailLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_email)
+            .colorRes(com.google.android.material.R.color.material_dynamic_primary50)
+            .sizeDp(24)
+        passwordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock)
+            .colorRes(com.google.android.material.R.color.material_dynamic_primary50)
+            .sizeDp(24)
+
+        val loginButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnLogin)
+        val rememberMe = findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.rememberMe)
+        val registerLink = findViewById<TextView>(R.id.tvRegister)
         val forgotPassword = findViewById<TextView>(R.id.forgotPassword)
 
         // Forgot Password
@@ -74,10 +85,22 @@ class  LoginActivity : AppCompatActivity() {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            emailLayout.error = null
+            passwordLayout.error = null
+
+            var isValid = true
+
+            if (email.isEmpty()) {
+                emailLayout.error = "Email is required"
+                isValid = false
             }
+
+            if (password.isEmpty()) {
+                passwordLayout.error = "Password is required"
+                isValid = false
+            }
+
+            if (!isValid) return@setOnClickListener
 
             val request = LoginRequest(email = email, password = password)
 

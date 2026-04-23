@@ -41,6 +41,16 @@ android {
         compose = true
         viewBinding = true
     }
+
+    sourceSets {
+        getByName("main") {
+            res.srcDirs(
+                "src/main/res",
+                "src/main/res-icons",
+                "src/main/res-backgrounds"
+            )
+        }
+    }
 }
 
 dependencies {
@@ -52,6 +62,10 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Iconify
+    implementation("com.joanzapata.iconify:android-iconify-material:2.2.2")
+    implementation("com.joanzapata.iconify:android-iconify-fontawesome:2.2.2")
 
 
     implementation("androidx.activity:activity-ktx:1.7.2")

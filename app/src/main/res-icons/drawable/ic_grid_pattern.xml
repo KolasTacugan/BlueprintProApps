@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <!-- Main Grid Lines -->
+    <path
+        android:pathData="M 0,0 L 40,0 M 0,0 L 0,40"
+        android:strokeColor="#0A3D62"
+        android:strokeAlpha="0.03"
+        android:strokeWidth="1"/>
+    <!-- Subtle Sub-grid Lines -->
+    <path
+        android:pathData="M 20,0 L 20,40 M 0,20 L 40,20"
+        android:strokeColor="#0A3D62"
+        android:strokeAlpha="0.015"
+        android:strokeWidth="0.5"/>
+</vector>

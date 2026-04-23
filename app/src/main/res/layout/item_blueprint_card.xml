@@ -5,10 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp"
-    android:background="@android:color/white">
+    style="?attr/materialCardViewElevatedStyle">
 
     <LinearLayout
         android:orientation="vertical"
@@ -29,22 +26,25 @@
                 android:contentDescription="Blueprint Image" />
 
             <!-- Price Badge Overlay -->
-            <TextView
-                android:id="@+id/blueprintPrice"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
-                android:layout_margin="10dp"
-                android:text="₱0"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:fontFamily="@font/raleway_bold"
-                android:background="@drawable/card_modern"
-                android:backgroundTint="#0D3C80"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
-                android:elevation="4dp" />
+                android:layout_margin="8dp"
+                style="?attr/materialCardViewFilledStyle"
+                app:cardBackgroundColor="?attr/colorPrimary">
+                
+                <TextView
+                    android:id="@+id/blueprintPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱0"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp" />
+            </com.google.android.material.card.MaterialCardView>
 
         </FrameLayout>
 
@@ -53,54 +53,39 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:padding="16dp">
 
             <!-- Blueprint Name -->
             <TextView
                 android:id="@+id/blueprintName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Blueprint Name"
-                android:textSize="15sp"
+                android:text="Modern Villa"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"
-                android:textColor="#091635"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.005"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:lineSpacingExtra="2dp" />
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <!-- Blueprint Description -->
             <TextView
                 android:id="@+id/blueprintDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Short description"
-                android:textSize="12sp"
-                android:textColor="#6B7280"
-                android:fontFamily="@font/raleway_regular"
+                android:text="Luxurious 4-bedroom villa"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_marginTop="4dp"
                 android:maxLines="2"
-                android:ellipsize="end"
-                android:lineSpacingExtra="2dp" />
+                android:ellipsize="end" />
 
             <!-- Add to Cart Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addToCartBtn"
-                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
+                android:layout_height="wrap_content"
                 android:text="Add to Cart"
-                android:textAllCaps="false"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:textColor="@android:color/white"
-                app:cornerRadius="10dp"
-                app:backgroundTint="#0D3C80"
-                app:rippleColor="#1E40AF"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="12dp" />
 
         </LinearLayout>
     </LinearLayout>

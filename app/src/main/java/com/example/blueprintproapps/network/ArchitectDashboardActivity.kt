@@ -33,8 +33,9 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         }
 
         // ✅ FIXED: match XML view types
-        val forMarketplaceBtn = findViewById<CardView>(R.id.forMarketplaceBtn)
-        val forProjectBtn = findViewById<CardView>(R.id.forProjectBtn)
+        val forMarketplaceBtn = findViewById<MaterialCardView>(R.id.forMarketplaceBtn)
+        val forProjectBtn = findViewById<MaterialCardView>(R.id.forProjectBtn)
+
 
         val chatIcon = findViewById<ImageView>(R.id.chatIcon)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)

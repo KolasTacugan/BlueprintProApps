@@ -34,9 +34,19 @@ class ChangePasswordActivity : AppCompatActivity() {
         val emailInput = findViewById<TextInputEditText>(R.id.etEmail)
         val newPasswordInput = findViewById<TextInputEditText>(R.id.etNewPassword)
         val confirmPasswordInput = findViewById<TextInputEditText>(R.id.etConfirmPassword)
-        val verifyButton = findViewById<Button>(R.id.btnVerifyEmail)
-        val changeButton = findViewById<Button>(R.id.btnChangePassword)
+        val verifyButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnVerifyEmail)
+        val changeButton = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnChangePassword)
         val passwordSection = findViewById<LinearLayout>(R.id.passwordSection)
+
+        val emailLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.emailLayout)
+        val newPasswordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.newPasswordLayout)
+        val confirmPasswordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.confirmPasswordLayout)
+
+        // Iconify migration
+        val iconColor = com.google.android.material.R.color.material_dynamic_primary50
+        emailLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_email).colorRes(iconColor).sizeDp(24)
+        newPasswordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
+        confirmPasswordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
 
         // Step 1️⃣: Verify email
         verifyButton.setOnClickListener {

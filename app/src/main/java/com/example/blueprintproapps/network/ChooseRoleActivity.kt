@@ -24,9 +24,16 @@ class ChooseRoleActivity : AppCompatActivity() {
             insets
         }
 
-        val clientButton = findViewById<LinearLayout>(R.id.clientButton)
-        val architectButton = findViewById<LinearLayout>(R.id.architectButton)
-        val backToLogin = findViewById<TextView>(R.id.backToLogin)
+        val clientButton = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnClient)
+        val architectButton = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnArchitect)
+        val ivClientIcon = findViewById<android.widget.ImageView>(R.id.ivClientIcon)
+        val ivArchitectIcon = findViewById<android.widget.ImageView>(R.id.ivArchitectIcon)
+
+        // Iconify migration
+        ivClientIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(com.google.android.material.R.color.material_dynamic_primary50))
+        ivArchitectIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_account_balance).colorRes(com.google.android.material.R.color.material_dynamic_primary50))
+
+        val backToLogin = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnBack)
 
         val sharedPrefs: SharedPreferences = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
 

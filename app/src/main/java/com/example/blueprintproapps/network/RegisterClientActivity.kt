@@ -39,6 +39,23 @@ class RegisterClientActivity : AppCompatActivity() {
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
         val confirmPasswordInput = findViewById<TextInputEditText>(R.id.confirmPasswordInput)
+        // ✅ References to UI Layouts for Validation
+        val firstNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.firstNameLayout)
+        val lastNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.lastNameLayout)
+        val phoneLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.phoneLayout)
+        val emailLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.emailLayout)
+        val passwordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.passwordLayout)
+        val confirmPasswordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.confirmPasswordLayout)
+
+        // Iconify migration
+        val iconColor = com.google.android.material.R.color.material_dynamic_primary50
+        firstNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
+        lastNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
+        phoneLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_phone).colorRes(iconColor).sizeDp(24)
+        emailLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_email).colorRes(iconColor).sizeDp(24)
+        passwordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
+        confirmPasswordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
+
         val registerButton = findViewById<MaterialButton>(R.id.registerButton)
         val loginLink = findViewById<TextView>(R.id.loginLink)
 
@@ -53,18 +70,32 @@ class RegisterClientActivity : AppCompatActivity() {
             val password = passwordInput.text.toString().trim()
             val confirmPassword = confirmPasswordInput.text.toString().trim()
 
-            // ✅ Simple Validation
-            if (firstName.isEmpty() || lastName.isEmpty() || phone.isEmpty() ||
-                email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()
-            ) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            // ✅ Reset errors
+            firstNameLayout.error = null
+            lastNameLayout.error = null
+            phoneLayout.error = null
+            emailLayout.error = null
+            passwordLayout.error = null
+            confirmPasswordLayout.error = null
+
+            var isValid = true
+
+            // ✅ Validation
+            if (firstName.isEmpty()) { firstNameLayout.error = "Required"; isValid = false }
+            if (lastName.isEmpty()) { lastNameLayout.error = "Required"; isValid = false }
+            if (phone.isEmpty()) { phoneLayout.error = "Required"; isValid = false }
+            if (email.isEmpty()) { emailLayout.error = "Required"; isValid = false }
+            if (password.isEmpty()) { passwordLayout.error = "Required"; isValid = false }
 
             if (password != confirmPassword) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                confirmPasswordLayout.error = "Passwords do not match"
+                isValid = false
+            } else if (confirmPassword.isEmpty()) {
+                confirmPasswordLayout.error = "Required"
+                isValid = false
             }
+
+            if (!isValid) return@setOnClickListener
 
             // ✅ Create register request
             val request = RegisterRequest(
@@ -76,9 +107,15 @@ class RegisterClientActivity : AppCompatActivity() {
                 role = role ?: "Client"
             )
 
+            registerButton.isEnabled = false
+            registerButton.text = "Registering..."
+
             // ✅ Call API
             ApiClient.instance.register(request).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                    registerButton.isEnabled = true
+                    registerButton.text = "Register"
+                    
                     if (response.isSuccessful) {
                         Toast.makeText(
                             this@RegisterClientActivity,
@@ -95,6 +132,8 @@ class RegisterClientActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                    registerButton.isEnabled = true
+                    registerButton.text = "Register"
                     Toast.makeText(this@RegisterClientActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })

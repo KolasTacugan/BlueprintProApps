@@ -32,8 +32,9 @@ class ClientDashboardActivity : AppCompatActivity() {
         }
 
         // ✅ FIXED view types (must match XML)
-        val findArchitect = findViewById<CardView>(R.id.findArchitect)
+        val findArchitect = findViewById<MaterialCardView>(R.id.findArchitect)
         val marketplaceBtn = findViewById<MaterialCardView>(R.id.marketplaceBtn)
+
 
         val chatIcon = findViewById<ImageView>(R.id.chatIcon)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)

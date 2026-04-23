@@ -42,6 +42,25 @@ class RegisterArchitectActivity : AppCompatActivity() {
         val licenseNoInput = findViewById<TextInputEditText>(R.id.licenseNoInput)
         val phoneNumber = findViewById<TextInputEditText>(R.id.phoneNumberInput)
 
+        // ✅ Layout References for Validation
+        val firstNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.firstNameLayout)
+        val lastNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.lastNameLayout)
+        val emailLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.emailLayout)
+        val passwordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.passwordLayout)
+        val confirmPasswordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.confirmPasswordLayout)
+        val licenseNoLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.licenseNoLayout)
+        val phoneNumberLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.phoneNumberLayout)
+
+        // Iconify migration
+        val iconColor = com.google.android.material.R.color.material_dynamic_primary50
+        firstNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
+        lastNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
+        emailLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_email).colorRes(iconColor).sizeDp(24)
+        passwordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
+        confirmPasswordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
+        licenseNoLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_assignment_ind).colorRes(iconColor).sizeDp(24)
+        phoneNumberLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_phone).colorRes(iconColor).sizeDp(24)
+
         val spinnerStyle = findViewById<Spinner>(R.id.spinnerStyle)
         val spinnerBudget = findViewById<Spinner>(R.id.spinnerBudget)
         val spinnerLocation = findViewById<Spinner>(R.id.spinnerLocation)
@@ -68,19 +87,34 @@ class RegisterArchitectActivity : AppCompatActivity() {
             val licenseNo = licenseNoInput.text.toString().trim()
             val phone = phoneNumber.text.toString().trim()
 
+            // ✅ Reset errors
+            firstNameLayout.error = null
+            lastNameLayout.error = null
+            emailLayout.error = null
+            passwordLayout.error = null
+            confirmPasswordLayout.error = null
+            licenseNoLayout.error = null
+            phoneNumberLayout.error = null
+
+            var isValid = true
 
             // Validation
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
-                phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || licenseNo.isEmpty()
-            ){
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (firstName.isEmpty()) { firstNameLayout.error = "Required"; isValid = false }
+            if (lastName.isEmpty()) { lastNameLayout.error = "Required"; isValid = false }
+            if (email.isEmpty()) { emailLayout.error = "Required"; isValid = false }
+            if (phone.isEmpty()) { phoneNumberLayout.error = "Required"; isValid = false }
+            if (licenseNo.isEmpty()) { licenseNoLayout.error = "Required"; isValid = false }
+            if (password.isEmpty()) { passwordLayout.error = "Required"; isValid = false }
 
             if (password != confirmPassword) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                confirmPasswordLayout.error = "Passwords do not match"
+                isValid = false
+            } else if (confirmPassword.isEmpty()) {
+                confirmPasswordLayout.error = "Required"
+                isValid = false
             }
+
+            if (!isValid) return@setOnClickListener
 
             // ✅ Create request
             val request = RegisterRequest(

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,145 +7,155 @@
     android:layout_height="match_parent"
     tools:context=".network.ChooseRoleActivity">
 
-    <!-- Fullscreen background image (not stretched) -->
+    <!-- Immersive Background -->
     <ImageView
-        android:id="@+id/bldg_bg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/bldg_bg"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_auth"
+        android:scaleType="centerCrop" />
 
-    <!-- Semi-transparent overlay for readability -->
     <View
-        android:id="@+id/dimOverlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#FFFFFF"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_overlay" />
 
-    <!-- Modern white card container -->
     <LinearLayout
-        android:id="@+id/chooseRoleContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
         android:padding="24dp"
-        android:background="@drawable/bg_white_card"
-        android:elevation="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="32dp">
+        android:gravity="center">
 
-        <!-- Title -->
         <TextView
-            android:id="@+id/titleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Choose Your Path"
-            android:textColor="#091635"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/raleway_bold"
-            android:gravity="center"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Subtitle -->
-        <TextView
-            android:id="@+id/subtitleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select your account type to get started"
-            android:textColor="#6C757D"
-            android:textSize="14sp"
-            android:fontFamily="@font/raleway_regular"
-            android:gravity="center"
-            android:layout_marginBottom="32dp"/>
-
-        <!-- Client Button -->
-        <LinearLayout
-            android:id="@+id/clientButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp"
-            android:background="@drawable/gradient_button"
-            android:layout_marginBottom="16dp"
-            android:layout_marginHorizontal="8dp"
-            android:clipToOutline="true"
-            android:elevation="2dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I'm a Client"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/raleway_bold"
-                android:textColor="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Looking for architectural services"
-                android:textSize="13sp"
-                android:fontFamily="@font/raleway_extralight"
-                android:textColor="@android:color/white"/>
-        </LinearLayout>
-
-        <!-- Architect Button -->
-        <LinearLayout
-            android:id="@+id/architectButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp"
-            android:background="@drawable/gradient_button"
-            android:layout_marginBottom="24dp"
-            android:layout_marginHorizontal="8dp"
-            android:clipToOutline="true"
-            android:elevation="2dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I'm an Architect"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/raleway_bold"
-                android:textColor="@android:color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Providing architectural services"
-                android:textSize="13sp"
-                android:fontFamily="@font/raleway_extralight"
-                android:textColor="@android:color/white"/>
-        </LinearLayout>
-
-        <!-- Back to Login -->
-        <TextView
-            android:id="@+id/backToLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back to Login"
-            android:textSize="14sp"
-            android:textColor="#6C757D"
-            android:fontFamily="@font/raleway_extralight"
-            android:gravity="center"/>
-    </LinearLayout>
+            android:text="Join the Blueprint"
+            android:textAppearance="?attr/textAppearanceHeadlineLarge"
+            android:textColor="?attr/colorOnPrimary"
+            android:textStyle="bold"
+            android:gravity="center" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your professional path"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnPrimary"
+            android:alpha="0.8"
+            android:layout_marginTop="8dp"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="48dp">
+
+            <!-- Client Option -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnClient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                style="?attr/materialCardViewElevatedStyle"
+                app:cardBackgroundColor="#E6FFFFFF"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="24dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivClientIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:tint="?attr/colorPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I'm a Client"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find architects &amp; build your dream"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Architect Option -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnArchitect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?attr/materialCardViewElevatedStyle"
+                app:cardBackgroundColor="#E6FFFFFF"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="24dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/ivArchitectIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:tint="?attr/colorPrimary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I'm an Architect"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Showcase expertise &amp; manage projects"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:text="Already have an account? Login"
+            android:textColor="?attr/colorOnPrimary"
+            android:layout_marginTop="32dp" />
+
+    </LinearLayout>
+</FrameLayout>
