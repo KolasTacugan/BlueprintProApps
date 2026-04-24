@@ -1,10 +1,19 @@
 package com.example.blueprintproapps.network
 
+import android.content.Context
+import android.graphics.Color
 import android.content.Intent
-import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +23,24 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.RegisterRequest
 import com.example.blueprintproapps.models.RegisterResponse
+import com.example.blueprintproapps.utils.ParallaxEffect
+import com.example.blueprintproapps.utils.UiEffects
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.joanzapata.iconify.IconDrawable
+import com.joanzapata.iconify.fonts.MaterialIcons
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterArchitectActivity : AppCompatActivity() {
+
+    private lateinit var registerButton: MaterialButton
+    private lateinit var registerProgressLayout: View
+    private lateinit var layouts: List<TextInputLayout>
+    private lateinit var parallaxEffect: ParallaxEffect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,131 +53,180 @@ class RegisterArchitectActivity : AppCompatActivity() {
             insets
         }
 
-        // ✅ UI References
+        // Views
         val firstNameInput = findViewById<TextInputEditText>(R.id.firstNameInput)
         val lastNameInput = findViewById<TextInputEditText>(R.id.lastNameInput)
+        val phoneNumberInput = findViewById<TextInputEditText>(R.id.phoneNumberInput)
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
         val confirmPasswordInput = findViewById<TextInputEditText>(R.id.confirmPasswordInput)
         val licenseNoInput = findViewById<TextInputEditText>(R.id.licenseNoInput)
-        val phoneNumber = findViewById<TextInputEditText>(R.id.phoneNumberInput)
+        
+        val fNameL = findViewById<TextInputLayout>(R.id.firstNameLayout)
+        val lNameL = findViewById<TextInputLayout>(R.id.lastNameLayout)
+        val phoneL = findViewById<TextInputLayout>(R.id.phoneNumberLayout)
+        val emailL = findViewById<TextInputLayout>(R.id.emailLayout)
+        val passL = findViewById<TextInputLayout>(R.id.passwordLayout)
+        val confPassL = findViewById<TextInputLayout>(R.id.confirmPasswordLayout)
+        val licL = findViewById<TextInputLayout>(R.id.licenseNoLayout)
+        
+        layouts = listOf(fNameL, lNameL, phoneL, emailL, passL, confPassL, licL)
+        registerButton = findViewById(R.id.registerButtonArchitect)
+        registerProgressLayout = findViewById(R.id.registerProgressLayoutArchitect)
+        val background = findViewById<View>(R.id.ivBackground)
+        val loginLink = findViewById<View>(R.id.loginLinkArchitect)
+        val title = findViewById<View>(R.id.tvRegisterTitle)
+        val registerCard = findViewById<View>(R.id.registerCard)
 
-        // ✅ Layout References for Validation
-        val firstNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.firstNameLayout)
-        val lastNameLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.lastNameLayout)
-        val emailLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.emailLayout)
-        val passwordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.passwordLayout)
-        val confirmPasswordLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.confirmPasswordLayout)
-        val licenseNoLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.licenseNoLayout)
-        val phoneNumberLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.phoneNumberLayout)
+        // Effects
+        parallaxEffect = ParallaxEffect(this)
+        parallaxEffect.attach(background)
 
-        // Iconify migration
-        val iconColor = com.google.android.material.R.color.material_dynamic_primary50
-        firstNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
-        lastNameLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(iconColor).sizeDp(24)
-        emailLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_email).colorRes(iconColor).sizeDp(24)
-        passwordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
-        confirmPasswordLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_lock).colorRes(iconColor).sizeDp(24)
-        licenseNoLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_assignment_ind).colorRes(iconColor).sizeDp(24)
-        phoneNumberLayout.startIconDrawable = com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_phone).colorRes(iconColor).sizeDp(24)
+        UiEffects.applyBlueprintBranding(title)
+        UiEffects.applyCascadingEntrance(listOf(title, registerCard))
 
-        val spinnerStyle = findViewById<Spinner>(R.id.spinnerStyle)
-        val spinnerBudget = findViewById<Spinner>(R.id.spinnerBudget)
-        val spinnerLocation = findViewById<Spinner>(R.id.spinnerLocation)
-        val spinnerSpecialization = findViewById<Spinner>(R.id.spinnerSpecialization)
-        val registerButton = findViewById<MaterialButton>(R.id.registerButtonArchitect)
+        layouts.zip(listOf(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput)).forEach {
+            UiEffects.applyFocusGlow(it.first, it.second)
+        }
 
-        // ✅ Dropdown setup
-        setupSpinner(spinnerStyle, listOf("Modern", "Traditional", "Contemporary", "Minimalist"))
-        setupSpinner(spinnerBudget, listOf("Low", "Medium", "High"))
-        setupSpinner(spinnerLocation, listOf("Urban", "Suburban", "Rural"))
-        setupSpinner(spinnerSpecialization, listOf("Residential", "Commercial", "Industrial"))
+        val strengthView = findViewById<View>(R.id.passwordStrength)
+        UiEffects.setupPasswordStrength(
+            passwordInput,
+            strengthView.findViewById(R.id.strengthBar1),
+            strengthView.findViewById(R.id.strengthBar2),
+            strengthView.findViewById(R.id.strengthBar3),
+            strengthView.findViewById(R.id.strengthText)
+        )
 
-        // ✅ Shared preferences for role
-        val sharedPrefs: SharedPreferences = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
+        setupIcons()
+        setupSpinners()
+        setupValidation(listOf(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput))
+
+        val sharedPrefs = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
         val role = sharedPrefs.getString("user_role", "Architect")
 
-        // ✅ Register button click
         registerButton.setOnClickListener {
-            val firstName = firstNameInput.text.toString().trim()
-            val lastName = lastNameInput.text.toString().trim()
-            val email = emailInput.text.toString().trim()
-            val password = passwordInput.text.toString().trim()
-            val confirmPassword = confirmPasswordInput.text.toString().trim()
-            val licenseNo = licenseNoInput.text.toString().trim()
-            val phone = phoneNumber.text.toString().trim()
-
-            // ✅ Reset errors
-            firstNameLayout.error = null
-            lastNameLayout.error = null
-            emailLayout.error = null
-            passwordLayout.error = null
-            confirmPasswordLayout.error = null
-            licenseNoLayout.error = null
-            phoneNumberLayout.error = null
-
-            var isValid = true
-
-            // Validation
-            if (firstName.isEmpty()) { firstNameLayout.error = "Required"; isValid = false }
-            if (lastName.isEmpty()) { lastNameLayout.error = "Required"; isValid = false }
-            if (email.isEmpty()) { emailLayout.error = "Required"; isValid = false }
-            if (phone.isEmpty()) { phoneNumberLayout.error = "Required"; isValid = false }
-            if (licenseNo.isEmpty()) { licenseNoLayout.error = "Required"; isValid = false }
-            if (password.isEmpty()) { passwordLayout.error = "Required"; isValid = false }
-
-            if (password != confirmPassword) {
-                confirmPasswordLayout.error = "Passwords do not match"
-                isValid = false
-            } else if (confirmPassword.isEmpty()) {
-                confirmPasswordLayout.error = "Required"
-                isValid = false
-            }
-
-            if (!isValid) return@setOnClickListener
-
-            // ✅ Create request
-            val request = RegisterRequest(
-                firstName = firstName,
-                lastName = lastName,
-                email = email,
-                password = password,
-                phoneNumber = phone,
-                role = role ?: "Architect",
-                licenseNo = licenseNo,
-                style = spinnerStyle.selectedItem.toString(),
-                specialization = spinnerSpecialization.selectedItem.toString(),
-                location = spinnerLocation.selectedItem.toString(),
-                laborCost = spinnerBudget.selectedItem.toString()
-            )
-
-            // ✅ API Call
-            ApiClient.instance.register(request).enqueue(object : Callback<RegisterResponse> {
-                override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@RegisterArchitectActivity,
-                            "Registration successful! Please log in.",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        // Go to login screen
-                        startActivity(Intent(this@RegisterArchitectActivity, LoginActivity::class.java))
-                        finish()
-                    } else {
-                        Toast.makeText(this@RegisterArchitectActivity, "Registration failed. Try again.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                    Toast.makeText(this@RegisterArchitectActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+            if (validate(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput)) {
+                performRegistration(
+                    firstNameInput.text.toString().trim(),
+                    lastNameInput.text.toString().trim(),
+                    phoneNumberInput.text.toString().trim(),
+                    emailInput.text.toString().trim(),
+                    passwordInput.text.toString().trim(),
+                    role ?: "Architect",
+                    licenseNoInput.text.toString().trim(),
+                    findViewById<Spinner>(R.id.spinnerStyle).selectedItem.toString(),
+                    findViewById<Spinner>(R.id.spinnerSpecialization).selectedItem.toString(),
+                    findViewById<Spinner>(R.id.spinnerLocation).selectedItem.toString(),
+                    findViewById<Spinner>(R.id.spinnerBudget).selectedItem.toString()
+                )
+            } else { vibrateError() }
         }
+
+        loginLink.setOnClickListener { startActivity(Intent(this, LoginActivity::class.java)); finish() }
     }
 
-    private fun setupSpinner(spinner: Spinner, items: List<String>) {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
-        spinner.adapter = adapter
+    override fun onDestroy() {
+        super.onDestroy()
+        parallaxEffect.detach()
+    }
+
+    private fun setupIcons() {
+        val color = R.color.primary
+        layouts[0].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
+        layouts[1].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
+        layouts[2].startIconDrawable = IconDrawable(this, MaterialIcons.md_phone).colorRes(color).sizeDp(20)
+        layouts[3].startIconDrawable = IconDrawable(this, MaterialIcons.md_email).colorRes(color).sizeDp(20)
+        layouts[4].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
+        layouts[5].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
+        layouts[6].startIconDrawable = IconDrawable(this, MaterialIcons.md_assignment_ind).colorRes(color).sizeDp(20)
+    }
+
+    private fun setupSpinners() {
+        val styleS = findViewById<Spinner>(R.id.spinnerStyle)
+        val budgetS = findViewById<Spinner>(R.id.spinnerBudget)
+        val locS = findViewById<Spinner>(R.id.spinnerLocation)
+        val specS = findViewById<Spinner>(R.id.spinnerSpecialization)
+
+        fun fill(s: Spinner, items: List<String>) {
+            s.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
+        }
+        fill(styleS, listOf("Modern", "Traditional", "Contemporary", "Minimalist"))
+        fill(budgetS, listOf("Low", "Medium", "High"))
+        fill(locS, listOf("Urban", "Suburban", "Rural"))
+        fill(specS, listOf("Residential", "Commercial", "Industrial"))
+    }
+
+    private fun setupValidation(inputs: List<TextInputEditText>) {
+        val watcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                layouts.forEach { it.error = null }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+        inputs.forEach { it.addTextChangedListener(watcher) }
+    }
+
+    private fun validate(f: TextInputEditText, l: TextInputEditText, p: TextInputEditText, e: TextInputEditText, pw: TextInputEditText, cpw: TextInputEditText, lic: TextInputEditText): Boolean {
+        var v = true
+        if (f.text.isNullOrBlank()) { layouts[0].error = "Required"; v = false }
+        if (l.text.isNullOrBlank()) { layouts[1].error = "Required"; v = false }
+        if (p.text.isNullOrBlank()) { layouts[2].error = "Required"; v = false }
+        if (e.text.isNullOrBlank()) { layouts[3].error = "Required"; v = false }
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e.text!!).matches()) { layouts[3].error = "Invalid"; v = false }
+        if (pw.text.isNullOrBlank()) { layouts[4].error = "Required"; v = false }
+        if (cpw.text.isNullOrBlank()) { layouts[5].error = "Required"; v = false }
+        else if (pw.text.toString() != cpw.text.toString()) { layouts[5].error = "Mismatch"; v = false }
+        if (lic.text.isNullOrBlank()) { layouts[6].error = "Required"; v = false }
+        return v
+    }
+
+    private fun performRegistration(f: String, l: String, p: String, e: String, pw: String, r: String, lic: String, s: String, sp: String, loc: String, bud: String) {
+        setLoading(true)
+        val request = RegisterRequest(f, l, p, e, pw, r, lic, s, sp, loc, bud)
+        ApiClient.instance.register(request).enqueue(object : Callback<RegisterResponse> {
+            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                setLoading(false)
+                if (response.isSuccessful) {
+                    showSnackbar("Success! You can now login.")
+                    startActivity(Intent(this@RegisterArchitectActivity, LoginActivity::class.java))
+                    finish()
+                } else {
+                    vibrateError(); showSnackbar("Registration failed.", true)
+                }
+            }
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                setLoading(false); vibrateError(); showSnackbar("Error: ${t.message}", true)
+            }
+        })
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        registerButton.isEnabled = !isLoading
+        registerButton.text = if (isLoading) "" else "Register"
+        registerProgressLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showSnackbar(message: String, isError: Boolean = false) {
+        val snackbar = Snackbar.make(findViewById(R.id.register_scroll), message, Snackbar.LENGTH_LONG)
+        if (isError) {
+            snackbar.setBackgroundTint(resources.getColor(R.color.error, theme))
+            snackbar.setTextColor(android.graphics.Color.WHITE)
+        }
+        snackbar.show()
+    }
+
+    private fun vibrateError() {
+        val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+        } else {
+            @Suppress("DEPRECATION") getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION") vibrator.vibrate(200)
+        }
     }
 }

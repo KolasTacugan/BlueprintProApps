@@ -8,10 +8,13 @@
 
     <!-- Immersive Background -->
     <ImageView
+        android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/bg_auth"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:scaleX="1.1"
+        android:scaleY="1.1" />
 
     <View
         android:layout_width="match_parent"
@@ -33,6 +36,7 @@
             android:gravity="center">
 
             <TextView
+                android:id="@+id/tvRegisterTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create Account"
@@ -51,6 +55,7 @@
 
             <!-- Register Card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/registerCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -68,14 +73,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="First Name"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        >
-
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/firstNameInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            android:autofillHints="personGivenName" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -85,12 +89,12 @@
                         android:layout_marginTop="12dp"
                         android:hint="Last Name"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/lastNameInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            android:autofillHints="personFamilyName" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -99,14 +103,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:hint="Phone Number"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        >
-
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/phoneInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="phone" />
+                            android:inputType="phone"
+                            android:autofillHints="phoneNumber" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -115,14 +118,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:hint="Email"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        >
-
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/emailInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress" />
+                            android:inputType="textEmailAddress"
+                            android:autofillHints="emailAddress" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -132,15 +134,19 @@
                         android:layout_marginTop="12dp"
                         android:hint="Password"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        
                         app:passwordToggleEnabled="true">
-
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/passwordInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPassword" />
+                            android:inputType="textPassword"
+                            android:autofillHints="newPassword" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Real-time Password Strength Meter -->
+                    <include
+                        android:id="@+id/passwordStrength"
+                        layout="@layout/layout_password_strength" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/confirmPasswordLayout"
@@ -149,22 +155,54 @@
                         android:layout_marginTop="12dp"
                         android:hint="Confirm Password"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        
                         app:passwordToggleEnabled="true">
-
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/confirmPasswordInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPassword" />
+                            android:inputType="textPassword"
+                            android:autofillHints="newPassword" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/registerButton"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="32dp"
-                        android:text="Create Account" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/registerButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="Create Account" />
+
+                        <LinearLayout
+                            android:id="@+id/registerProgressLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <com.google.android.material.progressindicator.CircularProgressIndicator
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:indeterminate="true"
+                                app:indicatorColor="@color/white"
+                                app:indicatorSize="18dp"
+                                app:trackThickness="2dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:fontFamily="@font/raleway_bold"
+                                android:text="REGISTERING..."
+                                android:textColor="@color/white"
+                                android:textSize="13sp"
+                                android:letterSpacing="0.05" />
+                        </LinearLayout>
+                    </FrameLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

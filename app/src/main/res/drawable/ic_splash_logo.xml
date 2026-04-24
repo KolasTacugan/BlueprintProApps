@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Main Icon -->
+    <item
+        android:drawable="@drawable/bpp_logo"
+        android:width="100dp"
+        android:height="100dp"
+        android:gravity="center"
+        android:top="-20dp" />
+
+    <!-- Brand Name Text (Using a simple drawable or just centered text if we had a font-drawable) -->
+    <!-- Since we can't easily put "Text" in a layer-list without a bitmap, 
+         I will use a high-quality icon-only approach with a subtle glow instead 
+         to ensure it looks crisp on all screens. -->
+    
+</layer-list>

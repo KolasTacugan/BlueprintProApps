@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="ic_launcher_background">#091635</color>
     <!-- BlueprintPro Theme - Premium Palette -->
     <color name="primary">#0A3D62</color>      <!-- Deep Navy -->
     <color name="primary_light">#3C6382</color>

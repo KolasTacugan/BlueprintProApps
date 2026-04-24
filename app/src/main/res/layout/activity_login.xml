@@ -9,10 +9,13 @@
 
     <!-- Immersive Background -->
     <ImageView
+        android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/bg_auth"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:scaleX="1.1"
+        android:scaleY="1.1" />
 
     <View
         android:layout_width="match_parent"
@@ -20,6 +23,7 @@
         android:background="@drawable/bg_auth_overlay" />
 
     <ScrollView
+        android:id="@+id/loginScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -29,133 +33,231 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center">
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="28dp"
+            android:paddingTop="80dp"
+            android:paddingBottom="32dp">
 
-            <!-- Logo & Header -->
+            <!-- Logo -->
             <ImageView
                 android:id="@+id/ivLogo"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/bpp_logo"
-                app:tint="?attr/colorOnPrimary" />
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/bpp_logo" />
 
+            <!-- Brand Name -->
             <TextView
+                android:id="@+id/tvBrandName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway_bold"
+                android:letterSpacing="0.04"
                 android:text="BlueprintPro"
-                android:textAppearance="?attr/textAppearanceHeadlineLarge"
-                android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp" />
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
+            <!-- Tagline -->
             <TextView
+                android:id="@+id/tvTagline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.7"
+                android:fontFamily="@font/raleway_regular"
                 android:text="Design your legacy"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnPrimary"
-                android:alpha="0.8"
-                android:layout_marginTop="4dp" />
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
 
-            <!-- Login Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardContainer"
+            <!-- Glass Card -->
+            <LinearLayout
+                android:id="@+id/loginCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                style="?attr/materialCardViewElevatedStyle"
-                app:cardBackgroundColor="#E6FFFFFF"> <!-- Glassmorphism effect -->
+                android:layout_marginTop="40dp"
+                android:background="@drawable/bg_glass_card"
+                android:elevation="8dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="28dp"
+                android:paddingBottom="24dp">
 
-                <LinearLayout
+                <!-- Welcome Back -->
+                <TextView
+                    android:id="@+id/loginTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_bold"
+                    android:text="Welcome back"
+                    android:textColor="@color/on_surface"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:text="Sign in to continue"
+                    android:textColor="@color/slate_500"
+                    android:textSize="14sp" />
+
+                <!-- Email -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutEmail"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="28dp">
+                    android:layout_marginTop="28dp"
+                    android:hint="Email address"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:hintTextColor="@color/slate_500">
 
-                    <TextView
-                        android:id="@+id/loginTitle"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway_regular"
+                        android:inputType="textEmailAddress"
+                        android:autofillHints="emailAddress"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutPassword"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Password"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:endIconMode="password_toggle"
+                    app:hintTextColor="@color/slate_500">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway_regular"
+                        android:inputType="textPassword"
+                        android:autofillHints="password"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Remember Me & Forgot -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/rememberMe"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sign In"
-                        android:textAppearance="?attr/textAppearanceTitleLarge"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/raleway_regular"
+                        android:text="Remember me"
+                        android:textColor="@color/slate_700"
+                        android:textSize="13sp" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutEmail"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/forgotPassword"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:hint="Email"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/raleway_bold"
+                        android:text="Forgot Password?"
+                        android:textColor="@color/primary"
+                        android:textSize="13sp" />
+                </RelativeLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="Password"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        app:passwordToggleEnabled="true">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textPassword" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp">
-
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/rememberMe"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Remember me"
-                            android:textAppearance="?attr/textAppearanceLabelLarge" />
-
-                        <TextView
-                            android:id="@+id/forgotPassword"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:text="Forgot Password?"
-                            android:textAppearance="?attr/textAppearanceLabelLarge"
-                            android:textColor="?attr/colorPrimary"
-                            android:clickable="true"
-                            android:focusable="true" />
-                    </RelativeLayout>
+                <!-- Sign In Button Container -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLogin"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="24dp"
-                        android:text="Sign In" />
+                        android:layout_height="54dp"
+                        android:fontFamily="@font/raleway_bold"
+                        android:letterSpacing="0.02"
+                        android:text="Sign In"
+                        android:textSize="15sp"
+                        app:cornerRadius="14dp" />
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:id="@+id/loginProgressLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tvRegister"
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:indeterminate="true"
+                            app:indicatorColor="@color/white"
+                            app:indicatorSize="18dp"
+                            app:trackThickness="2dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:text="SIGNING IN..."
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <!-- Register Link -->
+            <LinearLayout
+                android:id="@+id/registerLinkContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Don't have an account? Sign Up"
-                android:textColor="?attr/colorOnPrimary"
-                android:textAppearance="?attr/textAppearanceLabelLarge" />
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
+                    android:text="Don't have an account? "
+                    android:textColor="@android:color/white"
+                    android:alpha="0.7"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/raleway_bold"
+                    android:text="Sign Up"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
+
 </FrameLayout>
