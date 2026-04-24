@@ -132,7 +132,7 @@
                             android:id="@+id/marketplaceIcon"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@drawable/ic_marketplace"
+                            
                             app:tint="?attr/colorOnPrimary"
                             android:layout_marginBottom="16dp" />
 
@@ -168,7 +168,7 @@
                             android:id="@+id/projectIcon"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@drawable/ic_project"
+                            
                             app:tint="?attr/colorPrimary"
                             android:layout_marginBottom="16dp" />
 
@@ -194,7 +194,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_chat_filled"
+        
         app:tint="?attr/colorOnPrimaryContainer"
         app:backgroundTint="?attr/colorPrimaryContainer"
         android:contentDescription="Chat" />

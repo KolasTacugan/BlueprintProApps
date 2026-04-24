@@ -56,7 +56,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:text="Cart"
-        app:icon="@drawable/ic_shopping_cart"
+        
         app:backgroundTint="?attr/colorPrimaryContainer"
         android:textColor="?attr/colorOnPrimaryContainer"
         app:iconTint="?attr/colorOnPrimaryContainer" />

@@ -36,9 +36,20 @@ class ClientDashboardActivity : AppCompatActivity() {
         val marketplaceBtn = findViewById<MaterialCardView>(R.id.marketplaceBtn)
 
 
-        val chatIcon = findViewById<ImageView>(R.id.chatIcon)
+        val chatIcon = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.chatIcon)
+        val architectIcon = findViewById<ImageView>(R.id.architectIcon)
+        val marketplaceIcon = findViewById<ImageView>(R.id.marketplaceIcon)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
+
+        // Apply Iconify Icons
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(architectIcon, "{md-search}")
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(marketplaceIcon, "{md-store-mall-directory}")
+        
+        // FAB Icon
+        chatIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, "{md-chat}")
+            .colorRes(android.R.color.white)
+            .sizeDp(24))
 
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val clientId = prefs.getString("clientId", null)
@@ -77,6 +88,11 @@ class ClientDashboardActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // Menu Icons via Iconify
+        com.example.blueprintproapps.utils.UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_home, "{md-home}")
+        com.example.blueprintproapps.utils.UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_project, "{md-assignment}")
+        com.example.blueprintproapps.utils.UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_profile, "{md-person}")
     }
 
     private fun fetchClientProfile(clientId: String?, tvUserName: TextView) {

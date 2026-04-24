@@ -88,6 +88,7 @@ class LoginActivity : AppCompatActivity() {
         UiEffects.applyFocusGlow(emailLayout, emailInput)
         UiEffects.applyFocusGlow(passwordLayout, passwordInput)
         UiEffects.applyBlueprintBranding(logo, brandName)
+        UiEffects.applyPressScaleEffect(loginButton)
 
         setupIcons()
         applyEntranceAnimations()
@@ -117,8 +118,10 @@ class LoginActivity : AppCompatActivity() {
             findViewById<View>(R.id.ivLogo),
             findViewById<View>(R.id.tvBrandName),
             findViewById<View>(R.id.tvTagline),
-            findViewById(R.id.loginCard),
-            findViewById(R.id.registerLinkContainer)
+            findViewById<View>(R.id.loginTitle),
+            emailLayout,
+            passwordLayout,
+            findViewById<View>(R.id.registerLinkContainer)
         )
         UiEffects.applyCascadingEntrance(views)
     }

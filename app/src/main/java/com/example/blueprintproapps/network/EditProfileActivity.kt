@@ -68,6 +68,19 @@ class EditProfileActivity : AppCompatActivity() {
         }
         loadExistingProfile()
         setupClicks()
+        
+        // Iconify Icons
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(btnBack, "md-arrow-back", android.graphics.Color.WHITE)
+        
+        val cameraIcon = com.joanzapata.iconify.IconDrawable(this, "md-camera-alt")
+            .colorRes(R.color.primary)
+            .sizeDp(18)
+        btnChangePhoto.setCompoundDrawablesWithIntrinsicBounds(cameraIcon, null, null, null)
+
+        val uploadIcon = com.joanzapata.iconify.IconDrawable(this, "md-file-upload")
+            .colorRes(R.color.primary)
+            .sizeDp(18)
+        btnUploadPdf.setCompoundDrawablesWithIntrinsicBounds(uploadIcon, null, null, null)
     }
 
     private fun initViews() {
@@ -141,9 +154,12 @@ class EditProfileActivity : AppCompatActivity() {
 
                     // ✅ Load profile image
                     if (!data.profilePhoto.isNullOrEmpty()) {
+                        val placeholderDrawable = com.joanzapata.iconify.IconDrawable(this@EditProfileActivity, "{md-person}")
+                            .colorRes(android.R.color.darker_gray)
+                            .sizeDp(48)
                         Glide.with(this@EditProfileActivity)
                             .load(data.profilePhoto)
-                            .placeholder(R.drawable.ic_user_placeholder)
+                            .placeholder(placeholderDrawable)
                             .into(imgProfile)
                     }
 

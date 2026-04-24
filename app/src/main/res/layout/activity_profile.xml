@@ -57,7 +57,7 @@
                         android:id="@+id/imgProfile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_user_placeholder"
+                        
                         android:scaleType="centerCrop"
                         android:background="@drawable/bg_profile_image_border" />
 
@@ -121,7 +121,7 @@
                     android:id="@+id/btnEditProfile"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_edit"
+                    
                     android:background="@drawable/bg_edit_button"
                     android:padding="8dp"
                     app:tint="@color/white" />

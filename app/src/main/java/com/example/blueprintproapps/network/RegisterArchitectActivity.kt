@@ -62,28 +62,29 @@ class RegisterArchitectActivity : AppCompatActivity() {
         val confirmPasswordInput = findViewById<TextInputEditText>(R.id.confirmPasswordInput)
         val licenseNoInput = findViewById<TextInputEditText>(R.id.licenseNoInput)
         
-        val fNameL = findViewById<TextInputLayout>(R.id.firstNameLayout)
-        val lNameL = findViewById<TextInputLayout>(R.id.lastNameLayout)
+        val firstNameLayout = findViewById<TextInputLayout>(R.id.firstNameLayout)
+        val lastNameLayout = findViewById<TextInputLayout>(R.id.lastNameLayout)
         val phoneL = findViewById<TextInputLayout>(R.id.phoneNumberLayout)
         val emailL = findViewById<TextInputLayout>(R.id.emailLayout)
         val passL = findViewById<TextInputLayout>(R.id.passwordLayout)
         val confPassL = findViewById<TextInputLayout>(R.id.confirmPasswordLayout)
         val licL = findViewById<TextInputLayout>(R.id.licenseNoLayout)
         
-        layouts = listOf(fNameL, lNameL, phoneL, emailL, passL, confPassL, licL)
+        layouts = listOf(firstNameLayout, lastNameLayout, phoneL, emailL, passL, confPassL, licL)
         registerButton = findViewById(R.id.registerButtonArchitect)
         registerProgressLayout = findViewById(R.id.registerProgressLayoutArchitect)
+        val loginLinkContainer = findViewById<View>(R.id.loginLinkContainer)
         val background = findViewById<View>(R.id.ivBackground)
-        val loginLink = findViewById<View>(R.id.loginLinkArchitect)
-        val title = findViewById<View>(R.id.tvRegisterTitle)
-        val registerCard = findViewById<View>(R.id.registerCard)
-
+        
+        val logo = findViewById<View>(R.id.ivLogo)
+        val registerTitle = findViewById<View>(R.id.tvRegisterTitle) 
+        
         // Effects
         parallaxEffect = ParallaxEffect(this)
         parallaxEffect.attach(background)
-
-        UiEffects.applyBlueprintBranding(title)
-        UiEffects.applyCascadingEntrance(listOf(title, registerCard))
+        
+        // Cascading Entrance
+        UiEffects.applyCascadingEntrance(listOf(logo, registerTitle, firstNameLayout, lastNameLayout, loginLinkContainer))
 
         layouts.zip(listOf(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput)).forEach {
             UiEffects.applyFocusGlow(it.first, it.second)
@@ -102,8 +103,8 @@ class RegisterArchitectActivity : AppCompatActivity() {
         setupSpinners()
         setupValidation(listOf(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput))
 
-        val sharedPrefs = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
-        val role = sharedPrefs.getString("user_role", "Architect")
+        val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val role = sharedPrefs.getString("userType", "Architect")
 
         registerButton.setOnClickListener {
             if (validate(firstNameInput, lastNameInput, phoneNumberInput, emailInput, passwordInput, confirmPasswordInput, licenseNoInput)) {
@@ -123,7 +124,10 @@ class RegisterArchitectActivity : AppCompatActivity() {
             } else { vibrateError() }
         }
 
-        loginLink.setOnClickListener { startActivity(Intent(this, LoginActivity::class.java)); finish() }
+        loginLinkContainer.setOnClickListener { 
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish() 
+        }
     }
 
     override fun onDestroy() {
@@ -132,14 +136,14 @@ class RegisterArchitectActivity : AppCompatActivity() {
     }
 
     private fun setupIcons() {
-        val color = R.color.primary
-        layouts[0].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
-        layouts[1].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
-        layouts[2].startIconDrawable = IconDrawable(this, MaterialIcons.md_phone).colorRes(color).sizeDp(20)
-        layouts[3].startIconDrawable = IconDrawable(this, MaterialIcons.md_email).colorRes(color).sizeDp(20)
-        layouts[4].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
-        layouts[5].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
-        layouts[6].startIconDrawable = IconDrawable(this, MaterialIcons.md_assignment_ind).colorRes(color).sizeDp(20)
+        val color = android.graphics.Color.parseColor("#8AADF4")
+        UiEffects.applyIconify(layouts[0].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-person", color)
+        UiEffects.applyIconify(layouts[1].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-person", color)
+        UiEffects.applyIconify(layouts[2].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-phone", color)
+        UiEffects.applyIconify(layouts[3].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-email", color)
+        UiEffects.applyIconify(layouts[4].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-lock", color)
+        UiEffects.applyIconify(layouts[5].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-lock", color)
+        UiEffects.applyIconify(layouts[6].findViewById(com.google.android.material.R.id.text_input_start_icon), "md-assignment-ind", color)
     }
 
     private fun setupSpinners() {
@@ -149,7 +153,7 @@ class RegisterArchitectActivity : AppCompatActivity() {
         val specS = findViewById<Spinner>(R.id.spinnerSpecialization)
 
         fun fill(s: Spinner, items: List<String>) {
-            s.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
+            s.adapter = ArrayAdapter(this, R.layout.spinner_item, items)
         }
         fill(styleS, listOf("Modern", "Traditional", "Contemporary", "Minimalist"))
         fill(budgetS, listOf("Low", "Medium", "High"))

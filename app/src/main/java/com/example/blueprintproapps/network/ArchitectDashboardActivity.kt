@@ -1,5 +1,8 @@
 package com.example.blueprintproapps.network
 
+import com.example.blueprintproapps.R
+import com.example.blueprintproapps.utils.UiEffects
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
@@ -10,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ProfileApiResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -37,9 +39,20 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         val forProjectBtn = findViewById<MaterialCardView>(R.id.forProjectBtn)
 
 
-        val chatIcon = findViewById<ImageView>(R.id.chatIcon)
+        val chatIcon = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.chatIcon)
+        val marketplaceIcon = findViewById<ImageView>(R.id.marketplaceIcon)
+        val projectIcon = findViewById<ImageView>(R.id.projectIcon)
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
+
+        // Apply Iconify Icons
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(marketplaceIcon, "{md-store-mall-directory}")
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(projectIcon, "{md-assignment}")
+        
+        // Settings the FAB icon via drawable
+        chatIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, "{md-chat}")
+            .colorRes(android.R.color.white)
+            .sizeDp(24))
 
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val architectId = prefs.getString("architectId", null)
@@ -77,6 +90,11 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         }
 
         bottomNavigation.selectedItemId = R.id.nav_home
+
+        // Menu Icons via Iconify
+        UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_home, "{md-home}")
+        UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_match_request, "{md-people}")
+        UiEffects.applyIconifyToMenu(this, bottomNavigation.menu, R.id.nav_profile, "{md-person}")
     }
 
     private fun fetchArchitectProfile(architectId: String?, tvUserName: TextView) {

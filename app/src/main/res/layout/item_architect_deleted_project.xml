@@ -34,7 +34,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_delete"
+                    
                     app:tint="#DC2626" />
 
             </FrameLayout>
@@ -127,7 +127,7 @@
                 app:strokeWidth="2dp"
                 android:textColor="#DC2626"
                 app:rippleColor="#FEE2E2"
-                app:icon="@drawable/ic_delete"
+                
                 app:iconTint="#DC2626"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />
@@ -149,7 +149,7 @@
                 app:cornerRadius="12dp"
                 app:backgroundTint="#0D3C80"
                 app:rippleColor="#1E40AF"
-                app:icon="@drawable/ic_restore"
+                
                 app:iconTint="@android:color/white"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />

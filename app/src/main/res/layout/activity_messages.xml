@@ -82,7 +82,7 @@
 <!--            android:paddingHorizontal="20dp"-->
 <!--            android:paddingVertical="16dp"-->
 <!--            android:background="@drawable/bg_search_field"-->
-<!--            android:drawableStart="@drawable/ic_search"-->
+<!--            -->
 <!--            android:drawablePadding="8dp"-->
 <!--            android:textSize="15sp"-->
 <!--            android:fontFamily="@font/raleway_regular"-->

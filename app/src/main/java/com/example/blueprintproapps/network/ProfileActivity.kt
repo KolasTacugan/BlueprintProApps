@@ -298,9 +298,12 @@ class ProfileActivity : AppCompatActivity() {
                         credentialsFilePath = profile.credentialsFilePath
 
                         if (!profile.profilePhoto.isNullOrEmpty()) {
+                            val placeholderDrawable = com.joanzapata.iconify.IconDrawable(this@ProfileActivity, "md-person")
+                                .colorRes(android.R.color.darker_gray)
+                                .sizeDp(48)
                             Glide.with(this@ProfileActivity)
                                 .load(profile.profilePhoto)
-                                .placeholder(R.drawable.ic_user_placeholder)
+                                .placeholder(placeholderDrawable)
                                 .into(imgProfile)
                         }
 

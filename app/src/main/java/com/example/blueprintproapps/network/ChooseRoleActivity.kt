@@ -1,5 +1,8 @@
 package com.example.blueprintproapps.network
 
+import com.example.blueprintproapps.R
+import com.example.blueprintproapps.utils.UiEffects
+
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,54 +12,73 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.blueprintproapps.R
+import android.view.View
+import android.widget.ImageView
+import com.example.blueprintproapps.utils.ParallaxEffect
 
 class ChooseRoleActivity : AppCompatActivity() {
+
+    private lateinit var parallaxEffect: ParallaxEffect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_choose_role)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        val background = findViewById<ImageView>(R.id.ivBackground)
+        val logo = findViewById<View>(R.id.ivLogo)
+        val tagline = findViewById<TextView>(R.id.tvTagline)
+        val clientButton = findViewById<View>(R.id.btnClient)
+        val architectButton = findViewById<View>(R.id.btnArchitect)
+        val ivClientIcon = findViewById<ImageView>(R.id.ivClientIcon)
+        val ivArchitectIcon = findViewById<ImageView>(R.id.ivArchitectIcon)
+        val loginLinkContainer = findViewById<View>(R.id.loginLinkContainer)
+
+        // Window Insets for Content (Applied to ScrollView to keep background full-screen)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.roleScrollView)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val clientButton = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnClient)
-        val architectButton = findViewById<com.google.android.material.card.MaterialCardView>(R.id.btnArchitect)
-        val ivClientIcon = findViewById<android.widget.ImageView>(R.id.ivClientIcon)
-        val ivArchitectIcon = findViewById<android.widget.ImageView>(R.id.ivArchitectIcon)
+        // Apply Premium Effects
+        parallaxEffect = ParallaxEffect(this)
+        parallaxEffect.attach(background)
 
-        // Iconify migration
-        ivClientIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_person).colorRes(com.google.android.material.R.color.material_dynamic_primary50))
-        ivArchitectIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, com.joanzapata.iconify.fonts.MaterialIcons.md_account_balance).colorRes(com.google.android.material.R.color.material_dynamic_primary50))
+        UiEffects.applyIconify(ivClientIcon, "md-person")
+        UiEffects.applyIconify(ivArchitectIcon, "md-account-balance")
+        
+        // Interactive visual feedback
+        UiEffects.applyPressScaleEffect(clientButton)
+        UiEffects.applyPressScaleEffect(architectButton)
+        
+        // Cascading Entrance for all components
+        UiEffects.applyCascadingEntrance(listOf(logo, tagline, clientButton, architectButton, loginLinkContainer))
 
-        val backToLogin = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnBack)
-
-        val sharedPrefs: SharedPreferences = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
+        val sharedPrefs: SharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
 
         clientButton.setOnClickListener {
             saveRole(sharedPrefs, "Client")
-            val intent = Intent(this, RegisterClientActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterClientActivity::class.java))
         }
 
         architectButton.setOnClickListener {
             saveRole(sharedPrefs, "Architect")
-            val intent = Intent(this, RegisterArchitectActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterArchitectActivity::class.java))
         }
 
-        backToLogin.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+        loginLinkContainer.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }
-    //test push
+
+    override fun onDestroy() {
+        super.onDestroy()
+        parallaxEffect.detach()
+    }
+
     private fun saveRole(sharedPrefs: SharedPreferences, role: String) {
-        sharedPrefs.edit().putString("user_role", role).apply()
+        sharedPrefs.edit().putString("userType", role).apply()
     }
 }

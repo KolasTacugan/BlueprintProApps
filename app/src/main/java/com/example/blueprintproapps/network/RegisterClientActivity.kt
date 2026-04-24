@@ -69,20 +69,17 @@ class RegisterClientActivity : AppCompatActivity() {
         layouts = listOf(firstNameLayout, lastNameLayout, phoneLayout, emailLayout, passwordLayout, confirmPasswordLayout)
         registerButton = findViewById(R.id.registerButton)
         registerProgressLayout = findViewById(R.id.registerProgressLayout)
-        val loginLink = findViewById<TextView>(R.id.loginLink)
+        val loginLinkContainer = findViewById<View>(R.id.loginLinkContainer)
         val background = findViewById<View>(R.id.ivBackground)
 
-        val title = findViewById<View>(R.id.tvRegisterTitle)
-        
+        val logo = findViewById<View>(R.id.ivLogo)
+        val registerTitle = findViewById<View>(R.id.tvRegisterTitle)
+
         // Effects
         parallaxEffect = ParallaxEffect(this)
         parallaxEffect.attach(background)
 
-        UiEffects.applyBlueprintBranding(title)
-        
-        val registerCard = findViewById<View>(R.id.registerCard) 
-        val viewsToAnimate = listOf(title, registerCard) 
-        UiEffects.applyCascadingEntrance(viewsToAnimate.filterNotNull())
+        UiEffects.applyCascadingEntrance(listOf(logo, registerTitle, firstNameLayout, lastNameLayout, loginLinkContainer))
 
         layouts.zip(listOf(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput)).forEach {
             UiEffects.applyFocusGlow(it.first, it.second)
@@ -100,8 +97,8 @@ class RegisterClientActivity : AppCompatActivity() {
         setupIcons()
         setupValidation(listOf(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput))
 
-        val sharedPrefs = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
-        val role = sharedPrefs.getString("user_role", "Client")
+        val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val role = sharedPrefs.getString("userType", "Client")
 
         registerButton.setOnClickListener {
             if (validate(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput)) {
@@ -118,7 +115,10 @@ class RegisterClientActivity : AppCompatActivity() {
             }
         }
 
-        loginLink.setOnClickListener { startActivity(Intent(this, LoginActivity::class.java)); finish() }
+        loginLinkContainer.setOnClickListener { 
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish() 
+        }
     }
 
     override fun onDestroy() {
@@ -127,13 +127,13 @@ class RegisterClientActivity : AppCompatActivity() {
     }
 
     private fun setupIcons() {
-        val color = R.color.primary
-        layouts[0].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
-        layouts[1].startIconDrawable = IconDrawable(this, MaterialIcons.md_person).colorRes(color).sizeDp(20)
-        layouts[2].startIconDrawable = IconDrawable(this, MaterialIcons.md_phone).colorRes(color).sizeDp(20)
-        layouts[3].startIconDrawable = IconDrawable(this, MaterialIcons.md_email).colorRes(color).sizeDp(20)
-        layouts[4].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
-        layouts[5].startIconDrawable = IconDrawable(this, MaterialIcons.md_lock).colorRes(color).sizeDp(20)
+        val color = android.graphics.Color.parseColor("#8AADF4")
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.firstNameLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-person", color)
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.lastNameLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-person", color)
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.phoneLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-phone", color)
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.emailLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-email", color)
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.passwordLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-lock", color)
+        UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.confirmPasswordLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-lock", color)
     }
 
     private fun setupValidation(inputs: List<TextInputEditText>) {

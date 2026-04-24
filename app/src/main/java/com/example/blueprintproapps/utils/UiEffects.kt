@@ -146,4 +146,45 @@ object UiEffects {
         b2.backgroundTintList = gray
         b3.backgroundTintList = gray
     }
+
+    /**
+     * Applies a premium scale effect when a view is pressed.
+     */
+    fun applyPressScaleEffect(view: View) {
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(150).start()
+                }
+                android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(150).start()
+                }
+            }
+            false // Continue to handle click events
+        }
+    }
+
+    /**
+     * Applies an Iconify icon to an ImageView with optional styling.
+     */
+    fun applyIconify(imageView: ImageView, icon: String, color: Int = Color.parseColor("#82B1FF")) {
+        val cleanIcon = icon.replace("{", "").replace("}", "")
+        val drawable = com.joanzapata.iconify.IconDrawable(imageView.context, cleanIcon)
+            .color(color)
+            .sizeDp(24)
+        imageView.setImageDrawable(drawable)
+    }
+
+    /**
+     * Applies an Iconify icon to a Menu Item.
+     */
+    fun applyIconifyToMenu(context: android.content.Context, menu: android.view.Menu, itemId: Int, icon: String) {
+        val item = menu.findItem(itemId)
+        if (item != null) {
+            val cleanIcon = icon.replace("{", "").replace("}", "")
+            item.icon = com.joanzapata.iconify.IconDrawable(context, cleanIcon)
+                .colorRes(android.R.color.white)
+                .sizeDp(24)
+        }
+    }
 }
