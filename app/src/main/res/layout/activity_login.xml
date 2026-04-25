@@ -12,7 +12,7 @@
         android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bg_auth"
+        android:src="@drawable/bldg_bg"
         android:scaleType="centerCrop"
         android:scaleX="1.1"
         android:scaleY="1.1" />
@@ -43,7 +43,7 @@
                 android:id="@+id/ivLogo"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:src="@drawable/bpp_logo" />
+                android:src="@drawable/bpp_logo_updated" />
 
             <!-- Brand Name -->
             <TextView
@@ -161,7 +161,8 @@
                     android:id="@+id/rememberMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@android:color/white"
+                    android:checked="true"
+                    android:buttonTint="@color/checkbox_color"
                     android:fontFamily="@font/raleway_regular"
                     android:text="Remember me"
                     android:textColor="@android:color/white"

@@ -26,7 +26,7 @@
             android:id="@+id/appLogo"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/bpp_logo"
+            android:src="@drawable/bpp_logo_updated"
             app:tint="@color/primary"
             android:contentDescription="Logo"/>
 

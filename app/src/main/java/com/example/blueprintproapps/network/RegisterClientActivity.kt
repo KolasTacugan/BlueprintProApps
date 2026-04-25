@@ -40,6 +40,15 @@ class RegisterClientActivity : AppCompatActivity() {
     private lateinit var layouts: List<TextInputLayout>
     private lateinit var parallaxEffect: ParallaxEffect
 
+    private var currentStep = 2
+    private val MAX_STEPS = 3
+    
+    private lateinit var step1Container: View
+    private lateinit var step2Container: View
+    private lateinit var btnBack: MaterialButton
+    private lateinit var stepProgress: com.google.android.material.progressindicator.LinearProgressIndicator
+    private lateinit var tvStepIndicator: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -75,55 +84,83 @@ class RegisterClientActivity : AppCompatActivity() {
         val logo = findViewById<View>(R.id.ivLogo)
         val registerTitle = findViewById<View>(R.id.tvRegisterTitle)
 
+        step1Container = findViewById(R.id.step1Container)
+        step2Container = findViewById(R.id.step2Container)
+        btnBack = findViewById(R.id.btnBack)
+        stepProgress = findViewById(R.id.stepProgress)
+        tvStepIndicator = findViewById(R.id.tvStepIndicator)
+
         // Effects
         parallaxEffect = ParallaxEffect(this)
         parallaxEffect.attach(background)
+        
+        val allInputs = listOf<android.widget.EditText>(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput)
 
-        UiEffects.applyCascadingEntrance(listOf(logo, registerTitle, firstNameLayout, lastNameLayout, loginLinkContainer))
+        UiEffects.applyCascadingEntrance(listOf(logo, registerTitle, tvStepIndicator, stepProgress, firstNameLayout, lastNameLayout, phoneLayout, emailLayout, loginLinkContainer))
 
-        layouts.zip(listOf(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput)).forEach {
+        layouts.zip(allInputs).forEach {
             UiEffects.applyFocusGlow(it.first, it.second)
         }
 
-        val strengthView = findViewById<View>(R.id.passwordStrength)
-        UiEffects.setupPasswordStrength(
-            passwordInput,
-            strengthView.findViewById(R.id.strengthBar1),
-            strengthView.findViewById(R.id.strengthBar2),
-            strengthView.findViewById(R.id.strengthBar3),
-            strengthView.findViewById(R.id.strengthText)
-        )
+
 
         setupIcons()
-        setupValidation(listOf(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput))
+        setupValidation(allInputs)
 
         val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val role = sharedPrefs.getString("userType", "Client")
 
+        btnBack.setOnClickListener {
+            if (currentStep > 2) {
+                val outView = getStepContainer(currentStep)
+                currentStep--
+                val inView = getStepContainer(currentStep)
+                updateStepUI()
+                UiEffects.applyStepTransition(outView, inView, forward = false)
+            } else {
+                finish()
+            }
+        }
+        
+        // initialize UI state
+        updateStepUI()
+
         registerButton.setOnClickListener {
-            if (validate(firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput)) {
-                performRegistration(
-                    firstNameInput.text.toString().trim(),
-                    lastNameInput.text.toString().trim(),
-                    phoneInput.text.toString().trim(),
-                    emailInput.text.toString().trim(),
-                    passwordInput.text.toString().trim(),
-                    role ?: "Client"
-                )
+            if (validateStep(currentStep)) {
+                if (currentStep < MAX_STEPS) {
+                    val outView = getStepContainer(currentStep)
+                    currentStep++
+                    val inView = getStepContainer(currentStep)
+                    updateStepUI()
+                    UiEffects.applyStepTransition(outView, inView, forward = true)
+                } else {
+                    performRegistration(
+                        firstNameInput.text.toString().trim(),
+                        lastNameInput.text.toString().trim(),
+                        phoneInput.text.toString().trim(),
+                        emailInput.text.toString().trim(),
+                        passwordInput.text.toString().trim(),
+                        role ?: "Client"
+                    )
+                }
             } else {
                 vibrateError()
             }
         }
 
         loginLinkContainer.setOnClickListener { 
-            startActivity(Intent(this, LoginActivity::class.java))
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
             finish() 
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        parallaxEffect.detach()
+        if (::parallaxEffect.isInitialized) {
+            parallaxEffect.detach()
+        }
     }
 
     private fun setupIcons() {
@@ -136,7 +173,7 @@ class RegisterClientActivity : AppCompatActivity() {
         UiEffects.applyIconify(findViewById<TextInputLayout>(R.id.confirmPasswordLayout).findViewById(com.google.android.material.R.id.text_input_start_icon), "md-lock", color)
     }
 
-    private fun setupValidation(inputs: List<TextInputEditText>) {
+    private fun setupValidation(inputs: List<android.widget.EditText>) {
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -147,28 +184,66 @@ class RegisterClientActivity : AppCompatActivity() {
         inputs.forEach { it.addTextChangedListener(watcher) }
     }
 
-    private fun validate(f: TextInputEditText, l: TextInputEditText, p: TextInputEditText, e: TextInputEditText, pw: TextInputEditText, cpw: TextInputEditText): Boolean {
+    private fun validateStep(step: Int): Boolean {
         var valid = true
-        if (f.text.isNullOrBlank()) { layouts[0].error = "Required"; valid = false }
-        if (l.text.isNullOrBlank()) { layouts[1].error = "Required"; valid = false }
-        if (p.text.isNullOrBlank()) { layouts[2].error = "Required"; valid = false }
-        if (e.text.isNullOrBlank()) { layouts[3].error = "Required"; valid = false }
-        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e.text!!).matches()) { layouts[3].error = "Invalid"; valid = false }
-        if (pw.text.isNullOrBlank()) { layouts[4].error = "Required"; valid = false }
-        if (cpw.text.isNullOrBlank()) { layouts[5].error = "Required"; valid = false }
-        else if (pw.text.toString() != cpw.text.toString()) { layouts[5].error = "Mismatch"; valid = false }
+        val f = findViewById<TextInputEditText>(R.id.firstNameInput)
+        val l = findViewById<TextInputEditText>(R.id.lastNameInput)
+        val p = findViewById<TextInputEditText>(R.id.phoneInput)
+        val e = findViewById<TextInputEditText>(R.id.emailInput)
+        val pw = findViewById<TextInputEditText>(R.id.passwordInput)
+        val cpw = findViewById<TextInputEditText>(R.id.confirmPasswordInput)
+        
+        if (step == 2) {
+            if (f.text.isNullOrBlank()) { layouts[0].error = "Required"; valid = false }
+            if (l.text.isNullOrBlank()) { layouts[1].error = "Required"; valid = false }
+            if (p.text.isNullOrBlank()) { layouts[2].error = "Required"; valid = false }
+            else if (!android.util.Patterns.PHONE.matcher(p.text!!).matches()) { layouts[2].error = "Invalid format"; valid = false }
+            if (e.text.isNullOrBlank()) { layouts[3].error = "Required"; valid = false }
+            else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e.text!!).matches()) { layouts[3].error = "Invalid format"; valid = false }
+        } else if (step == 3) {
+            if (pw.text.isNullOrBlank()) { layouts[4].error = "Required"; valid = false }
+            else if (pw.text!!.length < 6) { layouts[4].error = "Min 6 characters"; valid = false }
+            if (cpw.text.isNullOrBlank()) { layouts[5].error = "Required"; valid = false }
+            else if (pw.text.toString() != cpw.text.toString()) { layouts[5].error = "Mismatch"; valid = false }
+        }
         return valid
+    }
+
+    private fun getStepContainer(step: Int): View {
+        return when (step) {
+            2 -> step1Container
+            3 -> step2Container
+            else -> step1Container
+        }
+    }
+
+    private fun updateStepUI() {
+        stepProgress.max = MAX_STEPS
+        stepProgress.progress = currentStep
+        tvStepIndicator.text = "Step $currentStep of $MAX_STEPS: ${if (currentStep == 2) "Profile Details" else "Security"}"
+        
+        btnBack.visibility = View.VISIBLE
+        registerButton.text = if (currentStep == MAX_STEPS) "Create Account" else "Next Step"
     }
 
     private fun performRegistration(f: String, l: String, p: String, e: String, pw: String, r: String) {
         setLoading(true)
-        val request = RegisterRequest(f, l, p, e, pw, r)
+        val request = RegisterRequest(
+            email = e,
+            password = pw,
+            firstName = f,
+            lastName = l,
+            phoneNumber = p,
+            role = r
+        )
         ApiClient.instance.register(request).enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                 setLoading(false)
                 if (response.isSuccessful) {
                     showSnackbar("Success! You can now login.")
-                    startActivity(Intent(this@RegisterClientActivity, LoginActivity::class.java))
+                    val intent = Intent(this@RegisterClientActivity, LoginActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
                     finish()
                 } else {
                     vibrateError(); showSnackbar("Registration failed.", true)
@@ -182,7 +257,8 @@ class RegisterClientActivity : AppCompatActivity() {
 
     private fun setLoading(isLoading: Boolean) {
         registerButton.isEnabled = !isLoading
-        registerButton.text = if (isLoading) "" else "Create Account"
+        btnBack.isEnabled = !isLoading
+        registerButton.text = if (isLoading) "" else if (currentStep == MAX_STEPS) "Create Account" else "Next Step"
         registerProgressLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 

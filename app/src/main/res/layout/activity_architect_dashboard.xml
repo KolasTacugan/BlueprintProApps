@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Home"
             app:titleTextColor="?attr/colorOnPrimary"
-            app:navigationIcon="@drawable/bpp_logo"
+            app:navigationIcon="@drawable/bpp_logo_updated"
             app:navigationIconTint="?attr/colorOnPrimary" />
 
         <LinearLayout
@@ -94,7 +94,7 @@
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/bpp_logo"
+                        android:src="@drawable/bpp_logo_updated"
                         app:tint="?attr/colorOnPrimaryContainer"
                         android:alpha="0.2"
                         android:layout_alignParentEnd="true"

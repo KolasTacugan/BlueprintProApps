@@ -77,21 +77,17 @@ class ChangePasswordActivity : AppCompatActivity() {
         UiEffects.applyFocusGlow(newPasswordLayout, newPasswordInput)
         UiEffects.applyFocusGlow(confirmPasswordLayout, confirmPasswordInput)
 
-        val strengthView = findViewById<View>(R.id.passwordStrength)
-        UiEffects.setupPasswordStrength(
-            newPasswordInput,
-            strengthView.findViewById(R.id.strengthBar1),
-            strengthView.findViewById(R.id.strengthBar2),
-            strengthView.findViewById(R.id.strengthBar3),
-            strengthView.findViewById(R.id.strengthText)
-        )
-
         setupIcons()
         setupValidation(listOf(emailInput, newPasswordInput, confirmPasswordInput))
+        
+        // Cascading Entrance
+        val logo = findViewById<View>(R.id.ivLogo)
+        UiEffects.applyCascadingEntrance(listOf(logo, emailLayout))
 
         verifyButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             if (email.isEmpty()) { emailLayout.error = "Required"; vibrateError() }
+            else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) { emailLayout.error = "Invalid format"; vibrateError() }
             else performVerification(email, passwordSection)
         }
 
@@ -101,11 +97,20 @@ class ChangePasswordActivity : AppCompatActivity() {
             val confPw = confirmPasswordInput.text.toString().trim()
             if (validate(newPw, confPw)) performChange(email, newPw) else vibrateError()
         }
+
+        findViewById<View>(R.id.loginLinkContainer).setOnClickListener {
+            val intent = android.content.Intent(this, LoginActivity::class.java)
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        parallaxEffect.detach()
+        if (::parallaxEffect.isInitialized) {
+            parallaxEffect.detach()
+        }
     }
 
     private fun setupIcons() {
@@ -129,6 +134,7 @@ class ChangePasswordActivity : AppCompatActivity() {
     private fun validate(p: String, cp: String): Boolean {
         var valid = true
         if (p.isEmpty()) { newPasswordLayout.error = "Required"; valid = false }
+        else if (p.length < 6) { newPasswordLayout.error = "Min 6 characters"; valid = false }
         if (cp.isEmpty()) { confirmPasswordLayout.error = "Required"; valid = false }
         else if (p != cp) { confirmPasswordLayout.error = "Mismatch"; valid = false }
         return valid
@@ -159,7 +165,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                 else { vibrateError(); showSnackbar("Reset failed", true) }
             }
             override fun onFailure(call: Call<ChangePasswordResponse>, t: Throwable) {
-                setChangeLoading(true); vibrateError(); showSnackbar("Error: ${t.message}", true)
+                setChangeLoading(false); vibrateError(); showSnackbar("Error: ${t.message}", true)
             }
         })
     }

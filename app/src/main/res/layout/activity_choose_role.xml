@@ -12,7 +12,7 @@
         android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bg_auth"
+        android:src="@drawable/bldg_bg"
         android:scaleType="centerCrop"
         android:scaleX="1.1"
         android:scaleY="1.1" />
@@ -43,7 +43,7 @@
                 android:id="@+id/ivLogo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/bpp_logo" />
+                android:src="@drawable/bpp_logo_updated" />
 
             <!-- Role Selection Header -->
             <TextView
@@ -66,6 +66,29 @@
                 android:text="Are you building or designing?"
                 android:textColor="@android:color/white"
                 android:textSize="15sp" />
+
+            <!-- Stepper Progress Indicator -->
+            <TextView
+                android:id="@+id/tvStepIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="Step 1: Choose Role"
+                android:textColor="#82B1FF"
+                android:textSize="13sp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/stepProgress"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:indicatorColor="#82B1FF"
+                app:trackColor="#33FFFFFF"
+                app:trackCornerRadius="4dp"
+                android:max="3"
+                android:progress="1" />
 
             <LinearLayout
                 android:layout_width="match_parent"

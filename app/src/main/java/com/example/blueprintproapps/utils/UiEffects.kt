@@ -32,10 +32,6 @@ object UiEffects {
                     view.paint.shader = shader
                     view.invalidate()
                 }
-                is ImageView -> {
-                    view.setColorFilter(startColor)
-                    view.imageTintList = ColorStateList.valueOf(startColor)
-                }
             }
         }
     }
@@ -56,7 +52,7 @@ object UiEffects {
                 .start()
         }
     }
-    fun applyFocusGlow(layout: TextInputLayout, editText: TextInputEditText) {
+    fun applyFocusGlow(layout: TextInputLayout, editText: android.widget.EditText) {
         val originalElevation = layout.elevation
         val focusedElevation = 12f
         val originalStrokeWidth = layout.boxStrokeWidth
@@ -77,7 +73,7 @@ object UiEffects {
      * Logic for the Password Strength Meter
      */
     fun setupPasswordStrength(
-        editText: TextInputEditText,
+        editText: android.widget.EditText,
         bar1: View,
         bar2: View,
         bar3: View,
@@ -186,5 +182,32 @@ object UiEffects {
                 .colorRes(android.R.color.white)
                 .sizeDp(24)
         }
+    }
+
+    /**
+     * Applies a smooth transition between two step views.
+     */
+    fun applyStepTransition(outView: View, inView: View, forward: Boolean) {
+        val outTranslation = if (forward) -100f else 100f
+        val inTranslation = if (forward) 100f else -100f
+
+        outView.animate()
+            .alpha(0f)
+            .translationX(outTranslation)
+            .setDuration(250)
+            .withEndAction {
+                outView.visibility = View.GONE
+                outView.translationX = 0f // Reset
+
+                inView.translationX = inTranslation
+                inView.alpha = 0f
+                inView.visibility = View.VISIBLE
+                inView.animate()
+                    .alpha(1f)
+                    .translationX(0f)
+                    .setDuration(250)
+                    .start()
+            }
+            .start()
     }
 }

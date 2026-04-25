@@ -53,8 +53,9 @@ class LoginActivity : AppCompatActivity() {
 
         // Session Check
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        if (prefs.getBoolean("rememberMe", false) && prefs.getString("userType", null) != null) {
-            navigateToDashboard(prefs.getString("userType", null)!!)
+        val userType = prefs.getString("userType", null)
+        if (userType != null) {
+            navigateToDashboard(userType)
             return
         }
 
@@ -87,7 +88,7 @@ class LoginActivity : AppCompatActivity() {
         
         UiEffects.applyFocusGlow(emailLayout, emailInput)
         UiEffects.applyFocusGlow(passwordLayout, passwordInput)
-        UiEffects.applyBlueprintBranding(logo, brandName)
+        UiEffects.applyBlueprintBranding(brandName)
         UiEffects.applyPressScaleEffect(loginButton)
 
         setupIcons()
@@ -105,7 +106,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        parallaxEffect.detach()
+        if (::parallaxEffect.isInitialized) {
+            parallaxEffect.detach()
+        }
     }
 
     private fun setupIcons() {

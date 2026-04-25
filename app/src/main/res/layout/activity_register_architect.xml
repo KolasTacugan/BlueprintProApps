@@ -12,7 +12,7 @@
         android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bg_auth"
+        android:src="@drawable/bldg_bg"
         android:scaleType="centerCrop"
         android:scaleX="1.1"
         android:scaleY="1.1" />
@@ -43,7 +43,7 @@
                 android:id="@+id/ivLogo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/bpp_logo" />
+                android:src="@drawable/bpp_logo_updated" />
 
             <!-- Architect Header Section -->
             <TextView
@@ -65,6 +65,36 @@
                 android:text="Join the elite network of developers"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
+
+            <!-- Stepper Progress Indicator -->
+            <TextView
+                android:id="@+id/tvStepIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="Step 1 of 3: Profile Details"
+                android:textColor="#82B1FF"
+                android:textSize="13sp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/stepProgress"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:indicatorColor="#82B1FF"
+                app:trackColor="#33FFFFFF"
+                app:trackCornerRadius="4dp"
+                android:max="3"
+                android:progress="1" />
+
+            <!-- Step 1 Container -->
+            <LinearLayout
+                android:id="@+id/step1Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <!-- Section: Personal Details -->
             <com.google.android.material.textfield.TextInputLayout
@@ -183,6 +213,16 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            </LinearLayout>
+
+            <!-- Step 2 Container -->
+            <LinearLayout
+                android:id="@+id/step2Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordLayout"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -198,9 +238,10 @@
                 app:boxCornerRadiusTopStart="14dp"
                 app:boxStrokeWidth="1.5dp"
                 app:boxStrokeColor="@android:color/white"
-                app:passwordToggleEnabled="true"
-                app:passwordToggleTint="#82B1FF"
-                app:hintTextColor="@android:color/white">
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconMode="password_toggle"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordInput"
@@ -212,12 +253,7 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <include
-                android:id="@+id/passwordStrength"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                layout="@layout/layout_password_strength" />
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/confirmPasswordLayout"
@@ -234,9 +270,10 @@
                 app:boxCornerRadiusTopStart="14dp"
                 app:boxStrokeWidth="1.5dp"
                 app:boxStrokeColor="@android:color/white"
-                app:passwordToggleEnabled="true"
-                app:passwordToggleTint="#82B1FF"
-                app:hintTextColor="@android:color/white">
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconMode="password_toggle"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/confirmPasswordInput"
@@ -247,6 +284,16 @@
                     android:textColor="@android:color/white"
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- Step 3 Container -->
+            <LinearLayout
+                android:id="@+id/step3Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
             <!-- Section: Professional Credentials -->
             <TextView
@@ -287,119 +334,185 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Glass Dropdowns -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Professional Dropdowns -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/styleLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#4DFFFFFF"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1.5dp"
-                app:strokeColor="@android:color/white">
-                <Spinner
-                    android:id="@+id/spinnerStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:paddingHorizontal="16dp"
-                    android:background="@null"/>
-            </com.google.android.material.card.MaterialCardView>
+                android:hint="Architectural Style"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#4DFFFFFF"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1.5dp"
-                app:strokeColor="@android:color/white">
-                <Spinner
-                    android:id="@+id/spinnerBudget"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:paddingHorizontal="16dp"
-                    android:background="@null"/>
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/budgetLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#4DFFFFFF"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1.5dp"
-                app:strokeColor="@android:color/white">
-                <Spinner
-                    android:id="@+id/spinnerLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:paddingHorizontal="16dp"
-                    android:background="@null"/>
-            </com.google.android.material.card.MaterialCardView>
+                android:hint="Project Budget Range"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
 
-            <com.google.android.material.card.MaterialCardView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoBudget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/locationLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#4DFFFFFF"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1.5dp"
-                app:strokeColor="@android:color/white">
-                <Spinner
-                    android:id="@+id/spinnerSpecialization"
+                android:hint="Service Location"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoLocation"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:paddingHorizontal="16dp"
-                    android:background="@null"/>
-            </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/specializationLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Professional Specialization"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoSpecialization"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
             <!-- Complete Registration Button -->
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp">
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/registerButtonArchitect"
-                    android:layout_width="match_parent"
+                    android:id="@+id/btnBackArchitect"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
                     android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
                     android:fontFamily="@font/raleway_bold"
                     android:letterSpacing="0.02"
-                    android:text="Complete Registration"
-                    android:textSize="16sp"
-                    app:cornerRadius="14dp" />
+                    android:text="Back"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone" />
 
-                <LinearLayout
-                    android:id="@+id/registerProgressLayoutArchitect"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:layout_weight="1">
 
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:indeterminate="true"
-                        app:indicatorColor="@android:color/white"
-                        app:indicatorSize="20dp"
-                        app:trackThickness="2dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/registerButtonArchitect"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:fontFamily="@font/raleway_bold"
+                        android:letterSpacing="0.02"
+                        android:text="Next Step"
+                        android:textSize="16sp"
+                        app:cornerRadius="14dp" />
 
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/registerProgressLayoutArchitect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:fontFamily="@font/raleway_bold"
-                        android:text="REGISTERING..."
-                        android:textColor="@android:color/white"
-                        android:textSize="13sp"
-                        android:letterSpacing="0.05" />
-                </LinearLayout>
-            </FrameLayout>
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:indeterminate="true"
+                            app:indicatorColor="@android:color/white"
+                            app:indicatorSize="20dp"
+                            app:trackThickness="2dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:text="REGISTERING..."
+                            android:textColor="@android:color/white"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
 
             <!-- Login Link Container -->
             <LinearLayout

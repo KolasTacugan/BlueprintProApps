@@ -46,13 +46,11 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
 
         // Apply Iconify Icons
-        com.example.blueprintproapps.utils.UiEffects.applyIconify(marketplaceIcon, "{md-store-mall-directory}")
-        com.example.blueprintproapps.utils.UiEffects.applyIconify(projectIcon, "{md-assignment}")
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(marketplaceIcon, "md-store")
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(projectIcon, "md-assignment")
         
         // Settings the FAB icon via drawable
-        chatIcon.setImageDrawable(com.joanzapata.iconify.IconDrawable(this, "{md-chat}")
-            .colorRes(android.R.color.white)
-            .sizeDp(24))
+        com.example.blueprintproapps.utils.UiEffects.applyIconify(chatIcon, "md-chat", android.graphics.Color.WHITE)
 
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val architectId = prefs.getString("architectId", null)
