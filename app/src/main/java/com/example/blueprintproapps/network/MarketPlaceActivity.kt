@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.BlueprintAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.BlueprintResponse
 import com.example.blueprintproapps.models.CartItem
 import com.example.blueprintproapps.models.MarketplaceResponse
@@ -31,9 +33,12 @@ class MarketPlaceActivity : AppCompatActivity() {
     // ✅ Cart badge elements
     private lateinit var cartBtn: com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
     private var cartItemCount = 0
+    private lateinit var clientId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.CLIENT) ?: return
+        clientId = session.userId
 
         window.setFlags(
             android.view.WindowManager.LayoutParams.FLAG_SECURE,
@@ -143,14 +148,6 @@ class MarketPlaceActivity : AppCompatActivity() {
     }
 
     private fun fetchCartCount() {
-        val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val clientId = sharedPrefs.getString("clientId", null)
-
-        if (clientId == null) {
-            Log.d("CartCount", "No clientId found. User not logged in.")
-            return
-        }
-
         ApiClient.instance.getCart(clientId).enqueue(object : Callback<List<CartItem>> {
             override fun onResponse(call: Call<List<CartItem>>, response: Response<List<CartItem>>) {
                 if (response.isSuccessful) {

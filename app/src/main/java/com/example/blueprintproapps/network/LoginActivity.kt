@@ -21,8 +21,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSession
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.LoginRequest
 import com.example.blueprintproapps.models.LoginResponse
+import com.example.blueprintproapps.navigation.AppHostActivity
 import com.example.blueprintproapps.utils.ParallaxEffect
 import com.example.blueprintproapps.utils.UiEffects
 import com.google.android.material.button.MaterialButton
@@ -51,11 +55,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Session Check
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userType = prefs.getString("userType", null)
-        if (userType != null) {
-            navigateToDashboard(userType)
+        val existingSession = AuthSessionManager.getValidSession(this)
+        if (existingSession != null) {
+            navigateToDashboard(existingSession)
             return
         }
 
@@ -157,9 +159,14 @@ class LoginActivity : AppCompatActivity() {
                 setLoading(false)
                 if (response.isSuccessful) {
                     response.body()?.let { 
-                        saveSession(it, shouldRemember)
+                        val session = saveSession(it, shouldRemember)
+                        if (session == null) {
+                            vibrateError()
+                            showSnackbar("Invalid login response. Please try again.", true)
+                            return
+                        }
                         showSnackbar("Welcome, ${it.email}")
-                        navigateToDashboard(it.role)
+                        navigateToDashboard(session)
                     }
                 } else {
                     vibrateError(); showSnackbar("Invalid credentials", true)
@@ -186,18 +193,13 @@ class LoginActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    private fun saveSession(response: LoginResponse, shouldRemember: Boolean) {
-        val editor = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).edit()
-        val role = response.role.lowercase()
-        editor.putString("userType", if (role == "client") "Client" else "Architect")
-        editor.putString(if (role == "client") "clientId" else "architectId", response.userId)
-        editor.putBoolean("rememberMe", shouldRemember)
-        editor.apply()
+    private fun saveSession(response: LoginResponse, shouldRemember: Boolean): AuthSession? {
+        return AuthSessionManager.saveLoginSession(this, response, shouldRemember)
     }
 
-    private fun navigateToDashboard(userType: String) {
-        val target = if (userType.equals("Client", ignoreCase = true)) ClientDashboardActivity::class.java else ArchitectDashboardActivity::class.java
-        startActivity(Intent(this, target)); finish()
+    private fun navigateToDashboard(session: AuthSession) {
+        startActivity(Intent(this, AppHostActivity::class.java))
+        finish()
     }
 
     private fun vibrateError() {

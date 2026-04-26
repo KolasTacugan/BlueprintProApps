@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -57,7 +57,7 @@ class ClientStepReviewFragment : Fragment() {
 
         currentRevisionName = v.findViewById(R.id.currentRevisionName)
         revisionsRecyclerView = v.findViewById(R.id.revisionsRecyclerView)
-        val openCurrentBtn = v.findViewById<Button>(R.id.openCurrentBtn)
+        val openCurrentBtn = v.findViewById<ImageButton>(R.id.openCurrentBtn)
 
         val fileName = arguments?.getString("fileName") ?: ""
         val filePath = arguments?.getString("filePath") ?: ""
@@ -68,8 +68,12 @@ class ClientStepReviewFragment : Fragment() {
         // --- CURRENT FILE DISPLAY ---
         if (filePath.isNotEmpty()) {
             currentRevisionName.text = "Current Version"
+            openCurrentBtn.visibility = View.VISIBLE
+            openCurrentBtn.isEnabled = true
         } else {
             currentRevisionName.text = "No file uploaded yet."
+            openCurrentBtn.visibility = View.INVISIBLE
+            openCurrentBtn.isEnabled = false
         }
 
         // --- OPEN CURRENT VERSION BUTTON ---

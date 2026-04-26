@@ -81,6 +81,7 @@ class ArchitectStepReviewFragment : Fragment() {
 
         revisionsRecyclerView = view.findViewById(R.id.revisionsRecyclerView)
         currentRevisionName = view.findViewById(R.id.currentRevisionName)
+        val openCurrentBtn = view.findViewById<ImageButton>(R.id.openCurrentBtn)
         viewPager = requireActivity().findViewById(R.id.stepViewPager)
 
         projectId = arguments?.getString("projectId")
@@ -92,12 +93,16 @@ class ArchitectStepReviewFragment : Fragment() {
         // ✅ Display current file like web
         if (!currentFilePath.isNullOrEmpty()) {
             currentRevisionName.text = "Current_Version"
+            openCurrentBtn.visibility = View.VISIBLE
+            openCurrentBtn.isEnabled = true
             currentRevisionName.setOnClickListener {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(currentFilePath))
                 startActivity(intent)
             }
         } else {
             currentRevisionName.text = "No file uploaded yet."
+            openCurrentBtn.visibility = View.INVISIBLE
+            openCurrentBtn.isEnabled = false
         }
 
         // ✅ Display revision list like web
@@ -130,7 +135,6 @@ class ArchitectStepReviewFragment : Fragment() {
             }
         }
 
-        val openCurrentBtn = view.findViewById<Button>(R.id.openCurrentBtn)
         openCurrentBtn.setOnClickListener {
             val filePath = arguments?.getString("currentFilePath")
 

@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
@@ -49,23 +49,24 @@ class ClientStepComplianceFragment : Fragment() {
 
         // Add zoning file link (if exists)
         compliance?.compliance_Zoning?.let {
-            addFileLink("Zoning File", it, zoningContainer)
+            addFileCard(it, zoningContainer)
         }
 
         // Add other file link (if exists)
         compliance?.compliance_Others?.let {
-            addFileLink("Other File", it, otherContainer)
+            addFileCard(it, otherContainer)
         }
 
         return view
     }
 
-    private fun addFileLink(label: String, fileName: String, parent: LinearLayout) {
-        val tv = TextView(requireContext())
-        tv.text = label
-        tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
+    private fun addFileCard(fileName: String, parent: LinearLayout) {
+        val view = layoutInflater.inflate(R.layout.item_compliance_file, parent, false)
+        val fileLabel = view.findViewById<TextView>(R.id.fileLabel)
+        val viewBtn = view.findViewById<Button>(R.id.viewBtn)
+        fileLabel.text = fileName
 
-        tv.setOnClickListener {
+        viewBtn.setOnClickListener {
             val fileUrl =
                 if (fileName.startsWith("http")) fileName
                 else "${ApiClient.getBaseUrl()}uploads/compliance/$fileName"
@@ -73,6 +74,6 @@ class ClientStepComplianceFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl)))
         }
 
-        parent.addView(tv)
+        parent.addView(view)
     }
 }

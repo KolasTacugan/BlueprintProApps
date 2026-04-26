@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.databinding.FragmentCartItemsBinding
 import com.example.blueprintproapps.adapter.CartAdapter
 import com.example.blueprintproapps.models.*
@@ -27,6 +28,7 @@ class CartItemsFragment : Fragment() {
     private lateinit var cartAdapter: CartAdapter
     private val api = ApiClient.instance
     private var cartItems: List<CartItem> = emptyList()
+    private var clientId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +43,10 @@ class CartItemsFragment : Fragment() {
         binding.cartRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.cartRecyclerView.adapter = cartAdapter
 
-        val prefs = requireContext().getSharedPreferences("MyAppPrefs", AppCompatActivity.MODE_PRIVATE)
-        val clientId = prefs.getString("clientId", null)
+        clientId = AuthSessionManager.requireSession(requireActivity(), UserRole.CLIENT)?.userId
 
         if (!clientId.isNullOrEmpty()) {
-            fetchCart(clientId)
+            fetchCart(clientId!!)
         } else {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
@@ -94,7 +95,7 @@ class CartItemsFragment : Fragment() {
     }
 
     private fun startCheckout(cartItems: List<CartItem>) {
-        val prefs = requireContext().getSharedPreferences("MyAppPrefs", AppCompatActivity.MODE_PRIVATE)
+        val prefs = requireContext().getSharedPreferences(AuthSessionManager.PREFS_NAME, 0)
         val blueprintIds = cartItems.map { it.blueprintId }.map { it.toString() }.toSet()
         prefs.edit().putStringSet("purchasedBlueprintIds", blueprintIds).apply()
 
@@ -139,8 +140,7 @@ class CartItemsFragment : Fragment() {
     }
 
     private fun removeFromCart(item: CartItem) {
-        val prefs = requireContext().getSharedPreferences("MyAppPrefs", AppCompatActivity.MODE_PRIVATE)
-        val clientId = prefs.getString("clientId", null) ?: return
+        val clientId = clientId ?: return
         val request = RemoveCartRequest(clientId = clientId, blueprintId = item.blueprintId)
 
         api.removeFromCart(request).enqueue(object : Callback<GenericResponsee> {

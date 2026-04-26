@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.api.ApiService
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.MatchedClientResponse
 import com.example.blueprintproapps.models.UploadProjectBlueprintResponse
 import okhttp3.MediaType.Companion.toMediaType
@@ -37,6 +39,7 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var dueDateValue: String = ""
     private var selectedClientId: String = ""
+    private lateinit var architectId: String
 
     private val apiService: ApiService = ApiClient.instance
     private val clientList = mutableListOf<MatchedClientResponse>()
@@ -50,6 +53,8 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
+        architectId = session.userId
         setContentView(R.layout.activity_upload_project_blueprint)
 
         blueprintImageView = findViewById(R.id.blueprintImageView)
@@ -76,7 +81,8 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
         val datePicker = DatePickerDialog(
             this,
             { _, year, month, day ->
-                val date = "$year-${month + 1}-$day"
+                // ✅ Standard ISO format with leading zeros (YYYY-MM-DD)
+                val date = String.format("%04d-%02d-%02d", year, month + 1, day)
                 dueDateValue = date
                 dueDateBtn.text = date
             },
@@ -88,13 +94,6 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
     }
 
     private fun fetchClients() {
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val architectId = prefs.getString("architectId", null)
-
-        if (architectId == null) {
-            Toast.makeText(this, "Error: Architect ID not found. Please log in again.", Toast.LENGTH_SHORT).show()
-            return
-        }
         Log.d("CLIENT_LIST", "Architect ID used in API call: $architectId")
 
         val call = apiService.getClientsForProject(architectId)
@@ -158,11 +157,13 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
             return
         }
 
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userArchitectId = prefs.getString("architectId", null)
+        if (dueDateValue.isEmpty()) {
+            Toast.makeText(this, "Please select a due date", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        if (userArchitectId == null) {
-            Toast.makeText(this, "Error: Architect ID not found. Please log in again.", Toast.LENGTH_SHORT).show()
+        if (selectedClientId.isEmpty()) {
+            Toast.makeText(this, "Please select a client", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -170,12 +171,19 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
         val body = MultipartBody.Part.createFormData("BlueprintImage", file.name, requestFile)
 
+        // ✅ Sanitize budget: Remove non-numeric characters (like ₱ or commas)
+        val rawBudget = budgetInput.text.toString().replace(Regex("[^0-9]"), "")
+        if (rawBudget.isEmpty()) {
+            Toast.makeText(this, "Please enter a valid budget", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val projectName = projectNameInput.text.toString().trim().toRequestBody("text/plain".toMediaType())
-        val budget = budgetInput.text.toString().trim().toRequestBody("text/plain".toMediaType())
+        val budget = rawBudget.toRequestBody("text/plain".toMediaType())
         val description = descriptionInput.text.toString().trim().toRequestBody("text/plain".toMediaType())
         val clientId = selectedClientId.toRequestBody("text/plain".toMediaType())
         val dueDate = dueDateValue.toRequestBody("text/plain".toMediaType())
-        val architectId = userArchitectId.toRequestBody("text/plain".toMediaType())
+        val architectId = this.architectId.toRequestBody("text/plain".toMediaType())
 
         apiService.uploadProjectBlueprint(
             body,
@@ -195,7 +203,9 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
                     file.delete()
                     finish()
                 } else {
-                    Toast.makeText(this@UploadProjectBlueprintActivity, "Upload failed", Toast.LENGTH_SHORT).show()
+                    val errorHtml = response.errorBody()?.string() ?: "Unknown error"
+                    Log.e("UPLOAD_FAILED", "Server Error (${response.code()}): $errorHtml")
+                    Toast.makeText(this@UploadProjectBlueprintActivity, "Upload failed. Check logs.", Toast.LENGTH_SHORT).show()
                 }
             }
 

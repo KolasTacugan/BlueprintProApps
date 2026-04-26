@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.EditProfileResponse
 import com.example.blueprintproapps.models.GetEditProfileResponse
 import com.example.blueprintproapps.utils.FileUtil
@@ -39,12 +41,17 @@ class EditProfileActivity : AppCompatActivity() {
 
     private var selectedImageFile: File? = null
     private var selectedPdfFile: File? = null
+    private lateinit var userId: String
+    private lateinit var userRole: UserRole
 
     private val PICK_IMAGE = 1001
     private val PICK_PDF = 1002
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this) ?: return
+        userId = session.userId
+        userRole = session.role
         enableEdgeToEdge()
         setContentView(R.layout.activity_edit_profile)
 
@@ -56,10 +63,7 @@ class EditProfileActivity : AppCompatActivity() {
 
 
         initViews()
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userType = prefs.getString("userType", null)
-
-        if (userType == "Client") {
+        if (userRole == UserRole.CLIENT) {
             btnUploadPdf.isEnabled = false
             btnUploadPdf.alpha = 0.5f
         } else {
@@ -119,19 +123,6 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun loadExistingProfile() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-
-        val userType = prefs.getString("userType", null)
-
-        val userId = when (userType) {
-            "Architect" -> prefs.getString("architectId", null)
-            "Client" -> prefs.getString("clientId", null)
-            else -> null
-        }
-
-        if (userId.isNullOrEmpty()) {
-            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         ApiClient.instance.getEditProfile(userId)
             .enqueue(object : Callback<GetEditProfileResponse> {
@@ -234,19 +225,6 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun saveChanges() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-
-        val userType = prefs.getString("userType", null)
-
-        val userId = when (userType) {
-            "Architect" -> prefs.getString("architectId", null)
-            "Client" -> prefs.getString("clientId", null)
-            else -> null
-        }
-
-        if (userId.isNullOrEmpty()) {
-            Toast.makeText(this, "User ID not found. Please log in again.", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         val rbUserId = userId.toRequestBody("text/plain".toMediaTypeOrNull())
         val rbFirst = etFirstName.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())

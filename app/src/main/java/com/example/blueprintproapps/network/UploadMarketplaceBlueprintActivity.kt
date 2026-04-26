@@ -16,6 +16,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -40,10 +42,13 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
     private lateinit var backBtn: ImageButton
 
     private var imageUri: Uri? = null
+    private lateinit var architectId: String
     private val PICK_IMAGE_REQUEST = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
+        architectId = session.userId
         enableEdgeToEdge()
         setContentView(R.layout.activity_upload_marketplace_blueprint)
 
@@ -129,14 +134,8 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
         val descPart = desc.toRequestBody("text/plain".toMediaType())
         val stylePart = style.toRequestBody("text/plain".toMediaType())
         val isForSalePart = "true".toRequestBody("text/plain".toMediaType())
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userArchitectId = prefs.getString("architectId", null)
-        Log.d("UploadBlueprint", "Architect ID from SharedPreferences: $userArchitectId")
-        if (userArchitectId == null) {
-            Toast.makeText(this, "Error: Architect ID not found. Please log in again.", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val architectIdPart = userArchitectId.toRequestBody("text/plain".toMediaType())
+        Log.d("UploadBlueprint", "Architect ID from auth session: $architectId")
+        val architectIdPart = architectId.toRequestBody("text/plain".toMediaType())
 
         val api = ApiClient.instance
 

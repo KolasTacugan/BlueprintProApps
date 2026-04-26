@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.CompletePurchaseRequest
 import com.example.blueprintproapps.models.GenericResponse
 import com.example.blueprintproapps.network.MarketPlaceActivity
@@ -47,15 +49,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun completePurchase() {
+        val clientId = AuthSessionManager.requireSession(this, UserRole.CLIENT)?.userId ?: return
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val clientId = prefs.getString("clientId", null)
         val blueprintIdsSet = prefs.getStringSet("purchasedBlueprintIds", emptySet()) ?: emptySet()
         val blueprintIds = blueprintIdsSet.map { it.toInt() }
-
-        if (clientId.isNullOrEmpty()) {
-            Toast.makeText(this, "ClientId not found", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         if (blueprintIds.isEmpty()) {
             Toast.makeText(this, "No blueprints to complete purchase", Toast.LENGTH_SHORT).show()

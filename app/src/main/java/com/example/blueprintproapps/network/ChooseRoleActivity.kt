@@ -1,10 +1,10 @@
 package com.example.blueprintproapps.network
 
 import com.example.blueprintproapps.R
+import com.example.blueprintproapps.auth.AuthSessionManager
 import com.example.blueprintproapps.utils.UiEffects
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -55,16 +55,12 @@ class ChooseRoleActivity : AppCompatActivity() {
         // Cascading Entrance for all components
         UiEffects.applyCascadingEntrance(listOf(logo, tagline, clientButton, architectButton, loginLinkContainer))
 
-        val sharedPrefs: SharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-
         clientButton.setOnClickListener {
-            saveRole(sharedPrefs, "Client")
-            startActivity(Intent(this, RegisterClientActivity::class.java))
+            openRegistration(RegisterClientActivity::class.java, "Client")
         }
 
         architectButton.setOnClickListener {
-            saveRole(sharedPrefs, "Architect")
-            startActivity(Intent(this, RegisterArchitectActivity::class.java))
+            openRegistration(RegisterArchitectActivity::class.java, "Architect")
         }
 
         loginLinkContainer.setOnClickListener {
@@ -82,7 +78,10 @@ class ChooseRoleActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveRole(sharedPrefs: SharedPreferences, role: String) {
-        sharedPrefs.edit().putString("userType", role).apply()
+    private fun openRegistration(target: Class<*>, role: String) {
+        val intent = Intent(this, target).apply {
+            putExtra(AuthSessionManager.EXTRA_SELECTED_ROLE, role)
+        }
+        startActivity(intent)
     }
 }

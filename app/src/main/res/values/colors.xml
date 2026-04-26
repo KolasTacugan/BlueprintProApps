@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#091635</color>
+    <color name="ic_launcher_background">#344EAD</color>
     <!-- BlueprintPro Theme - Premium Palette -->
-    <color name="primary">#0A3D62</color>      <!-- Deep Navy -->
-    <color name="primary_light">#3C6382</color>
-    <color name="primary_dark">#062C46</color>
+    <color name="primary">#344EAD</color>      <!-- Deep Navy -->
+    <color name="primary_light">#5C73C4</color>
+    <color name="primary_dark">#233575</color>
     <color name="accent">#4A90E2</color>       <!-- Vibrant Blue -->
     
     <color name="surface">#FFFFFF</color>
     <color name="background">#F5F6FA</color>
-    <color name="on_surface">#091635</color>
-    <color name="on_background">#091635</color>
+    <color name="on_surface">#142632</color>
+    <color name="on_background">#142632</color>
     
     <color name="glass_white">#CCFFFFFF</color> <!-- 80% White -->
     <color name="glass_stroke">#33FFFFFF</color> <!-- 20% White -->
@@ -39,5 +39,15 @@
     <color name="gray">@color/slate_500</color>
     <color name="dark_gray">@color/slate_700</color>
 
+    <!-- Web-Matched Dashboard Colors -->
+    <color name="web_blue">#344EAD</color>
+    <color name="web_blue_light">#5C73C4</color>
+    <color name="web_bg">#F1F7F9</color>
+    <color name="web_border">#E2E8F0</color>
+    <color name="web_text_heading">#142632</color>
+    <color name="web_text_subtitle">#344678</color>
+    <color name="web_text_body">#2C3E50</color>
+    <color name="web_card_bg">#FFFFFF</color>
+    <color name="stat_accent_alpha">#14344EAD</color>
 
 </resources>

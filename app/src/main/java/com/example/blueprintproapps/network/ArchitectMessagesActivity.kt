@@ -1,6 +1,5 @@
 package com.example.blueprintproapps.network
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -11,9 +10,13 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectChatHeadAdapter
 import com.example.blueprintproapps.adapter.ArchitectMessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.databinding.ActivityArchitectMessagesBinding
 import com.example.blueprintproapps.models.ArchitectConversationListResponse
 import com.example.blueprintproapps.models.ArchitectMatchListResponse
+import com.example.blueprintproapps.navigation.AppNavDestination
+import com.example.blueprintproapps.navigation.AppNavigator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,6 +30,7 @@ class ArchitectMessagesActivity : AppCompatActivity() {
     private var lastRefreshTime = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
         binding = ActivityArchitectMessagesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -35,9 +39,7 @@ class ArchitectMessagesActivity : AppCompatActivity() {
         binding.architectRecyclerChatHeads.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // ✅ Get architectId from SharedPreferences
-        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val architectProfileUrl = sharedPref.getString("profilePhoto", null)
+        val architectId = session.userId
 
 //        architectProfileUrl?.let {
 //            Glide.with(this)
@@ -46,33 +48,32 @@ class ArchitectMessagesActivity : AppCompatActivity() {
 //                .circleCrop()
 //                .into(binding.architectProfilePic)
 //        }
-
-
-        val architectId = sharedPref.getString("architectId", null)
-
-        if (architectId.isNullOrEmpty()) {
-            Toast.makeText(this, "Missing architect ID", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
         // ✅ Initialize Adapters
         messageAdapter = ArchitectMessagesAdapter(emptyList()) { conversation ->
             openChatActivity(
                 conversation.clientId ?: "",
-                conversation.clientName ?: "Unknown"
+                conversation.clientName ?: "Unknown",
+                conversation.profileUrl
             )
         }
 
         chatHeadAdapter = ArchitectChatHeadAdapter(emptyList()) { match ->
             openChatActivity(
                 match.clientId ?: "",
-                match.clientName ?: "Unknown"
+                match.clientName ?: "Unknown",
+                match.clientPhoto
             )
         }
 
         binding.architectRecyclerMessages.adapter = messageAdapter
         binding.architectRecyclerChatHeads.adapter = chatHeadAdapter
+
+        AppNavigator.bind(
+            activity = this,
+            bottomNavigationView = binding.architectBottomNavigation,
+            role = UserRole.ARCHITECT,
+            currentDestination = AppNavDestination.MESSAGES
+        )
 
         // ✅ Load data
         loadConversations(architectId)
@@ -83,13 +84,9 @@ class ArchitectMessagesActivity : AppCompatActivity() {
 
         val now = System.currentTimeMillis()
         if (now - lastRefreshTime > 3000) { // refresh only if at least 3 seconds passed
-            val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-            val architectId = sharedPref.getString("architectId", null)
-
-            if (!architectId.isNullOrEmpty()) {
-                loadConversations(architectId)
-                loadMatches(architectId)
-            }
+            val architectId = AuthSessionManager.requireSession(this, UserRole.ARCHITECT)?.userId ?: return
+            loadConversations(architectId)
+            loadMatches(architectId)
             lastRefreshTime = now
         }
     }
@@ -106,7 +103,8 @@ class ArchitectMessagesActivity : AppCompatActivity() {
                         messageAdapter = ArchitectMessagesAdapter(conversations) { convo ->
                             openChatActivity(
                                 convo.clientId ?: "",
-                                convo.clientName ?: "Unknown"
+                                convo.clientName ?: "Unknown",
+                                convo.profileUrl
                             )
                         }
                         binding.architectRecyclerMessages.adapter = messageAdapter
@@ -142,7 +140,8 @@ class ArchitectMessagesActivity : AppCompatActivity() {
                         chatHeadAdapter = ArchitectChatHeadAdapter(matches) { match ->
                             openChatActivity(
                                 match.clientId ?: "",
-                                match.clientName ?: "Unknown"
+                                match.clientName ?: "Unknown",
+                                match.clientPhoto
                             )
                         }
                         binding.architectRecyclerChatHeads.adapter = chatHeadAdapter
@@ -166,7 +165,7 @@ class ArchitectMessagesActivity : AppCompatActivity() {
     }
 
     // 🚀 Open ChatActivity
-    private fun openChatActivity(receiverId: String, receiverName: String) {
+    private fun openChatActivity(receiverId: String, receiverName: String, receiverPhoto: String? = null) {
         if (receiverId.isEmpty()) {
             Toast.makeText(this, "Invalid chat target.", Toast.LENGTH_SHORT).show()
             return
@@ -174,7 +173,8 @@ class ArchitectMessagesActivity : AppCompatActivity() {
 
         val intent = Intent(this, ArchitectChatActivity::class.java).apply {
             putExtra("receiverId", receiverId)
-            putExtra("receiverName", receiverName)
+            putExtra("clientName", receiverName)
+            putExtra("clientPhoto", receiverPhoto)
         }
         startActivity(intent)
     }

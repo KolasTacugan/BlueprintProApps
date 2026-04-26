@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectMatchRequestAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.ArchitectMatchRequest
 import com.example.blueprintproapps.models.ClientProfileResponse
+import com.example.blueprintproapps.navigation.AppNavDestination
+import com.example.blueprintproapps.navigation.AppNavigator
 import com.example.blueprintproapps.utils.ClientProfileBottomSheet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
@@ -26,23 +30,14 @@ class ArchitectMatchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
+        architectId = session.userId
         setContentView(R.layout.activity_architect_match)
 
         recyclerView = findViewById(R.id.recyclerMatchRequests)
         bottomNav = findViewById(R.id.bottomNavigationView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // ✅ Get architectId from SharedPreferences (assign to the property, not local val)
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val storedArchitectId = prefs.getString("architectId", null)
-
-        if (storedArchitectId.isNullOrEmpty()) {
-            Toast.makeText(this, "ArchitectID not found", Toast.LENGTH_SHORT).show()
-            return
-        } else {
-            architectId = storedArchitectId
-        }
 
         adapter = ArchitectMatchRequestAdapter(
             mutableListOf(),                    // <-- START EMPTY
@@ -54,22 +49,12 @@ class ArchitectMatchActivity : AppCompatActivity() {
         // ✅ Load pending requests
         fetchPendingRequests()
 
-        // Bottom navigation
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    val intent = Intent(this, ArchitectDashboardActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.nav_profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
+        AppNavigator.bind(
+            activity = this,
+            bottomNavigationView = bottomNav,
+            role = UserRole.ARCHITECT,
+            currentDestination = AppNavDestination.WORK
+        )
     }
 
     private fun fetchPendingRequests() {

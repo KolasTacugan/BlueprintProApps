@@ -5,89 +5,101 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
     style="?attr/materialCardViewElevatedStyle">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Blueprint Image with Price Badge -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="160dp">
+        <!-- Blueprint Image -->
+        <ImageView
+            android:id="@+id/blueprintImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:contentDescription="Blueprint Image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="16:9" />
 
-            <ImageView
-                android:id="@+id/blueprintImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:contentDescription="Blueprint Image" />
-
-            <!-- Price Badge Overlay -->
-            <com.google.android.material.card.MaterialCardView
+        <!-- Price Badge Overlay -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            style="?attr/materialCardViewFilledStyle"
+            app:cardBackgroundColor="?attr/colorPrimary"
+            app:layout_constraintTop_toTopOf="@id/blueprintImage"
+            app:layout_constraintEnd_toEndOf="@id/blueprintImage">
+            
+            <TextView
+                android:id="@+id/blueprintPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="8dp"
-                style="?attr/materialCardViewFilledStyle"
-                app:cardBackgroundColor="?attr/colorPrimary">
-                
-                <TextView
-                    android:id="@+id/blueprintPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₱0"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:textAppearance="?attr/textAppearanceLabelMedium"
-                    android:textStyle="bold"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp" />
-            </com.google.android.material.card.MaterialCardView>
-
-        </FrameLayout>
-
-        <!-- Content Section -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-
-            <!-- Blueprint Name -->
-            <TextView
-                android:id="@+id/blueprintName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Modern Villa"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorOnSurface"
+                android:text="₱0"
+                android:textColor="?attr/colorOnPrimary"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end" />
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
+        </com.google.android.material.card.MaterialCardView>
 
-            <!-- Blueprint Description -->
-            <TextView
-                android:id="@+id/blueprintDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Luxurious 4-bedroom villa"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginTop="4dp"
-                android:maxLines="2"
-                android:ellipsize="end" />
+        <!-- Blueprint Name -->
+        <TextView
+            android:id="@+id/blueprintName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Modern Villa"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/blueprintImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Add to Cart Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addToCartBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add to Cart"
-                android:layout_marginTop="12dp" />
+        <!-- Blueprint Description -->
+        <TextView
+            android:id="@+id/blueprintDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Luxurious 4-bedroom villa"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/blueprintName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        </LinearLayout>
-    </LinearLayout>
+        <!-- Add to Cart Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addToCartBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Add to Cart"
+            style="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintTop_toBottomOf="@id/blueprintDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

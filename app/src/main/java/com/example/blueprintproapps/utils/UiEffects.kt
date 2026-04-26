@@ -164,11 +164,15 @@ object UiEffects {
      * Applies an Iconify icon to an ImageView with optional styling.
      */
     fun applyIconify(imageView: ImageView, icon: String, color: Int = Color.parseColor("#82B1FF")) {
-        val cleanIcon = icon.replace("{", "").replace("}", "")
-        val drawable = com.joanzapata.iconify.IconDrawable(imageView.context, cleanIcon)
-            .color(color)
-            .sizeDp(24)
-        imageView.setImageDrawable(drawable)
+        try {
+            val cleanIcon = icon.replace("{", "").replace("}", "")
+            val drawable = com.joanzapata.iconify.IconDrawable(imageView.context, cleanIcon)
+                .color(color)
+                .sizeDp(32)
+            imageView.setImageDrawable(drawable)
+        } catch (e: Exception) {
+            android.util.Log.e("UiEffects", "Failed to apply icon: $icon", e)
+        }
     }
 
     /**
@@ -177,10 +181,13 @@ object UiEffects {
     fun applyIconifyToMenu(context: android.content.Context, menu: android.view.Menu, itemId: Int, icon: String) {
         val item = menu.findItem(itemId)
         if (item != null) {
-            val cleanIcon = icon.replace("{", "").replace("}", "")
-            item.icon = com.joanzapata.iconify.IconDrawable(context, cleanIcon)
-                .colorRes(android.R.color.white)
-                .sizeDp(24)
+            try {
+                val cleanIcon = icon.replace("{", "").replace("}", "")
+                item.icon = com.joanzapata.iconify.IconDrawable(context, cleanIcon)
+                    .sizeDp(24)
+            } catch (e: Exception) {
+                android.util.Log.e("UiEffects", "Failed to apply menu icon: $icon", e)
+            }
         }
     }
 

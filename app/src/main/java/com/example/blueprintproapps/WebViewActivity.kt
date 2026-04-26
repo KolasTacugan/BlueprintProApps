@@ -7,6 +7,8 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.ArchitectSubscriptionCompleteRequest
 import com.example.blueprintproapps.models.GenericResponse
 import retrofit2.Call
@@ -54,14 +56,7 @@ class WebViewActivity : AppCompatActivity() {
     }
 
     private fun onSubscriptionSuccess() {
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val architectId = prefs.getString("architectId", null)
-
-        if (architectId == null) {
-            Toast.makeText(this, "Architect ID not found", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        val architectId = AuthSessionManager.requireSession(this, UserRole.ARCHITECT)?.userId ?: return
 
         val request = ArchitectSubscriptionCompleteRequest(architectId)
 

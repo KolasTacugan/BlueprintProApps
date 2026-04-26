@@ -3,84 +3,254 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F8FAFC"
     tools:context=".network.ClientProjectsActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="0dp">
 
-        <!-- Header Section -->
         <LinearLayout
-            android:id="@+id/headerLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
             android:paddingTop="32dp"
-            android:paddingBottom="16dp"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:paddingBottom="20dp">
 
-            <!-- Back Button -->
-            <ImageButton
-                android:id="@+id/backButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                
-                android:contentDescription="Back"
-                android:padding="8dp"
-                android:scaleType="centerInside"
-                android:clickable="true"
-                android:focusable="true"
-                app:tint="#0D3C80" />
-
-            <!-- Title -->
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Projects"
-                android:textColor="#091635"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:layout_marginTop="16dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <!-- Subtitle -->
-            <TextView
-                android:id="@+id/subtitleText"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/titleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Projects"
+                        android:textColor="#0F172A"
+                        android:textSize="28sp"
+                        android:fontFamily="@font/raleway_bold"
+                        android:letterSpacing="-0.02" />
+
+                    <TextView
+                        android:id="@+id/subtitleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Track and manage your architectural projects"
+                        android:textColor="#64748B"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_icon_button"
+                        android:src="@drawable/ic_arrow_back"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        app:tint="#0F172A"
+                        android:layout_marginEnd="8dp" />
+
+                    <ImageButton
+                        android:id="@+id/filterBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_icon_button"
+                        android:src="@drawable/ic_filter"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        app:tint="#0F172A" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Search Bar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_search_bar"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="#94A3B8" />
+
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Search projects..."
+                    android:textColorHint="#94A3B8"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginStart="12dp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
+            </LinearLayout>
+
+            <!-- Filter Chips -->
+            <HorizontalScrollView
+                android:id="@+id/filterScroll"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Manage and organize your projects"
-                android:textColor="#6B7280"
-                android:textSize="14sp"
-                android:fontFamily="@font/raleway_regular"
-                android:layout_marginTop="6dp" />
+                android:layout_marginTop="16dp"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filterChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAll"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All"
+                        android:checked="true"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="0dp"
+                        android:textColor="@color/chip_text_selector"
+                        android:fontFamily="@font/raleway_bold" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipOngoing"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ongoing"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="0dp"
+                        android:textColor="@color/chip_text_selector"
+                        android:fontFamily="@font/raleway_bold" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFinished"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Finished"
+                        app:chipBackgroundColor="@color/chip_bg_selector"
+                        app:chipStrokeWidth="0dp"
+                        android:textColor="@color/chip_text_selector"
+                        android:fontFamily="@font/raleway_bold" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
         </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- RecyclerView for Projects -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewClientProjects"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:paddingHorizontal="24dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:paddingTop="8dp"
             android:clipToPadding="false"
-            android:scrollbars="vertical"
-            app:layout_constraintTop_toBottomOf="@id/headerLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:scrollbars="none"
             tools:listitem="@layout/item_client_project" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/bg_empty_icon"
+                android:padding="24dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_work"
+                    app:tint="#3B82F6" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="No projects found"
+                android:textColor="#0F172A"
+                android:textSize="20sp"
+                android:fontFamily="@font/raleway_bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Your project list is currently empty. Try clearing your search or filters."
+                android:textColor="#64748B"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:fontFamily="@font/raleway_regular" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearFilterBtn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Clear Filters"
+                android:textColor="#3B82F6"
+                android:textAllCaps="false"
+                android:fontFamily="@font/raleway_bold"
+                app:rippleColor="#E0E7FF" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        style="@style/Widget.BlueprintPro.BottomNavigation"
+        app:menu="@menu/bottom_nav_menu" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

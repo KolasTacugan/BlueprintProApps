@@ -10,9 +10,14 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/nav_project"
-        
-        android:title="Project"
+        android:id="@+id/nav_work"
+        android:title="Projects"
+        android:fontFamily="@font/raleway_bold"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/nav_messages"
+        android:title="Messages"
         android:fontFamily="@font/raleway_bold"
         app:showAsAction="ifRoom" />
 

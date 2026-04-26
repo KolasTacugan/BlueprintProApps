@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
 import com.example.blueprintproapps.models.RegisterRequest
 import com.example.blueprintproapps.models.RegisterResponse
 import com.example.blueprintproapps.utils.ParallaxEffect
@@ -107,8 +108,7 @@ class RegisterClientActivity : AppCompatActivity() {
         setupIcons()
         setupValidation(allInputs)
 
-        val sharedPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val role = sharedPrefs.getString("userType", "Client")
+        val role = intent.getStringExtra(AuthSessionManager.EXTRA_SELECTED_ROLE) ?: "Client"
 
         btnBack.setOnClickListener {
             if (currentStep > 2) {
@@ -240,6 +240,7 @@ class RegisterClientActivity : AppCompatActivity() {
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                 setLoading(false)
                 if (response.isSuccessful) {
+                    AuthSessionManager.clearAuthData(this@RegisterClientActivity)
                     showSnackbar("Success! You can now login.")
                     val intent = Intent(this@RegisterClientActivity, LoginActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

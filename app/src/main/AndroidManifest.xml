@@ -18,6 +18,9 @@
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".navigation.AppHostActivity"
+            android:exported="false" />
+        <activity
             android:name=".network.ClientProjectsActivity"
             android:exported="false" />
         <activity

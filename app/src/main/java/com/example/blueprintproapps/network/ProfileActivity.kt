@@ -10,6 +10,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
+import com.example.blueprintproapps.navigation.AppNavDestination
+import com.example.blueprintproapps.navigation.AppNavigator
 import com.example.blueprintproapps.models.ProfileApiResponse
 import com.example.blueprintproapps.models.ArchitectSubscriptionRequest
 import com.example.blueprintproapps.models.ArchitectSubscriptionResponse
@@ -25,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.WebViewActivity
 import com.example.blueprintproapps.adapter.ClientPurchasedBlueprintAdapter
 import com.example.blueprintproapps.models.ClientPurchasedBlueprint
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -49,7 +54,8 @@ class ProfileActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            // Keep bottom nav anchored; avoid extra bottom whitespace from root inset padding.
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
         val layoutArchitectCredentials =
@@ -78,25 +84,9 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Get userType ONCE
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userType = prefs.getString("userType", null)
-
-        // Enable or disable subscription button based on user role
-
-
-        // Get correct userId ONCE
-        val userId = when (userType) {
-            "Architect" -> prefs.getString("architectId", null)
-            "Client" -> prefs.getString("clientId", null)
-            else -> null
-        }
-
-        if (userId == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        val session = AuthSessionManager.requireSession(this) ?: return
+        val userId = session.userId
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         btnEditProfile.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
@@ -107,19 +97,21 @@ class ProfileActivity : AppCompatActivity() {
         btnLogout.setOnClickListener {
             logoutUser()
         }
+
+        AppNavigator.bind(
+            activity = this,
+            bottomNavigationView = bottomNavigation,
+            role = session.role,
+            currentDestination = AppNavDestination.PROFILE
+        )
+
         loadProfile(userId)
     }
 
     override fun onResume() {
         super.onResume()
 
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val userType = prefs.getString("userType", null)
-        val userId = when (userType) {
-            "Architect" -> prefs.getString("architectId", null)
-            "Client" -> prefs.getString("clientId", null)
-            else -> null
-        }
+        val userId = AuthSessionManager.getValidSession(this)?.userId
 
         if (!userId.isNullOrEmpty()) {
             loadProfile(userId)
@@ -127,11 +119,9 @@ class ProfileActivity : AppCompatActivity() {
     }
     private fun loadPurchasedBlueprints() {
 
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val clientId = prefs.getString("clientId", null)
+        val clientId = AuthSessionManager.requireSession(this, UserRole.CLIENT)?.userId
 
         if (clientId == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -218,8 +208,7 @@ class ProfileActivity : AppCompatActivity() {
     // UPGRADE TO PRO
     // -------------------------------------
     private fun upgradeToPro() {
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val architectId = prefs.getString("architectId", null) ?: return
+        val architectId = AuthSessionManager.requireSession(this, UserRole.ARCHITECT)?.userId ?: return
 
         val request = ArchitectSubscriptionRequest(architectId)
 
@@ -254,8 +243,7 @@ class ProfileActivity : AppCompatActivity() {
     // DOWNGRADE
     // -------------------------------------
     private fun downgradeToFree() {
-        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val architectId = prefs.getString("architectId", null) ?: return
+        val architectId = AuthSessionManager.requireSession(this, UserRole.ARCHITECT)?.userId ?: return
 
         val request = ArchitectSubscriptionRequest(architectId)
 
@@ -327,22 +315,7 @@ class ProfileActivity : AppCompatActivity() {
             })
     }
     private fun logoutUser() {
-
-        // Clear all saved user data inside MyAppPrefs
-        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        sharedPref.edit().clear().apply()
-
-        // Go back to login screen
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.addFlags(
-            Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                    Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK
-        )
-
-        startActivity(intent)
-
-        finish()
+        AuthSessionManager.logout(this)
     }
 
 

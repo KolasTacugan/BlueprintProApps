@@ -38,10 +38,20 @@ class ArchitectChatMessagesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
 
+        // Format date: "2026-04-26T13:44:30" -> "1:44 PM"
+        val formattedTime = try {
+            val date = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault()).parse(message.messageDate)
+            java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(date)
+        } catch (e: Exception) {
+            message.messageDate // fallback
+        }
+
         if (holder is SentMessageViewHolder) {
             holder.txtMessage.text = message.messageBody
+            holder.txtTime.text = formattedTime
         } else if (holder is ReceivedMessageViewHolder) {
             holder.txtMessage.text = message.messageBody
+            holder.txtTime.text = formattedTime
         }
     }
 
@@ -49,10 +59,12 @@ class ArchitectChatMessagesAdapter(
 
     inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtMessage: TextView = itemView.findViewById(R.id.txtMessageSent)
+        val txtTime: TextView = itemView.findViewById(R.id.txtSentTime)
     }
 
     inner class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtMessage: TextView = itemView.findViewById(R.id.txtMessageReceived)
+        val txtTime: TextView = itemView.findViewById(R.id.txtReceivedTime)
     }
 
     // ✅ Real-time updating method

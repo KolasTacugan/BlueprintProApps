@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
     android:paddingHorizontal="16dp"
     android:paddingVertical="4dp">
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="1dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="#0D3C80">
+        android:orientation="vertical"
+        android:gravity="end">
 
         <TextView
             android:id="@+id/txtMessageSent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_background_sent"
+            android:background="@drawable/bg_bubble_sent"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:fontFamily="@font/raleway_regular"
-            android:letterSpacing="0.005"
-            android:lineSpacingExtra="2dp"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="10dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
             android:maxWidth="280dp"
+            android:lineSpacingExtra="2sp"
             android:text="Sample message" />
 
-    </com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/txtSentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="12:45 PM"
+            android:textColor="#94A3B8"
+            android:textSize="10sp"
+            android:fontFamily="@font/raleway_bold" />
+    </LinearLayout>
 
 </LinearLayout>

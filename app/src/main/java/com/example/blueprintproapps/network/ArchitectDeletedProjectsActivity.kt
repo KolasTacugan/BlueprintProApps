@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectDeletedProjectsAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.DeletedProjectResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,19 +30,10 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
         setContentView(R.layout.activity_architect_deleted_projects)
 
-        // Get architectId properly
-        architectId = intent.getStringExtra("architectId")
-            ?: getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                .getString("architectId", null)
-                    ?: ""
-
-        if (architectId.isEmpty()) {
-            Toast.makeText(this, "Architect ID missing", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        architectId = session.userId
 
         // Back button
         btnBack = findViewById(R.id.btnBack)
