@@ -42,7 +42,6 @@ class ProfileActivity : AppCompatActivity() {
 
     private var credentialsFilePath: String? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -66,7 +65,7 @@ class ProfileActivity : AppCompatActivity() {
         tvProBadge = findViewById(R.id.tvProBadge)
         imgProfile = findViewById(R.id.imgProfile)
         btnEditProfile = findViewById(R.id.btnEditProfile)
-        btnSubscription = findViewById(R.id.btnSubscription)
+
 
         // Open credentials
         tvCredentialsFile.setOnClickListener {
@@ -84,20 +83,7 @@ class ProfileActivity : AppCompatActivity() {
         val userType = prefs.getString("userType", null)
 
         // Enable or disable subscription button based on user role
-        if (userType == "Client") {
-            btnSubscription.visibility = View.GONE
-            loadPurchasedBlueprints()
-            layoutArchitectCredentials.visibility = View.GONE
-        } else {
-            btnSubscription.isEnabled = true
-            btnSubscription.alpha = 1f
 
-        }
-
-        // Subscription modal
-        btnSubscription.setOnClickListener {
-            showSubscriptionDialog()
-        }
 
         // Get correct userId ONCE
         val userId = when (userType) {

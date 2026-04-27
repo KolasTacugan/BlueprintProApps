@@ -9,7 +9,7 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.MessageResponse
 
 class ChatMessagesAdapter(
-    private val messages: List<MessageResponse>,
+    private val messages: MutableList<MessageResponse>,   // <-- MUTABLE LIST
     private val currentUserId: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -42,6 +42,13 @@ class ChatMessagesAdapter(
     }
 
     override fun getItemCount(): Int = messages.size
+
+    // 🔥 FUNCTION TO UPDATE MESSAGES IN REAL-TIME
+    fun updateMessages(newList: List<MessageResponse>) {
+        messages.clear()
+        messages.addAll(newList)
+        notifyDataSetChanged()
+    }
 
     inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtMessage: TextView = itemView.findViewById(R.id.txtMessageSent)

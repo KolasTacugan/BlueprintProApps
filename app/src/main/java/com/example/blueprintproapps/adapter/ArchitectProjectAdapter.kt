@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectProjectResponse
@@ -17,7 +18,8 @@ import com.squareup.picasso.Picasso
 class ArchitectProjectAdapter(
     private val items: MutableList<ArchitectProjectResponse>,
     private val context: Context,
-    private val onDeleteClick: (String) -> Unit
+    private val onDeleteClick: (String) -> Unit,
+    private val onClientClick: (String) -> Unit
 ) : RecyclerView.Adapter<ArchitectProjectAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -40,30 +42,35 @@ class ArchitectProjectAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
+        // BASIC BINDING
         holder.blueprintName.text = item.project_Title
         holder.blueprintBudget.text = "₱${item.project_Budget ?: "0"}"
         holder.clientName.text = item.clientName ?: "Unknown Client"
 
+        // 🔥 Pass clientId to activity through callback
+        holder.clientName.setOnClickListener {
+            item.clientId?.let { id ->
+                onClientClick(id)
+            } ?: Toast.makeText(context, "Client ID is missing", Toast.LENGTH_SHORT).show()
+        }
+
+        // IMAGE
         if (!item.blueprintImage.isNullOrEmpty()) {
             Picasso.get().load(item.blueprintImage).into(holder.blueprintImage)
         } else {
             holder.blueprintImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
 
-        // ------------------------------------------------------------------
-        // ✅ Show/hide DELETE button based on project status
-        // ------------------------------------------------------------------
-        if (item.project_Status == "Ongoing") {
-            holder.deleteBtn.visibility = View.VISIBLE
-        } else {
-            holder.deleteBtn.visibility = View.GONE
-        }
+        // DELETE BUTTON VISIBILITY
+        holder.deleteBtn.visibility =
+            if (item.project_Status == "Ongoing") View.VISIBLE else View.GONE
 
-        // DELETE BUTTON CLICK
+        // DELETE ACTION
         holder.deleteBtn.setOnClickListener {
             onDeleteClick(item.project_Id)
         }
 
+        // TRACK BUTTON
         holder.trackBtn.setOnClickListener {
             val intent = Intent(context, ArchitectProjectTrackerActivity::class.java)
             intent.putExtra("projectId", item.project_Id)

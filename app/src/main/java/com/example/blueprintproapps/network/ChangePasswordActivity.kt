@@ -13,6 +13,8 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ChangePasswordRequest
 import com.example.blueprintproapps.models.ChangePasswordResponse
+import com.example.blueprintproapps.models.VerifyEmailRequest
+import com.example.blueprintproapps.models.VerifyEmailResponse
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,25 +48,22 @@ class ChangePasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Here we only check if the email exists by calling your ChangePassword API
-            // The backend will respond with 404 if not found
-            val request = ChangePasswordRequest(email = email, newPassword = "dummyTempPassword")
-
-            ApiClient.instance.changePassword(request).enqueue(object : Callback<ChangePasswordResponse> {
+            ApiClient.instance.verifyEmail(VerifyEmailRequest(email)).enqueue(object : Callback<VerifyEmailResponse> {
                 override fun onResponse(
-                    call: Call<ChangePasswordResponse>,
-                    response: Response<ChangePasswordResponse>
+                    call: Call<VerifyEmailResponse>,
+                    response: Response<VerifyEmailResponse>
                 ) {
                     if (response.code() == 404) {
                         Toast.makeText(this@ChangePasswordActivity, "Email not found", Toast.LENGTH_SHORT).show()
                     } else {
-                        // Instead of actually changing the password, just reveal the fields
                         passwordSection.visibility = View.VISIBLE
+                        emailInput.isEnabled = false
+                        verifyButton.visibility = View.GONE
                         Toast.makeText(this@ChangePasswordActivity, "Email verified. You can now change your password.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun onFailure(call: Call<ChangePasswordResponse>, t: Throwable) {
+                override fun onFailure(call: Call<VerifyEmailResponse>, t: Throwable) {
                     Toast.makeText(this@ChangePasswordActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })

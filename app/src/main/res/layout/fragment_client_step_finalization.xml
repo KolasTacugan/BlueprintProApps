@@ -1,56 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F9FAFB"
+    android:fillViewport="true">
 
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp">
 
+        <!-- Header Section -->
         <TextView
             android:id="@+id/stepTitle"
             android:text="Finalization"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp"
+            android:textColor="#091635"
+            android:fontFamily="@font/raleway_bold"
+            android:letterSpacing="0.01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <TextView android:text="Final Blueprint" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/finalFileNameText"
-            android:text="No final file uploaded yet"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView android:text="Finalization Notes" android:textStyle="bold" android:layout_marginTop="12dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/finalizationNotesText"
-            android:text="No notes"
-            android:layout_marginTop="4dp"
-            android:minHeight="150dp"
-            android:background="@drawable/edittext_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- Rating controls (hidden by fragment if not needed) -->
-        <RatingBar
-            android:id="@+id/ratingBar"
-            android:numStars="5"
-            android:stepSize="1"
-            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:text="Review final blueprint and project completion details"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            android:fontFamily="@font/raleway_regular"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp" />
 
-        <Button
-            android:id="@+id/submitRatingBtn"
-            android:text="Submit Rating"
-            android:layout_marginTop="8dp"
+        <!-- Final Blueprint Card -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Final Blueprint"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/finalFileNameText"
+                    android:text="No final file uploaded yet"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Finalization Notes Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalization Notes"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/finalizationNotesText"
+                    android:text="No notes"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:minHeight="150dp"
+                    android:padding="16dp"
+                    android:gravity="top|start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Rating Card (hidden by fragment if not needed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ratingCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rate Your Experience"
+                    android:textColor="#091635"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:layout_marginBottom="16dp" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/submitRatingBtn"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Submit Rating"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.01"
+                    android:textColor="@android:color/white"
+                    android:paddingVertical="14dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    app:cornerRadius="12dp"
+                    app:backgroundTint="#0D3C80" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 </ScrollView>

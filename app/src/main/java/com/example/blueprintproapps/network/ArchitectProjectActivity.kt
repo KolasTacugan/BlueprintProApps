@@ -15,6 +15,8 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ArchitectProjectAdapter
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ArchitectProjectResponse
+import com.example.blueprintproapps.models.ClientProfileResponse
+import com.example.blueprintproapps.utils.ClientProfileBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -54,10 +56,14 @@ class ArchitectProjectActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ArchitectProjectAdapter(
             mutableListOf(),
-            this
-        ) { projectId ->
-            showDeleteConfirmation(projectId)
-        }
+            this,
+            onDeleteClick = { projectId ->
+                showDeleteConfirmation(projectId)
+            },
+            onClientClick = { clientId ->
+                fetchClientProfile(clientId)
+            }
+        )
         recyclerView.adapter = adapter
 
         moreOptionsBtn.setOnClickListener {
@@ -96,6 +102,29 @@ class ArchitectProjectActivity : AppCompatActivity() {
 
         loadProjects()
     }
+
+    private fun fetchClientProfile(clientId: String) {
+        ApiClient.instance.getClientProfile(clientId)
+            .enqueue(object : Callback<ClientProfileResponse> {
+                override fun onResponse(
+                    call: Call<ClientProfileResponse>,
+                    response: Response<ClientProfileResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+
+                        val bottomSheet = ClientProfileBottomSheet(response.body()!!)
+                        bottomSheet.show(supportFragmentManager, "ClientProfile")
+                    } else {
+                        Toast.makeText(this@ArchitectProjectActivity, "Failed to load client profile", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ClientProfileResponse>, t: Throwable) {
+                    Toast.makeText(this@ArchitectProjectActivity, "Network error", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
     private fun openFabMenu() {
         isFabOpen = true
 

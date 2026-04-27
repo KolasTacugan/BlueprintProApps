@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ClientProjectResponse
@@ -18,7 +19,8 @@ import com.squareup.picasso.Picasso
 class ClientProjectAdapter(
     private val items: MutableList<ClientProjectResponse>,
     private val context: Context,
-    private val onItemClick: (ClientProjectResponse) -> Unit
+    private val onItemClick: (ClientProjectResponse) -> Unit,
+    private val onArchitectNameClick: (String) -> Unit
 ) : RecyclerView.Adapter<ClientProjectAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -42,21 +44,29 @@ class ClientProjectAdapter(
 
         holder.projectTitle.text = item.project_Title
         holder.projectStatus.text = item.project_Status
+
+        // 🔥 SET THE ARCHITECT NAME (this was missing)
         holder.architectName.text = item.architectName
 
-        // -----------------------------
-        // 🔥 FIXED IMAGE URL HERE
-        // -----------------------------
+        holder.architectName.setOnClickListener {
+            if (item.user_architectId.isNullOrEmpty()) {
+                Toast.makeText(context, "Architect ID missing", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            onArchitectNameClick(item.user_architectId)
+        }
+
+        // IMAGE
         if (!item.blueprint_ImageUrl.isNullOrEmpty()) {
             Picasso.get().load(item.blueprint_ImageUrl).into(holder.blueprintImage)
         } else {
             holder.blueprintImage.setImageResource(android.R.drawable.ic_menu_gallery)
         }
 
-        // 🔹 CARD CLICK
+        // ITEM CLICK
         holder.itemView.setOnClickListener { onItemClick(item) }
 
-        // 🔹 TRACK BUTTON CLICK (go to tracker)
+        // TRACK BUTTON
         holder.trackBtn.setOnClickListener {
             val intent = Intent(context, ClientProjectTrackerActivity::class.java)
             intent.putExtra("blueprintId", item.blueprint_Id)

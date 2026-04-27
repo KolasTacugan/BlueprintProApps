@@ -54,7 +54,18 @@ class EditProfileActivity : AppCompatActivity() {
             insets
         }
 
+
         initViews()
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userType = prefs.getString("userType", null)
+
+        if (userType == "Client") {
+            btnUploadPdf.isEnabled = false
+            btnUploadPdf.alpha = 0.5f
+        } else {
+            btnUploadPdf.isEnabled = true
+            btnUploadPdf.alpha = 1f
+        }
         loadExistingProfile()
         setupClicks()
     }
@@ -71,6 +82,27 @@ class EditProfileActivity : AppCompatActivity() {
         etEmail = findViewById(R.id.etEmail)
         etPhone = findViewById(R.id.etPhone)
     }
+
+    private fun getRealFileName(uri: Uri): String {
+        var name: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    name = it.getString(it.getColumnIndexOrThrow(android.provider.OpenableColumns.DISPLAY_NAME))
+                }
+            }
+        }
+        if (name == null) {
+            name = uri.path
+            val cut = name?.lastIndexOf('/') ?: -1
+            if (cut != -1) {
+                name = name?.substring(cut + 1)
+            }
+        }
+        return name ?: "image_${System.currentTimeMillis()}.jpg"
+    }
+
 
     private fun loadExistingProfile() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
@@ -110,7 +142,8 @@ class EditProfileActivity : AppCompatActivity() {
                     // ✅ Load profile image
                     if (!data.profilePhoto.isNullOrEmpty()) {
                         Glide.with(this@EditProfileActivity)
-                            .load("YOUR_BASE_URL" + data.profilePhoto)
+                            .load(data.profilePhoto)
+                            .placeholder(R.drawable.ic_user_placeholder)
                             .into(imgProfile)
                     }
 
@@ -159,11 +192,23 @@ class EditProfileActivity : AppCompatActivity() {
             if (uri != null) {
                 when (requestCode) {
                     PICK_IMAGE -> {
-                        selectedImageFile = FileUtil.from(this, uri)
+                        val imageBytes = contentResolver.openInputStream(uri)!!.readBytes()
+                        val fileName = getRealFileName(uri)
+
+                        selectedImageFile = File(cacheDir, fileName).apply {
+                            writeBytes(imageBytes)
+                        }
+
                         Glide.with(this).load(uri).into(imgProfile)
                     }
                     PICK_PDF -> {
-                        selectedPdfFile = FileUtil.from(this, uri)
+                        val pdfBytes = contentResolver.openInputStream(uri)!!.readBytes()
+                        val fileName = getRealFileName(uri)
+
+                        selectedPdfFile = File(cacheDir, fileName).apply {
+                            writeBytes(pdfBytes)
+                        }
+
                         Toast.makeText(this, "PDF Selected", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -196,10 +241,11 @@ class EditProfileActivity : AppCompatActivity() {
         val imagePart = selectedImageFile?.let {
             MultipartBody.Part.createFormData(
                 "ProfilePhoto",
-                it.name,
+                it.name, // <-- NOW CORRECT EXTENSION
                 it.asRequestBody("image/*".toMediaTypeOrNull())
             )
         }
+
 
         val pdfPart = selectedPdfFile?.let {
             MultipartBody.Part.createFormData(

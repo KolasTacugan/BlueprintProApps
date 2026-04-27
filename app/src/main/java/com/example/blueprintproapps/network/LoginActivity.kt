@@ -24,6 +24,25 @@ class  LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val remember = prefs.getBoolean("rememberMe", false)
+        val userType = prefs.getString("userType", null)
+
+        if (remember && userType != null) {
+            when (userType) {
+                "Client" -> {
+                    startActivity(Intent(this, ClientDashboardActivity::class.java))
+                    finish()
+                    return
+                }
+                "Architect" -> {
+                    startActivity(Intent(this, ArchitectDashboardActivity::class.java))
+                    finish()
+                    return
+                }
+            }
+        }
+
         setContentView(R.layout.activity_login)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -76,7 +95,9 @@ class  LoginActivity : AppCompatActivity() {
                                 "client" -> {
                                     editor.putString("clientId", loginResponse.userId)
                                     editor.putString("userType", "Client")
+                                    editor.putBoolean("rememberMe", rememberMe.isChecked)
                                     editor.apply()
+
 
                                     Toast.makeText(this@LoginActivity, "Login successful! Welcome ${loginResponse.email}", Toast.LENGTH_SHORT).show()
                                     val intent = Intent(this@LoginActivity, ClientDashboardActivity::class.java)
@@ -87,7 +108,9 @@ class  LoginActivity : AppCompatActivity() {
                                 "architect" -> {
                                     editor.putString("architectId", loginResponse.userId)
                                     editor.putString("userType", "Architect")
+                                    editor.putBoolean("rememberMe", rememberMe.isChecked)
                                     editor.apply()
+
 
                                     Toast.makeText(this@LoginActivity, "Login successful! Welcome ${loginResponse.email}", Toast.LENGTH_SHORT).show()
                                     val intent = Intent(this@LoginActivity, ArchitectDashboardActivity::class.java)

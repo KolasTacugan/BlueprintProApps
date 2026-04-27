@@ -13,5 +13,6 @@ data class ClientProjectResponse(
     val blueprint_Name: String,
     val blueprint_ImageUrl: String?,
 
-    val architectName: String
+    val architectName: String,
+    val user_architectId: String
 )

@@ -20,6 +20,9 @@ interface ApiService {
     @POST("api/MobileAuth/change-password")
     fun changePassword(@Body request: ChangePasswordRequest): Call<ChangePasswordResponse>
 
+    @POST("api/MobileAuth/verify-email")
+    fun verifyEmail(@Body request: VerifyEmailRequest): Call<VerifyEmailResponse>
+
     @GET("api/MobileAuth/profile/{userId}")
     fun getProfile(@Path("userId") userId: String): Call<ProfileApiResponse>
 
@@ -82,7 +85,8 @@ interface ApiService {
     @GET("api/MobileClient/Matches")
     fun getMatches(
         @Query("clientId") clientId: String?,
-        @Query("query") query: String?
+        @Query("query") query: String?,
+        @Query("clarifications") clarifications: String? = null
     ): Call<MatchesApiResponse>
 
     @POST("api/MobileClient/ExplainMatch")

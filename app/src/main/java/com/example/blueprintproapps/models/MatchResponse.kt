@@ -15,5 +15,6 @@ data class MatchResponse(
     @SerializedName("RealMatchStatus") val realMatchStatus: String?,
     @SerializedName("MatchDate") val matchDate: String?,
     @SerializedName("SimilarityScore") val similarityScore: Double?,
-    @SerializedName("SimilarityPercentage") val similarityPercentage: Double?
+    @SerializedName("SimilarityPercentage") val similarityPercentage: Double?,
+    @SerializedName("matchExplanation")     val matchExplanation: String?
 )

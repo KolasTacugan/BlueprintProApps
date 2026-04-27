@@ -7,5 +7,6 @@ data class ArchitectProjectResponse(
     val project_Status: String,
     val blueprint_Id: Int,
     val blueprintImage: String?,
+    val clientId: String,
     val clientName: String
 )
