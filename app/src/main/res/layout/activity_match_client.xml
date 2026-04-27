@@ -9,73 +9,198 @@
     android:focusable="true"
     android:background="@color/light_gray">
 
-    <!-- 🖼 Logo -->
-    <ImageView
-        android:id="@+id/appLogo"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:src="@drawable/bpp_logo"
-        android:contentDescription="BlueprintPro Logo"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/searchTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintVertical_bias="0.5"/>
-
-    <!-- 🏷 Title -->
-    <TextView
-        android:id="@+id/searchTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Architect Search"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#091635"
-
-        app:layout_constraintTop_toBottomOf="@id/appLogo"
-        app:layout_constraintBottom_toTopOf="@id/searchSubtitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- 📝 Subtitle -->
-    <TextView
-        android:id="@+id/searchSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Find the perfect architect for your project"
-        android:textSize="14sp"
-        android:textColor="#6B7280"
-
-        app:layout_constraintTop_toBottomOf="@id/searchTitle"
-        app:layout_constraintBottom_toTopOf="@id/clientPrompt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- 🔍 Search Bar -->
-    <EditText
-        android:id="@+id/clientPrompt"
+    <!-- ═══ TOP BAR ═══ -->
+    <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:hint="Search architects..."
-        android:background="@drawable/bg_search_field"
-        android:paddingHorizontal="20dp"
-        android:textSize="15sp"
-        android:textColor="#091635"
-        android:textColorHint="#6B7280"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="24dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        app:layout_constraintTop_toBottomOf="@id/searchSubtitle"
+        <!-- Logo (kept as direct child so code's findViewById works) -->
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/bpp_logo"
+            android:contentDescription="BlueprintPro Logo"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Architect Match"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#091635"
+                android:fontFamily="@font/raleway_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Describe your project and we'll find your architect"
+                android:textSize="11sp"
+                android:textColor="#9CA3AF"
+                android:fontFamily="@font/raleway_regular"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ═══ CHAT SCROLL AREA ═══ -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/chatScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/inputBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="12dp">
+
+            <!-- Static AI welcome bubble (always visible) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="52dp"
+                    android:text="Hi! Tell me about your project — the style, scale, and budget — and I'll match you with the best architects."
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:lineSpacingExtra="3dp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:background="@drawable/bg_ai_bubble"/>
+            </LinearLayout>
+
+            <!-- User query + AI answer bubbles (addChatBubble appends here) -->
+            <LinearLayout
+                android:id="@+id/chatHistoryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"/>
+
+            <!-- Clarification questions rendered as AI bubbles (buildQuestionCard appends here) -->
+            <LinearLayout
+                android:id="@+id/clarificationScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/clarificationInner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+            </LinearLayout>
+
+            <!-- AI feedback bubble (out-of-scope / low results) -->
+            <LinearLayout
+                android:id="@+id/aiFeedbackContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/aiFeedbackText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="52dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:lineSpacingExtra="3dp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:background="@drawable/bg_ai_bubble"/>
+            </LinearLayout>
+
+            <!-- Match result cards (nestedScrollingEnabled=false lets NestedScrollView drive) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/matchRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ═══ INPUT BAR ═══ -->
+    <LinearLayout
+        android:id="@+id/inputBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- ⏳ Loading -->
+        <EditText
+            android:id="@+id/clientPrompt"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:hint="Describe your project..."
+            android:background="@drawable/bg_search_field"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:textColor="#091635"
+            android:textColorHint="#9CA3AF"
+            android:fontFamily="@font/raleway_regular"
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:maxLines="1"/>
+
+        <ImageButton
+            android:id="@+id/sendButton"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_circle_primary"
+            android:src="@android:drawable/ic_menu_send"
+            app:tint="@color/white"
+            android:scaleType="center"
+            android:contentDescription="Send"/>
+    </LinearLayout>
+
+    <!-- ═══ LOADING OVERLAY ═══ -->
     <LinearLayout
         android:id="@+id/loadingSection"
         android:layout_width="wrap_content"
@@ -83,35 +208,26 @@
         android:visibility="gone"
         android:orientation="vertical"
         android:gravity="center"
-
+        android:background="@drawable/bg_card"
+        android:padding="28dp"
+        android:elevation="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="44dp"
+            android:layout_height="44dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading architects..."
+            android:text="Finding architects..."
             android:textColor="#6B7280"
-            android:layout_marginTop="8dp"/>
+            android:fontFamily="@font/raleway_regular"
+            android:textSize="13sp"
+            android:layout_marginTop="12dp"/>
     </LinearLayout>
-
-    <!-- 👥 Results -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/matchRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:padding="16dp"
-
-        app:layout_constraintTop_toBottomOf="@id/clientPrompt"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

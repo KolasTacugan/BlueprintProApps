@@ -277,4 +277,9 @@ interface ApiService {
     fun getDeletedProjects(
         @Query("architectId") architectId: String
     ): Call<List<DeletedProjectResponse>>
+
+    @GET("api/MobileArchitect/credentialStatus")
+    fun getCredentialStatus(
+        @Query("architectId") architectId: String
+    ): Call<CredentialStatusResponse>
 }
