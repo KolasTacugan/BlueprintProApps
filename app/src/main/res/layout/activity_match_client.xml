@@ -195,7 +195,7 @@
             android:layout_marginStart="8dp"
             android:background="@drawable/bg_circle_primary"
             android:src="@android:drawable/ic_menu_send"
-            android:tint="@color/white"
+            app:tint="@color/white"
             android:scaleType="center"
             android:contentDescription="Send"/>
     </LinearLayout>

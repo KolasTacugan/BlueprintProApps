@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.models.CredentialStatusResponse
 import com.example.blueprintproapps.models.ProfileApiResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.card.MaterialCardView
@@ -44,6 +45,7 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         val architectId = prefs.getString("architectId", null)
 
         fetchArchitectProfile(architectId, tvUserName)
+        checkAndShowCredentialReminder(architectId)
 
         chatIcon.setOnClickListener {
             startActivity(Intent(this, ArchitectMessagesActivity::class.java))
@@ -76,6 +78,29 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         }
 
         bottomNavigation.selectedItemId = R.id.nav_home
+    }
+
+    private fun checkAndShowCredentialReminder(architectId: String?) {
+        if (architectId.isNullOrBlank()) return
+
+        ApiClient.instance.getCredentialStatus(architectId)
+            .enqueue(object : Callback<CredentialStatusResponse> {
+
+                override fun onResponse(
+                    call: Call<CredentialStatusResponse>,
+                    response: Response<CredentialStatusResponse>
+                ) {
+                    val body = response.body()
+                    if (body != null && body.success && !body.hasCredentialFile) {
+                        CredentialReminderBottomSheet()
+                            .show(supportFragmentManager, "credential_reminder")
+                    }
+                }
+
+                override fun onFailure(call: Call<CredentialStatusResponse>, t: Throwable) {
+                    // silent — reminder is non-critical
+                }
+            })
     }
 
     private fun fetchArchitectProfile(architectId: String?, tvUserName: TextView) {
