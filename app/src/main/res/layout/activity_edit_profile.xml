@@ -88,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_button_outlined"
+            android:background="@drawable/rounded_white_card"
             android:padding="24dp"
             android:elevation="2dp"
             android:layout_marginBottom="20dp">

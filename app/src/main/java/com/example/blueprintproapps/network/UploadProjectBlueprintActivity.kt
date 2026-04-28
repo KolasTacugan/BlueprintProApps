@@ -4,9 +4,13 @@ import android.app.DatePickerDialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.api.ApiService
@@ -35,6 +39,7 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
     private lateinit var dueDateBtn: Button
     private lateinit var clientDropdown: Spinner
     private lateinit var uploadBtn: Button
+    private lateinit var backBtn: ImageButton
 
     private var imageUri: Uri? = null
     private var dueDateValue: String = ""
@@ -55,7 +60,13 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val session = AuthSessionManager.requireSession(this, UserRole.ARCHITECT) ?: return
         architectId = session.userId
+        enableEdgeToEdge()
         setContentView(R.layout.activity_upload_project_blueprint)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         blueprintImageView = findViewById(R.id.blueprintImageView)
         selectImageBtn = findViewById(R.id.selectImageBtn)
@@ -65,9 +76,11 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
         dueDateBtn = findViewById(R.id.dueDateBtn)
         clientDropdown = findViewById(R.id.clientDropdown)
         uploadBtn = findViewById(R.id.uploadBtn)
+        backBtn = findViewById(R.id.backButton)
 
         selectImageBtn.setOnClickListener { pickImageLauncher.launch("image/*") }
         dueDateBtn.setOnClickListener { showDatePicker() }
+        backBtn.setOnClickListener { finish() }
 
         fetchClients()
 
@@ -152,8 +165,21 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
     }
 
     private fun uploadProjectBlueprint() {
+        val projectNameText = projectNameInput.text.toString().trim()
+        val descriptionText = descriptionInput.text.toString().trim()
+
         if (imageUri == null) {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (projectNameText.isEmpty()) {
+            Toast.makeText(this, "Please enter a project name", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (descriptionText.isEmpty()) {
+            Toast.makeText(this, "Please enter a project description", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -167,23 +193,29 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
             return
         }
 
-        val file = uriToFile(imageUri!!)
-        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        val body = MultipartBody.Part.createFormData("BlueprintImage", file.name, requestFile)
-
-        // ✅ Sanitize budget: Remove non-numeric characters (like ₱ or commas)
-        val rawBudget = budgetInput.text.toString().replace(Regex("[^0-9]"), "")
-        if (rawBudget.isEmpty()) {
+        val rawBudget = budgetInput.text.toString().trim().replace(",", "")
+        val budgetValue = rawBudget.toDoubleOrNull()
+        if (budgetValue == null || budgetValue <= 0.0) {
             Toast.makeText(this, "Please enter a valid budget", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val projectName = projectNameInput.text.toString().trim().toRequestBody("text/plain".toMediaType())
+        val file = try {
+            uriToFile(imageUri!!)
+        } catch (ex: Exception) {
+            Toast.makeText(this, "Failed to read selected image: ${ex.message}", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("BlueprintImage", file.name, requestFile)
+
+        val projectName = projectNameText.toRequestBody("text/plain".toMediaType())
         val budget = rawBudget.toRequestBody("text/plain".toMediaType())
-        val description = descriptionInput.text.toString().trim().toRequestBody("text/plain".toMediaType())
+        val description = descriptionText.toRequestBody("text/plain".toMediaType())
         val clientId = selectedClientId.toRequestBody("text/plain".toMediaType())
         val dueDate = dueDateValue.toRequestBody("text/plain".toMediaType())
         val architectId = this.architectId.toRequestBody("text/plain".toMediaType())
+        uploadBtn.isEnabled = false
 
         apiService.uploadProjectBlueprint(
             body,
@@ -203,6 +235,8 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
                     file.delete()
                     finish()
                 } else {
+                    uploadBtn.isEnabled = true
+                    file.delete()
                     val errorHtml = response.errorBody()?.string() ?: "Unknown error"
                     Log.e("UPLOAD_FAILED", "Server Error (${response.code()}): $errorHtml")
                     Toast.makeText(this@UploadProjectBlueprintActivity, "Upload failed. Check logs.", Toast.LENGTH_SHORT).show()
@@ -210,6 +244,8 @@ class UploadProjectBlueprintActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<UploadProjectBlueprintResponse>, t: Throwable) {
+                uploadBtn.isEnabled = true
+                file.delete()
                 Toast.makeText(this@UploadProjectBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

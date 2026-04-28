@@ -3,10 +3,12 @@ package com.example.blueprintproapps.network
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.view.View
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,7 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
     private lateinit var adapter: ArchitectBlueprintAdapter
     private lateinit var backBtn: ImageButton
     private lateinit var addBtn: FloatingActionButton
+    private lateinit var stateText: TextView
     private lateinit var architectId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,17 +41,13 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewBlueprints)
         backBtn = findViewById(R.id.backButton)
         addBtn = findViewById(R.id.addBlueprintBtn)
+        stateText = findViewById(R.id.blueprintState)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ArchitectBlueprintAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
 
-        // 🔙 Back to Architect Dashboard
-        backBtn.setOnClickListener {
-            val intent = Intent(this, ArchitectDashboardActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        backBtn.setOnClickListener { finish() }
 
         // ➕ Add Blueprint (go to upload)
         addBtn.setOnClickListener {
@@ -63,6 +62,7 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
         loadBlueprints()
     }
     private fun loadBlueprints() {
+        renderState("Loading blueprints...", showList = false)
         ApiClient.instance.getArchitectBlueprints(architectId)
             .enqueue(object : retrofit2.Callback<List<ArchitectBlueprintResponse>> {
                 override fun onResponse(
@@ -72,7 +72,12 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
                     if (response.isSuccessful && response.body() != null) {
                         val blueprintList = response.body()!!
                         adapter.updateData(blueprintList)
+                        renderState(
+                            if (blueprintList.isEmpty()) "No marketplace blueprints yet. Tap + to upload your first design." else "",
+                            showList = blueprintList.isNotEmpty()
+                        )
                     } else {
+                        renderState("Failed to load blueprints.", showList = false)
                         Toast.makeText(this@ArchitectBlueprintActivity, "Failed to load blueprints", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -80,8 +85,15 @@ class ArchitectBlueprintActivity : AppCompatActivity() {
                     call: retrofit2.Call<List<ArchitectBlueprintResponse>>,
                     t: Throwable
                 ) {
+                    renderState("Network error while loading blueprints.", showList = false)
                     Toast.makeText(this@ArchitectBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun renderState(message: String, showList: Boolean) {
+        stateText.text = message
+        stateText.visibility = if (message.isBlank()) View.GONE else View.VISIBLE
+        recyclerView.visibility = if (showList) View.VISIBLE else View.GONE
     }
 }

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Patterns
+import android.view.View
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +18,6 @@ import com.example.blueprintproapps.auth.AuthSessionManager
 import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.EditProfileResponse
 import com.example.blueprintproapps.models.GetEditProfileResponse
-import com.example.blueprintproapps.utils.FileUtil
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -33,6 +34,8 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var btnUploadPdf: Button
     private lateinit var btnBack: ImageButton
     private lateinit var btnSaveChanges: Button
+    private lateinit var layoutCredentials: LinearLayout
+    private lateinit var tvUploadedFile: TextView
 
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
@@ -63,13 +66,8 @@ class EditProfileActivity : AppCompatActivity() {
 
 
         initViews()
-        if (userRole == UserRole.CLIENT) {
-            btnUploadPdf.isEnabled = false
-            btnUploadPdf.alpha = 0.5f
-        } else {
-            btnUploadPdf.isEnabled = true
-            btnUploadPdf.alpha = 1f
-        }
+        layoutCredentials.visibility = if (userRole == UserRole.ARCHITECT) View.VISIBLE else View.GONE
+        btnUploadPdf.isEnabled = userRole == UserRole.ARCHITECT
         loadExistingProfile()
         setupClicks()
         
@@ -93,6 +91,8 @@ class EditProfileActivity : AppCompatActivity() {
         btnUploadPdf = findViewById(R.id.btnUploadPdf)
         btnBack = findViewById(R.id.btnBack)
         btnSaveChanges = findViewById(R.id.btnSaveChanges)
+        layoutCredentials = findViewById(R.id.layoutCredentials)
+        tvUploadedFile = findViewById(R.id.tvUploadedFile)
 
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
@@ -117,7 +117,25 @@ class EditProfileActivity : AppCompatActivity() {
                 name = name?.substring(cut + 1)
             }
         }
-        return name ?: "image_${System.currentTimeMillis()}.jpg"
+        return (name ?: "file_${System.currentTimeMillis()}").replace(Regex("[\\\\/:*?\"<>|]"), "_")
+    }
+
+    private fun copyUriToCache(uri: Uri): File {
+        val target = File(cacheDir, "${System.currentTimeMillis()}_${getRealFileName(uri)}")
+        val inputStream = contentResolver.openInputStream(uri)
+            ?: throw IllegalArgumentException("Cannot open selected file")
+        inputStream.use { input ->
+            target.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        return target
+    }
+
+    private fun displayFileName(path: String?): String {
+        val value = path?.trim().orEmpty()
+        if (value.isEmpty()) return "No file selected"
+        return value.substringAfterLast('/').ifBlank { value }
     }
 
 
@@ -142,10 +160,11 @@ class EditProfileActivity : AppCompatActivity() {
                     etLastName.setText(data.lastName)
                     etEmail.setText(data.email)
                     etPhone.setText(data.phoneNumber)
+                    tvUploadedFile.text = displayFileName(data.credentialsFile)
 
                     // ✅ Load profile image
                     if (!data.profilePhoto.isNullOrEmpty()) {
-                        val placeholderDrawable = com.joanzapata.iconify.IconDrawable(this@EditProfileActivity, "{md-person}")
+                        val placeholderDrawable = com.joanzapata.iconify.IconDrawable(this@EditProfileActivity, "md-person")
                             .colorRes(android.R.color.darker_gray)
                             .sizeDp(48)
                         Glide.with(this@EditProfileActivity)
@@ -161,6 +180,7 @@ class EditProfileActivity : AppCompatActivity() {
                     editor.putString("email", data.email)
                     editor.putString("phone", data.phoneNumber)
                     editor.putString("profilePhoto", data.profilePhoto)
+                    editor.putString("credentialsFile", data.credentialsFile)
                     editor.apply()
                 }
 
@@ -181,6 +201,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         btnUploadPdf.setOnClickListener {
+            if (userRole != UserRole.ARCHITECT) return@setOnClickListener
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "application/pdf"
             startActivityForResult(intent, PICK_PDF)
@@ -199,24 +220,23 @@ class EditProfileActivity : AppCompatActivity() {
             if (uri != null) {
                 when (requestCode) {
                     PICK_IMAGE -> {
-                        val imageBytes = contentResolver.openInputStream(uri)!!.readBytes()
-                        val fileName = getRealFileName(uri)
-
-                        selectedImageFile = File(cacheDir, fileName).apply {
-                            writeBytes(imageBytes)
+                        try {
+                            selectedImageFile?.delete()
+                            selectedImageFile = copyUriToCache(uri)
+                            Glide.with(this).load(uri).into(imgProfile)
+                        } catch (ex: Exception) {
+                            Toast.makeText(this, "Failed to read selected image: ${ex.message}", Toast.LENGTH_SHORT).show()
                         }
-
-                        Glide.with(this).load(uri).into(imgProfile)
                     }
                     PICK_PDF -> {
-                        val pdfBytes = contentResolver.openInputStream(uri)!!.readBytes()
-                        val fileName = getRealFileName(uri)
-
-                        selectedPdfFile = File(cacheDir, fileName).apply {
-                            writeBytes(pdfBytes)
+                        try {
+                            selectedPdfFile?.delete()
+                            selectedPdfFile = copyUriToCache(uri)
+                            tvUploadedFile.text = getRealFileName(uri)
+                            Toast.makeText(this, "PDF selected", Toast.LENGTH_SHORT).show()
+                        } catch (ex: Exception) {
+                            Toast.makeText(this, "Failed to read selected PDF: ${ex.message}", Toast.LENGTH_SHORT).show()
                         }
-
-                        Toast.makeText(this, "PDF Selected", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -226,11 +246,35 @@ class EditProfileActivity : AppCompatActivity() {
     private fun saveChanges() {
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
 
+        val firstName = etFirstName.text.toString().trim()
+        val lastName = etLastName.text.toString().trim()
+        val email = etEmail.text.toString().trim()
+        val phone = etPhone.text.toString().trim()
+
+        when {
+            firstName.isEmpty() -> {
+                Toast.makeText(this, "Please enter your first name", Toast.LENGTH_SHORT).show()
+                return
+            }
+            lastName.isEmpty() -> {
+                Toast.makeText(this, "Please enter your last name", Toast.LENGTH_SHORT).show()
+                return
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                return
+            }
+            phone.length != 11 || !phone.all { it.isDigit() } -> {
+                Toast.makeText(this, "Please enter an 11-digit phone number", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
         val rbUserId = userId.toRequestBody("text/plain".toMediaTypeOrNull())
-        val rbFirst = etFirstName.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val rbLast = etLastName.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val rbEmail = etEmail.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-        val rbPhone = etPhone.text.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val rbFirst = firstName.toRequestBody("text/plain".toMediaTypeOrNull())
+        val rbLast = lastName.toRequestBody("text/plain".toMediaTypeOrNull())
+        val rbEmail = email.toRequestBody("text/plain".toMediaTypeOrNull())
+        val rbPhone = phone.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val imagePart = selectedImageFile?.let {
             MultipartBody.Part.createFormData(
@@ -241,13 +285,15 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
 
-        val pdfPart = selectedPdfFile?.let {
+        val pdfPart = if (userRole == UserRole.ARCHITECT) selectedPdfFile?.let {
             MultipartBody.Part.createFormData(
                 "CredentialsFile",
                 it.name,
                 it.asRequestBody("application/pdf".toMediaTypeOrNull())
             )
-        }
+        } else null
+
+        btnSaveChanges.isEnabled = false
 
         ApiClient.instance.editProfile(
             rbUserId,
@@ -262,21 +308,25 @@ class EditProfileActivity : AppCompatActivity() {
                 call: Call<EditProfileResponse>,
                 response: Response<EditProfileResponse>
             ) {
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body()?.success == true) {
                     val data = response.body()?.data
 
-                    // ✅ Save updated profile locally
                     val editor = prefs.edit()
-                    editor.putString("firstName", data?.user_fname)
-                    editor.putString("lastName", data?.user_lname)
-                    editor.putString("email", data?.email)
-                    editor.putString("phone", data?.phoneNumber)
-                    editor.putString("profilePhoto", data?.user_profilePhoto)
+                    editor.putString("firstName", data?.user_fname ?: firstName)
+                    editor.putString("lastName", data?.user_lname ?: lastName)
+                    editor.putString("email", data?.email ?: email)
+                    editor.putString("phone", data?.phoneNumber ?: phone)
+                    editor.putString("profilePhoto", data?.user_profilePhoto ?: prefs.getString("profilePhoto", null))
+                    editor.putString("credentialsFile", data?.user_CredentialsFile ?: prefs.getString("credentialsFile", null))
                     editor.apply()
+
+                    selectedImageFile?.delete()
+                    selectedPdfFile?.delete()
 
                     Toast.makeText(this@EditProfileActivity, "Profile Updated!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
+                    btnSaveChanges.isEnabled = true
                     Toast.makeText(
                         this@EditProfileActivity,
                         "Failed: ${response.code()}",
@@ -286,6 +336,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<EditProfileResponse>, t: Throwable) {
+                btnSaveChanges.isEnabled = true
                 Toast.makeText(this@EditProfileActivity, "Error: ${t.message}", Toast.LENGTH_SHORT)
                     .show()
             }

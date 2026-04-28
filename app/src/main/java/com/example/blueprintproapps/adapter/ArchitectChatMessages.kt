@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.MessageResponse
+import com.example.blueprintproapps.utils.DateTimeUtils
 
 class ArchitectChatMessagesAdapter(
     private val messages: MutableList<MessageResponse>,
@@ -38,13 +39,7 @@ class ArchitectChatMessagesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
 
-        // Format date: "2026-04-26T13:44:30" -> "1:44 PM"
-        val formattedTime = try {
-            val date = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault()).parse(message.messageDate)
-            java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(date)
-        } catch (e: Exception) {
-            message.messageDate // fallback
-        }
+        val formattedTime = DateTimeUtils.formatPhilippineTime(message.messageDate)
 
         if (holder is SentMessageViewHolder) {
             holder.txtMessage.text = message.messageBody

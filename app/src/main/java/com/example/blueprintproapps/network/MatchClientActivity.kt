@@ -39,6 +39,7 @@ class MatchClientActivity : AppCompatActivity() {
     private lateinit var appLogo: ImageView
     private lateinit var clientPrompt: EditText
     private lateinit var sendButton: ImageButton
+    private lateinit var closeButton: ImageView
     private lateinit var loadingSection: LinearLayout
     private lateinit var matchRecyclerView: RecyclerView
     private lateinit var matchAdapter: MatchAdapter
@@ -72,6 +73,7 @@ class MatchClientActivity : AppCompatActivity() {
 
         root                    = findViewById(R.id.root)
         appLogo                 = findViewById(R.id.appLogo)
+        closeButton             = findViewById(R.id.closeButton)
         clientPrompt            = findViewById(R.id.clientPrompt)
         sendButton              = findViewById(R.id.sendButton)
         loadingSection          = findViewById(R.id.loadingSection)
@@ -109,6 +111,7 @@ class MatchClientActivity : AppCompatActivity() {
 
         // ── Send button
         sendButton.setOnClickListener { submitCurrentQuery() }
+        closeButton.setOnClickListener { finish() }
     }
 
     private fun submitCurrentQuery() {
@@ -490,9 +493,17 @@ class MatchClientActivity : AppCompatActivity() {
         ApiClient.instance.requestMatch(
             MatchRequest(architectId, clientId)
         ).enqueue(object : Callback<GenericResponse> {
-            override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {}
+            override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
+                val message = if (response.isSuccessful && response.body()?.success == true) {
+                    "Match request sent."
+                } else {
+                    response.body()?.message ?: "Unable to send match request."
+                }
+                Toast.makeText(this@MatchClientActivity, message, Toast.LENGTH_SHORT).show()
+            }
             override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
                 Log.e("MatchClientActivity", "Match request failed", t)
+                Toast.makeText(this@MatchClientActivity, "Network error. Try again.", Toast.LENGTH_SHORT).show()
             }
         })
     }

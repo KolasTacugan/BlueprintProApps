@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectProjectResponse
 import com.example.blueprintproapps.network.ArchitectProjectTrackerActivity
+import com.example.blueprintproapps.utils.ProjectStatusFormatter
 import com.example.blueprintproapps.utils.UiEffects
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
@@ -56,28 +57,11 @@ class ArchitectProjectAdapter(
         holder.clientName.text = "Client: ${item.clientName}"
         holder.projectStatusBadge.text = item.project_Status
 
-        // Progress Mapping
-        val progressValue = when (item.project_Status) {
-            "Ongoing" -> 20
-            "Review" -> 40
-            "Compliance" -> 60
-            "Finalization" -> 80
-            "Finished" -> 100
-            else -> 10
-        }
+        val progressValue = ProjectStatusFormatter.progressFor(item.project_Status)
         holder.projectProgress.progress = progressValue
         holder.progressPercentage.text = "$progressValue%"
 
-        // Status Colors
-        val statusColor = when (item.project_Status) {
-            "Ongoing" -> "#3B82F6"
-            "Review" -> "#F59E0B"
-            "Compliance" -> "#8B5CF6"
-            "Finalization" -> "#06B6D4"
-            "Finished" -> "#10B981"
-            "Deleted" -> "#EF4444"
-            else -> "#64748B"
-        }
+        val statusColor = ProjectStatusFormatter.colorFor(item.project_Status)
         holder.projectStatusBadge.backgroundTintList = ColorStateList.valueOf(Color.parseColor(statusColor))
 
         // Client click

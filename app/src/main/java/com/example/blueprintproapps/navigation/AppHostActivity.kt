@@ -16,13 +16,12 @@ class AppHostActivity : AppCompatActivity() {
         setContentView(R.layout.activity_app_host)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        val initialDestination = if (savedInstanceState == null) {
-            intent.getStringExtra(EXTRA_INITIAL_DESTINATION)
+        val initialDestination = savedInstanceState
+            ?.getString(KEY_SELECTED_DESTINATION)
+            ?.let { runCatching { AppNavDestination.valueOf(it) }.getOrNull() }
+            ?: intent.getStringExtra(EXTRA_INITIAL_DESTINATION)
                 ?.let { runCatching { AppNavDestination.valueOf(it) }.getOrNull() }
-                ?: AppNavDestination.HOME
-        } else {
-            null
-        }
+            ?: AppNavDestination.HOME
 
         AppNavigator.bindHost(
             activity = this,
@@ -32,7 +31,15 @@ class AppHostActivity : AppCompatActivity() {
         )
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        val destination = AppNavDestination.entries.firstOrNull { it.menuId == bottomNav.selectedItemId }
+        outState.putString(KEY_SELECTED_DESTINATION, destination?.name ?: AppNavDestination.HOME.name)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
         const val EXTRA_INITIAL_DESTINATION = "initialDestination"
+        private const val KEY_SELECTED_DESTINATION = "selectedDestination"
     }
 }

@@ -19,6 +19,7 @@ import com.example.blueprintproapps.models.ProfileApiResponse
 import com.example.blueprintproapps.network.MessagesActivity
 import com.example.blueprintproapps.network.MarketPlaceActivity
 import com.example.blueprintproapps.network.MatchClientActivity
+import com.example.blueprintproapps.utils.ProjectStatusFormatter
 import com.example.blueprintproapps.utils.UiEffects
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -412,39 +413,14 @@ class ClientHomeFragment : Fragment(R.layout.fragment_client_home) {
                 val phaseView = projectView.findViewById<TextView>(R.id.tvProjectPhase)
                 val percentView = projectView.findViewById<TextView>(R.id.tvProjectPercent)
 
-                val progress = mapStatusToProgress(project.project_Status)
+                val progress = ProjectStatusFormatter.progressFor(project.project_Status)
                 projectTitleView.text = project.project_Title ?: "Untitled Project"
                 progressBar.progress = progress
-                phaseView.text = mapStatusToPhaseLabel(project.project_Status)
+                phaseView.text = ProjectStatusFormatter.phaseFor(project.project_Status)
                 percentView.text = "$progress%"
 
                 projectsContainer.addView(projectView)
             }
-        }
-    }
-
-    // ── Helpers ──────────────────────────────────────────────────────
-    private fun mapStatusToProgress(status: String?): Int {
-        val s = status?.lowercase().orEmpty()
-        return when {
-            "finish" in s || "done" in s || "complete" in s -> 100
-            "final" in s -> 90
-            "compliance" in s || "permit" in s -> 66
-            "review" in s || "development" in s -> 33
-            else -> 0
-        }
-    }
-
-    private fun mapStatusToPhaseLabel(status: String?): String {
-        val s = status?.lowercase().orEmpty()
-        return when {
-            "final" in s || "done" in s || "finish" in s || "complete" in s -> "Completed"
-            "compliance" in s || "permit" in s -> "Compliance & Permitting"
-            "doc" in s || "construction" in s -> "Construction Docs"
-            "review" in s || "development" in s -> "Design Development"
-            "design" in s || "schematic" in s -> "Schematic Design"
-            "start" in s || "ongoing" in s || "planning" in s || "concept" in s -> "Planning"
-            else -> status ?: "Initiated"
         }
     }
 
@@ -453,10 +429,12 @@ class ClientHomeFragment : Fragment(R.layout.fragment_client_home) {
         matchesCall?.cancel()
         projectsCall?.cancel()
         conversationsCall?.cancel()
+        purchaseCall?.cancel()
         profileCall = null
         matchesCall = null
         projectsCall = null
         conversationsCall = null
+        purchaseCall = null
         currentUserId = null
         viewDestroyed = true
         super.onDestroyView()

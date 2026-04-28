@@ -2,7 +2,9 @@ package com.example.blueprintproapps.network
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,7 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
     private val deletedList = mutableListOf<DeletedProjectResponse>()
 
     private lateinit var btnBack: ImageView
+    private lateinit var stateText: TextView
     private lateinit var architectId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +40,7 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
 
         // Back button
         btnBack = findViewById(R.id.btnBack)
+        stateText = findViewById(R.id.deletedProjectsState)
         btnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         recyclerView = findViewById(R.id.recyclerViewDeletedProjects)
@@ -56,6 +60,7 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
     // Load deleted projects
     // ---------------------------------------
     private fun loadDeletedProjects() {
+        renderState("Loading bin...", showList = false)
         ApiClient.instance.getDeletedProjects(architectId)
             .enqueue(object : Callback<List<DeletedProjectResponse>> {
                 override fun onResponse(
@@ -66,7 +71,12 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
                         deletedList.clear()
                         deletedList.addAll(response.body()!!)
                         adapter.notifyDataSetChanged()
+                        renderState(
+                            if (deletedList.isEmpty()) "Project bin is empty." else "",
+                            showList = deletedList.isNotEmpty()
+                        )
                     } else {
+                        renderState("Failed to load deleted projects.", showList = false)
                         Toast.makeText(
                             this@ArchitectDeletedProjectsActivity,
                             "Failed to load deleted projects",
@@ -76,6 +86,7 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<List<DeletedProjectResponse>>, t: Throwable) {
+                    renderState("Network error while loading deleted projects.", showList = false)
                     Toast.makeText(
                         this@ArchitectDeletedProjectsActivity,
                         "Error: ${t.message}",
@@ -83,6 +94,12 @@ class ArchitectDeletedProjectsActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+    }
+
+    private fun renderState(message: String, showList: Boolean) {
+        stateText.text = message
+        stateText.visibility = if (message.isBlank()) View.GONE else View.VISIBLE
+        recyclerView.visibility = if (showList) View.VISIBLE else View.GONE
     }
 
     // ---------------------------------------

@@ -125,6 +125,22 @@ class MatchAdapter(
                     )
                     btnMatch.setTextColor(Color.BLACK)
                 }
+
+                "Declined" -> {
+                    btnMatch.text = "Declined"
+                    btnMatch.isEnabled = false
+                    btnMatch.setBackgroundColor(Color.parseColor("#E2E8F0"))
+                    btnMatch.setTextColor(Color.parseColor("#64748B"))
+                }
+
+                else -> {
+                    btnMatch.text = "Match"
+                    btnMatch.isEnabled = true
+                    btnMatch.setBackgroundColor(
+                        ContextCompat.getColor(itemView.context, R.color.primary)
+                    )
+                    btnMatch.setTextColor(Color.WHITE)
+                }
             }
 
             btnMatch.setOnClickListener {

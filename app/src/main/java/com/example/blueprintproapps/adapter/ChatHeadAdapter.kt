@@ -21,8 +21,10 @@ class ChatHeadAdapter(
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(chatHeads[adapterPosition])
-
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(chatHeads[position])
+                }
             }
         }
     }

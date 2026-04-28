@@ -1,6 +1,7 @@
 package com.example.blueprintproapps.network
 
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -37,6 +38,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var refreshRunnable: Runnable
     private lateinit var senderId: String
     private lateinit var receiverId: String
+    private var hasShownLoadError = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +54,21 @@ class ChatActivity : AppCompatActivity() {
 
         val btnBack = findViewById<android.view.View>(R.id.btnBack)
         val txtRecipientName = findViewById<TextView>(R.id.txtRecipientName)
+        val txtStatus = findViewById<TextView>(R.id.txtStatus)
         val imgRecipientProfile = findViewById<android.widget.ImageView>(R.id.imgRecipientProfile)
+        val btnAttach = findViewById<View>(R.id.btnAttach)
+        val btnInfo = findViewById<View>(R.id.btnInfo)
 
         val receiverName = intent.getStringExtra("receiverName") ?: "Chat"
         val receiverPhoto = intent.getStringExtra("receiverPhoto")
         
         txtRecipientName.text = receiverName
+        txtStatus.text = "Approved match"
         btnBack.setOnClickListener { finish() }
+        btnAttach.visibility = View.GONE
+        btnInfo.setOnClickListener {
+            Toast.makeText(this, "Profile details are available from Messages.", Toast.LENGTH_SHORT).show()
+        }
 
         Glide.with(this)
             .load(receiverPhoto)
@@ -96,8 +106,8 @@ class ChatActivity : AppCompatActivity() {
 
     private fun startAutoRefresh() {
         refreshRunnable = Runnable {
-            getMessages()  // fetch new messages repeatedly
-            refreshHandler.postDelayed(refreshRunnable, 1500) // every 1.5 seconds
+            getMessages()
+            refreshHandler.postDelayed(refreshRunnable, 5000)
         }
         refreshHandler.post(refreshRunnable)
     }
@@ -119,24 +129,24 @@ class ChatActivity : AppCompatActivity() {
                         messages.clear()
                         messages.addAll(response.body()!!.messages)
                         adapter.notifyDataSetChanged()
-                        recyclerMessages.scrollToPosition(messages.size - 1)
+                        if (messages.isNotEmpty()) {
+                            recyclerMessages.scrollToPosition(messages.size - 1)
+                        }
                     } else {
-                        Toast.makeText(
-                            this@ChatActivity,
-                            "Failed to load messages",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showLoadErrorOnce("Failed to load messages")
                     }
                 }
 
                 override fun onFailure(call: Call<MessageListResponse>, t: Throwable) {
-                    Toast.makeText(
-                        this@ChatActivity,
-                        "Error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showLoadErrorOnce("Error: ${t.message}")
                 }
             })
+    }
+
+    private fun showLoadErrorOnce(message: String) {
+        if (hasShownLoadError) return
+        hasShownLoadError = true
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     // ✅ Send message to server

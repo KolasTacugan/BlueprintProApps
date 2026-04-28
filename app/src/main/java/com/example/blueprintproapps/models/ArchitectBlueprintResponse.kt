@@ -5,5 +5,6 @@ data class ArchitectBlueprintResponse(
     val blueprintName: String,
     val blueprintPrice: Double,
     val blueprintStyle: String,
-    val blueprintImage: String
+    val blueprintImage: String,
+    val blueprintDescription: String? = null
 )

@@ -106,6 +106,11 @@ class ArchitectProjectActivity : AppCompatActivity() {
 
         // Filter chip logic
         filterChipGroup.setOnCheckedChangeListener { _, _ ->
+            if (filterChipGroup.checkedChipId == R.id.chipDeleted) {
+                startActivity(Intent(this, ArchitectDeletedProjectsActivity::class.java))
+                filterChipGroup.check(R.id.chipAll)
+                return@setOnCheckedChangeListener
+            }
             filterProjects()
         }
 
@@ -144,7 +149,6 @@ class ArchitectProjectActivity : AppCompatActivity() {
             val matchesFilter = when (checkedChipId) {
                 R.id.chipOngoing -> project.project_Status == "Ongoing"
                 R.id.chipFinished -> project.project_Status == "Finished"
-                R.id.chipDeleted -> project.project_Status == "Deleted"
                 else -> true // All
             }
             

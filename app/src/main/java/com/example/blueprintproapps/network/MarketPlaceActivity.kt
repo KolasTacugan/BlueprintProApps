@@ -1,7 +1,12 @@
 package com.example.blueprintproapps.network
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +25,7 @@ import com.example.blueprintproapps.utils.CartBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import android.view.WindowManager
 
@@ -32,8 +38,13 @@ class MarketPlaceActivity : AppCompatActivity() {
     private val displayedList = mutableListOf<BlueprintResponse>()
     // ✅ Cart badge elements
     private lateinit var cartBtn: com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    private lateinit var categoryTabs: TabLayout
+    private lateinit var searchEditText: EditText
+    private lateinit var marketplaceState: TextView
     private var cartItemCount = 0
     private lateinit var clientId: String
+    private var selectedCategory = "All"
+    private var cartBlueprintIds = emptySet<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +60,11 @@ class MarketPlaceActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.blueprintRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
+        marketplaceState = findViewById(R.id.marketplaceState)
+        searchEditText = findViewById(R.id.searchEditText)
+        categoryTabs = findViewById(R.id.categoryTabs)
+
+        findViewById<MaterialToolbar>(R.id.topBar).setNavigationOnClickListener { finish() }
 
         // ✅ Initialize cart button
         cartBtn = findViewById(R.id.cartBtn)
@@ -72,50 +88,63 @@ class MarketPlaceActivity : AppCompatActivity() {
             }
             cartBottomSheet.show(supportFragmentManager, "CartBottomSheet")
         }
-        val categoryTabs = findViewById<TabLayout>(R.id.categoryTabs)
-
-
-        fetchMarketplace()
-        fetchCartCount()
-
-        val categories = listOf("All", "Modern", "Traditional", "Contemporary", "Minimalist")
-
-        categories.forEach { category ->
-            categoryTabs.addTab(categoryTabs.newTab().setText(category))
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = filterBlueprints()
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchEditText.clearFocus()
+                true
+            } else {
+                false
+            }
         }
+
         categoryTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val selectedCategory = tab.text.toString()
-                filterBlueprints(selectedCategory)
+                selectedCategory = tab.text.toString()
+                filterBlueprints()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-
+        fetchMarketplace()
+        fetchCartCount()
     }
 
     private fun refreshMarketplace() {
         fetchCartCount()     // ✅ Updates the cart badge AND sets isAddedToCart flags
-        adapter.notifyDataSetChanged()
+        filterBlueprints()
     }
 
-    private fun filterBlueprints(category: String) {
-        val filtered = if (category == "All") {
-            blueprintList
-        } else {
-            blueprintList.filter {
-                it.blueprintStyle?.contains(category, ignoreCase = true) == true
-            }
+    private fun filterBlueprints() {
+        val query = searchEditText.text.toString().trim()
+        val filtered = blueprintList.filter { blueprint ->
+            val matchesCategory = selectedCategory == "All" ||
+                blueprint.blueprintStyle?.contains(selectedCategory, ignoreCase = true) == true
+            val matchesQuery = query.isBlank() ||
+                blueprint.blueprintName.contains(query, ignoreCase = true) ||
+                blueprint.blueprintDescription?.contains(query, ignoreCase = true) == true ||
+                blueprint.blueprintStyle?.contains(query, ignoreCase = true) == true
+
+            matchesCategory && matchesQuery
         }
 
         adapter.updateList(filtered)
+        renderState(
+            if (filtered.isEmpty()) "No blueprints found for the current search or category." else "",
+            showList = filtered.isNotEmpty()
+        )
     }
 
 
 
     private fun fetchMarketplace() {
+        renderState("Loading marketplace...", showList = false)
         ApiClient.instance.getMarketplace().enqueue(object : Callback<MarketplaceResponse> {
             override fun onResponse(
                 call: Call<MarketplaceResponse>,
@@ -126,22 +155,26 @@ class MarketPlaceActivity : AppCompatActivity() {
                     if (data != null && !data.Blueprints.isNullOrEmpty()) {
                         blueprintList.clear()
                         blueprintList.addAll(data.Blueprints)
+                        applyCartFlags()
+                        setupCategoryTabs()
 
-                        // ✅ Also update displayed list initially
-                        displayedList.clear()
-                        displayedList.addAll(data.Blueprints)
-
-                        adapter.notifyDataSetChanged()
+                        filterBlueprints()
                         Log.d("StripeKey", data.StripePublishableKey)
                     } else {
+                        blueprintList.clear()
+                        adapter.updateList(emptyList())
+                        setupCategoryTabs()
+                        renderState("No marketplace blueprints are available yet.", showList = false)
                         Log.e("Marketplace", "No blueprints found or body is null")
                     }
                 } else {
+                    renderState("Failed to load marketplace.", showList = false)
                     Log.e("Marketplace", "Response error code: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<MarketplaceResponse>, t: Throwable) {
+                renderState("Network error while loading marketplace.", showList = false)
                 Log.e("MarketplaceError", t.message ?: "Unknown error")
             }
         })
@@ -156,13 +189,9 @@ class MarketPlaceActivity : AppCompatActivity() {
                     cartBtn.text = "Cart ($cartItemCount)"
                     Log.d("CartCount", "Cart count updated: $cartItemCount")
 
-                    // 🟩 Mark items already in cart (no renames, works fine)
-                    val cartIds = cartItems.map { it.blueprintId }
-                    displayedList.forEach { bp ->
-                        bp.isAddedToCart = cartIds.contains(bp.blueprintId)
-                    }
-
-                    adapter.notifyDataSetChanged()
+                    cartBlueprintIds = cartItems.map { it.blueprintId }.toSet()
+                    applyCartFlags()
+                    filterBlueprints()
                 } else {
                     Log.e("CartCountError", "Response code: ${response.code()}")
                 }
@@ -172,6 +201,46 @@ class MarketPlaceActivity : AppCompatActivity() {
                 Log.e("CartCountError", "Failed: ${t.message}")
             }
         })
+    }
+
+    private fun applyCartFlags() {
+        blueprintList.forEach { bp ->
+            bp.isAddedToCart = cartBlueprintIds.contains(bp.blueprintId)
+        }
+    }
+
+    private fun setupCategoryTabs() {
+        val previousCategory = selectedCategory
+        val styles = blueprintList.mapNotNull { it.blueprintStyle?.trim() }
+            .filter { it.isNotEmpty() }
+            .distinctBy { it.lowercase() }
+            .sortedBy { it.lowercase() }
+        val categories = listOf("All") + styles
+
+        categoryTabs.clearOnTabSelectedListeners()
+        categoryTabs.removeAllTabs()
+        categories.forEach { category ->
+            categoryTabs.addTab(categoryTabs.newTab().setText(category), category == previousCategory)
+        }
+        if (categoryTabs.selectedTabPosition == -1 && categoryTabs.tabCount > 0) {
+            categoryTabs.getTabAt(0)?.select()
+            selectedCategory = "All"
+        }
+        categoryTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                selectedCategory = tab.text.toString()
+                filterBlueprints()
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) = Unit
+            override fun onTabReselected(tab: TabLayout.Tab) = Unit
+        })
+    }
+
+    private fun renderState(message: String, showList: Boolean) {
+        marketplaceState.text = message
+        marketplaceState.visibility = if (message.isBlank()) View.GONE else View.VISIBLE
+        recyclerView.visibility = if (showList) View.VISIBLE else View.GONE
     }
     override fun onResume() {
         super.onResume()

@@ -1,6 +1,5 @@
 package com.example.blueprintproapps.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectMatchResponse
-import com.example.blueprintproapps.network.ArchitectChatActivity // ✅ import this
 
 class ArchitectChatHeadAdapter(
     private val chatHeads: List<ArchitectMatchResponse>,
@@ -23,18 +21,10 @@ class ArchitectChatHeadAdapter(
 
         init {
             itemView.setOnClickListener {
-                val context = itemView.context
-                val match = chatHeads[adapterPosition]
-
-                // ✅ Launch ArchitectChatActivity with clientId
-                val intent = Intent(context, ArchitectChatActivity::class.java)
-                intent.putExtra("receiverId", match.clientId)
-                intent.putExtra("receiverName", match.clientName)
-
-                context.startActivity(intent)
-
-                // Optional callback if you still use it elsewhere
-                onItemClick?.invoke(match)
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(chatHeads[position])
+                }
             }
         }
     }

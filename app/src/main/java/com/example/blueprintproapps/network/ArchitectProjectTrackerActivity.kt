@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -65,6 +66,8 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
 
         if (blueprintId == 0) {
             Log.e("TrackerError", "❌ Missing blueprintId in Intent.")
+            Toast.makeText(this, "Invalid project tracker.", Toast.LENGTH_SHORT).show()
+            finish()
             return
         }
 
@@ -140,10 +143,15 @@ class ArchitectProjectTrackerActivity : AppCompatActivity() {
                         ArrayList(tracker.revisionHistory),
                         tracker.projectTrack_Id
                     )
+                } else {
+                    Toast.makeText(this@ArchitectProjectTrackerActivity, "Failed to load project tracker.", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
             override fun onFailure(call: Call<ArchitectProjectTrackerResponse>, t: Throwable) {
                 Log.e("TrackerError", "❌ Error loading tracker: ${t.message}")
+                Toast.makeText(this@ArchitectProjectTrackerActivity, "Network error while loading tracker.", Toast.LENGTH_SHORT).show()
+                finish()
             }
         })
     }

@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/web_bg">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/deletedScroll"
@@ -27,14 +28,14 @@
                 android:layout_height="48dp"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/bg_icon_button"
                 
                 android:contentDescription="Back"
                 android:padding="8dp"
                 android:scaleType="centerInside"
                 android:clickable="true"
                 android:focusable="true"
-                app:tint="#0D3C80"
+                app:tint="@color/web_text_heading"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -44,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Deleted Projects"
-                android:textColor="#091635"
+                android:textColor="@color/web_text_heading"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/raleway_bold"
@@ -59,21 +60,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Review and restore your deleted blueprints"
-                android:textColor="#6B7280"
+                android:textColor="@color/web_text_subtitle"
                 android:textSize="14sp"
                 android:fontFamily="@font/raleway_regular"
                 android:layout_marginTop="6dp"
                 app:layout_constraintTop_toBottomOf="@id/titleText"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- RecyclerView for Deleted Projects -->
+            <TextView
+                android:id="@+id/deletedProjectsState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Loading bin..."
+                android:textColor="@color/web_text_body"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/subtitleText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewDeletedProjects"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:scrollbars="vertical"
-                app:layout_constraintTop_toBottomOf="@id/subtitleText"
+                app:layout_constraintTop_toBottomOf="@id/deletedProjectsState"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_architect_deleted_project"

@@ -52,6 +52,7 @@ class ArchitectBlueprintAdapter(
             intent.putExtra("blueprintPrice", item.blueprintPrice)
             intent.putExtra("blueprintStyle", item.blueprintStyle)
             intent.putExtra("blueprintImage", item.blueprintImage)
+            intent.putExtra("blueprintDescription", item.blueprintDescription)
             context.startActivity(intent)
         }
 

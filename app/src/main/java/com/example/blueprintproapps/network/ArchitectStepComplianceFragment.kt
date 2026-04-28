@@ -250,8 +250,7 @@ class ArchitectStepComplianceFragment : Fragment() {
 
         fileLabel.text = fileName
 
-        // ✅ Fix: prepend full URL path
-        val fileUrl = "http://10.0.2.2:5169/uploads/compliance/$fileName"
+        val fileUrl = resolveComplianceFileUrl(fileName)
 
         viewBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl))
@@ -259,5 +258,18 @@ class ArchitectStepComplianceFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun resolveComplianceFileUrl(fileName: String): String {
+        val trimmed = fileName.trim()
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed
+
+        val baseUrl = ApiClient.getBaseUrl().trimEnd('/')
+        val relativePath = trimmed.trimStart('/')
+        return if (relativePath.startsWith("uploads/", ignoreCase = true)) {
+            "$baseUrl/$relativePath"
+        } else {
+            "$baseUrl/uploads/compliance/$relativePath"
+        }
     }
 }

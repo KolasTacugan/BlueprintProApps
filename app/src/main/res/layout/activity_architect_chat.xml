@@ -62,15 +62,17 @@
                 android:fontFamily="@font/raleway_bold" />
 
             <TextView
+                android:id="@+id/txtStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Online"
+                android:text="Approved match"
                 android:textColor="@color/success"
                 android:textSize="12sp"
                 android:fontFamily="@font/raleway_bold" />
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/btnInfo"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -109,10 +111,12 @@
             android:paddingVertical="6dp">
 
             <ImageButton
+                android:id="@+id/btnAttach"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_attach"
+                android:visibility="gone"
                 app:tint="@color/slate_500" />
 
             <EditText

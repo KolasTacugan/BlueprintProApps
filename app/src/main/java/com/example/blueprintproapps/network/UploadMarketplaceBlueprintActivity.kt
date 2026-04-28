@@ -14,6 +14,8 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.auth.AuthSessionManager
@@ -51,6 +53,11 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
         architectId = session.userId
         enableEdgeToEdge()
         setContentView(R.layout.activity_upload_marketplace_blueprint)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         previewImage = findViewById(R.id.previewImage)
         selectImageBtn = findViewById(R.id.selectImageBtn)
@@ -63,14 +70,13 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
 
         // Setup style spinner
         val styles = arrayOf("Modern", "Traditional", "Contemporary", "Minimalist")
-        styleSpinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, styles)
+        styleSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, styles).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
 
         selectImageBtn.setOnClickListener { pickImage() }
         uploadBtn.setOnClickListener { uploadBlueprint() }
         backBtn.setOnClickListener {
-            val intent = Intent(this, ArchitectBlueprintActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }
@@ -116,6 +122,15 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
             Toast.makeText(this, "Please enter a blueprint name", Toast.LENGTH_SHORT).show()
             return
         }
+        val priceValue = price.toDoubleOrNull()
+        if (priceValue == null || priceValue <= 0.0) {
+            Toast.makeText(this, "Please enter a valid price", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (desc.isEmpty()) {
+            Toast.makeText(this, "Please enter a description", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Convert URI to a File
         val file: File = try {
@@ -138,6 +153,7 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
         val architectIdPart = architectId.toRequestBody("text/plain".toMediaType())
 
         val api = ApiClient.instance
+        uploadBtn.isEnabled = false
 
         api.addMarketplaceBlueprint(
             namePart,
@@ -154,11 +170,15 @@ class UploadMarketplaceBlueprintActivity : AppCompatActivity() {
                     file.delete()
                     finish()
                 } else {
+                    uploadBtn.isEnabled = true
+                    file.delete()
                     Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Upload failed: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                uploadBtn.isEnabled = true
+                file.delete()
                 Toast.makeText(this@UploadMarketplaceBlueprintActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

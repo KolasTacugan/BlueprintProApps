@@ -1,6 +1,5 @@
 package com.example.blueprintproapps.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ArchitectConversationResponse
-import com.example.blueprintproapps.network.ArchitectChatActivity
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.blueprintproapps.utils.DateTimeUtils
 
 class ArchitectMessagesAdapter(
     private val conversations: List<ArchitectConversationResponse>,
@@ -28,17 +25,10 @@ class ArchitectMessagesAdapter(
 
         init {
             itemView.setOnClickListener {
-                val context = itemView.context
-                val conversation = conversations[adapterPosition]
-
-                // ✅ Open ArchitectChatActivity with clientId and name
-                val intent = Intent(context, ArchitectChatActivity::class.java)
-                intent.putExtra("receiverId", conversation.clientId)
-                intent.putExtra("clientName", conversation.clientName)
-                context.startActivity(intent)
-
-                // Optional: still trigger external click listener
-                onItemClick?.invoke(conversation)
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(conversations[position])
+                }
             }
         }
     }
@@ -59,7 +49,7 @@ class ArchitectMessagesAdapter(
         holder.txtMessage.text = convo.lastMessage ?: "(No messages yet)"
 
         // 🕒 Format message time
-        holder.txtTime.text = formatDate(convo.lastMessageTime)
+        holder.txtTime.text = DateTimeUtils.formatPhilippineTime(convo.lastMessageTime)
 
         // 🔴 Unread indicator
         holder.unreadIndicator.visibility = if (convo.unreadCount > 0) View.VISIBLE else View.GONE
@@ -73,13 +63,4 @@ class ArchitectMessagesAdapter(
 
     override fun getItemCount(): Int = conversations.size
 
-    private fun formatDate(rawDate: String?): String {
-        return try {
-            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
-            rawDate?.let { formatter.format(parser.parse(it)!!) } ?: ""
-        } catch (e: Exception) {
-            rawDate ?: ""
-        }
-    }
 }

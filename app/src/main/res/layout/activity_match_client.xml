@@ -55,10 +55,12 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/closeButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             app:tint="@color/slate_500"
+            android:contentDescription="Close"
             android:clickable="true"
             android:focusable="true"/>
     </LinearLayout>

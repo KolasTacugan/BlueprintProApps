@@ -117,22 +117,12 @@ class ClientProjectTrackerActivity : AppCompatActivity() {
                     response: Response<ClientProjectTrackerResponse>
                 ) {
                     if (response.code() == 404) {
-                        val fallback = ClientProjectTrackerResponse(
-                            projectTrack_Id = 0,
-                            project_Id = "",
-                            currentFileName = "",
-                            currentFilePath = "",
-                            currentRevision = 0,
-                            status = "Finished",
-                            finalizationNotes = "",
-                            compliance = null,
-                            revisionHistory = emptyList(),
-                            projectStatus = "Finished",
-                            isRated = false,
-                            architectName = ""
-                        )
-                        setupViewPager(fallback)
-                        applyProjectStatus(fallback.status)
+                        Toast.makeText(
+                            this@ClientProjectTrackerActivity,
+                            "Project tracker is not available yet.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
                         return
                     }
 

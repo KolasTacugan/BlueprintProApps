@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.models.ConversationResponse
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.blueprintproapps.utils.DateTimeUtils
 
 class MessagesAdapter(
     private val conversations: List<ConversationResponse>,
@@ -26,7 +25,10 @@ class MessagesAdapter(
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(conversations[adapterPosition])
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(conversations[position])
+                }
             }
         }
     }
@@ -47,7 +49,7 @@ class MessagesAdapter(
         holder.txtMessage.text = convo.lastMessage ?: "(No messages yet)"
 
         // 🕒 Format and show message time
-        holder.txtTime.text = formatDate(convo.lastMessageTime)
+        holder.txtTime.text = DateTimeUtils.formatPhilippineTime(convo.lastMessageTime)
 
         // 🔴 Unread indicator
         holder.unreadIndicator.visibility = if (convo.unreadCount > 0) View.VISIBLE else View.GONE
@@ -61,13 +63,4 @@ class MessagesAdapter(
 
     override fun getItemCount(): Int = conversations.size
 
-    private fun formatDate(rawDate: String?): String {
-        return try {
-            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
-            rawDate?.let { formatter.format(parser.parse(it)!!) } ?: ""
-        } catch (e: Exception) {
-            rawDate ?: ""
-        }
-    }
 }
