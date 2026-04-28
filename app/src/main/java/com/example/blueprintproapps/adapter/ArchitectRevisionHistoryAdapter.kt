@@ -10,7 +10,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
+import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ArchitectProjectFileResponse
+import com.example.blueprintproapps.utils.UiEffects
 
 class ArchitectRevisionHistoryAdapter(
     private val revisionList: List<ArchitectProjectFileResponse>
@@ -29,7 +31,9 @@ class ArchitectRevisionHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val revision = revisionList[position]
-        holder.revisionName.text = "Revision_ver.${revision.projectFile_Version}"
+        holder.revisionName.text = "Revision v${revision.projectFile_Version}"
+
+        UiEffects.applyPressScaleEffect(holder.itemView)
 
         holder.openBtn.setOnClickListener {
             val filePath = revision.projectFile_Path?.trim()
@@ -40,9 +44,8 @@ class ArchitectRevisionHistoryAdapter(
             }
 
             try {
-                // ✅ If it’s a local path (no scheme), prepend server URL
                 val uri = if (!filePath.startsWith("http")) {
-                    Uri.parse("http://10.0.2.2:5169/$filePath")
+                    Uri.parse("${ApiClient.getBaseUrl()}$filePath")
                 } else {
                     Uri.parse(filePath)
                 }

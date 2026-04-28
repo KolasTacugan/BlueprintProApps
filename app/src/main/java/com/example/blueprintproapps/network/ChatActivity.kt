@@ -1,6 +1,5 @@
 package com.example.blueprintproapps.network
 
-import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Button
@@ -15,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ChatMessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.GenericResponse
 import com.example.blueprintproapps.models.MessageListResponse
 import com.example.blueprintproapps.models.MessageRequest
@@ -23,12 +24,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.TextView
+import com.bumptech.glide.Glide
 
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var recyclerMessages: RecyclerView
     private lateinit var edtMessage: EditText
-    private lateinit var btnSend: Button
+    private lateinit var btnSend: android.view.View
     private lateinit var adapter: ChatMessagesAdapter
     private val messages = mutableListOf<MessageResponse>()
     private var refreshHandler = android.os.Handler()
@@ -38,6 +40,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.CLIENT) ?: return
         //enableEdgeToEdge()
         setContentView(R.layout.activity_chat)
 
@@ -47,22 +50,22 @@ class ChatActivity : AppCompatActivity() {
         edtMessage = findViewById(R.id.edtMessage)
         btnSend = findViewById(R.id.btnSend)
 
-        val txtChatTitle = findViewById<TextView>(R.id.txtChatTitle)
+        val btnBack = findViewById<android.view.View>(R.id.btnBack)
+        val txtRecipientName = findViewById<TextView>(R.id.txtRecipientName)
+        val imgRecipientProfile = findViewById<android.widget.ImageView>(R.id.imgRecipientProfile)
+
         val receiverName = intent.getStringExtra("receiverName") ?: "Chat"
-        txtChatTitle.text = receiverName
+        val receiverPhoto = intent.getStringExtra("receiverPhoto")
+        
+        txtRecipientName.text = receiverName
+        btnBack.setOnClickListener { finish() }
 
-        // ✅ Get current user ID (client or architect) from SharedPreferences
-        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        Glide.with(this)
+            .load(receiverPhoto)
+            .placeholder(R.drawable.sample_profile)
+            .into(imgRecipientProfile)
 
-        senderId = sharedPref.getString("clientId", null)
-            ?: sharedPref.getString("userId", null)
-                    ?: run {
-                Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-                finish()
-                return
-            }
-
-
+        senderId = session.userId
 
         // ✅ Get receiver ID from Intent extras
         receiverId = intent.getStringExtra("receiverId") ?: run {

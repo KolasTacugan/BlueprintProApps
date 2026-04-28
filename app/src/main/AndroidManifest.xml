@@ -4,8 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".BlueprintProApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BlueprintProApps"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".navigation.AppHostActivity"
+            android:exported="false" />
         <activity
             android:name=".network.ClientProjectsActivity"
             android:exported="false" />
@@ -131,6 +136,7 @@
             android:exported="false" />
         <activity
             android:name=".network.LoginActivity"
+            android:theme="@style/Theme.App.Starting"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

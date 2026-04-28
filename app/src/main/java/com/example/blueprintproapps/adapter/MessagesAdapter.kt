@@ -22,6 +22,7 @@ class MessagesAdapter(
         val txtName: TextView = itemView.findViewById(R.id.txtName)
         val txtMessage: TextView = itemView.findViewById(R.id.txtMessage)
         val txtTime: TextView = itemView.findViewById(R.id.txtTime)
+        val unreadIndicator: View = itemView.findViewById(R.id.unreadIndicator)
 
         init {
             itemView.setOnClickListener {
@@ -48,13 +49,14 @@ class MessagesAdapter(
         // 🕒 Format and show message time
         holder.txtTime.text = formatDate(convo.lastMessageTime)
 
+        // 🔴 Unread indicator
+        holder.unreadIndicator.visibility = if (convo.unreadCount > 0) View.VISIBLE else View.GONE
+
         // 🖼️ Load architect profile image
-        convo.profileUrl?.let {
-            Glide.with(holder.itemView.context)
-                .load(it)
-                .placeholder(R.drawable.sample_profile)
-                .into(holder.imgProfile)
-        }
+        Glide.with(holder.itemView.context)
+            .load(convo.profileUrl)
+            .placeholder(R.drawable.sample_profile)
+            .into(holder.imgProfile)
     }
 
     override fun getItemCount(): Int = conversations.size
@@ -62,7 +64,7 @@ class MessagesAdapter(
     private fun formatDate(rawDate: String?): String {
         return try {
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-            val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
             rawDate?.let { formatter.format(parser.parse(it)!!) } ?: ""
         } catch (e: Exception) {
             rawDate ?: ""

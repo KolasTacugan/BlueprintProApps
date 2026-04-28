@@ -29,7 +29,7 @@
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back"
+                
                 android:contentDescription="Back"
                 android:padding="8dp"
                 android:scaleType="centerInside"

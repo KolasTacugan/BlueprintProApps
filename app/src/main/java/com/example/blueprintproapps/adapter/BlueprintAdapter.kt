@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.BlueprintResponse
 import com.example.blueprintproapps.models.CartRequest
 import com.example.blueprintproapps.models.CartResponse
@@ -93,11 +95,11 @@ class BlueprintAdapter(
         }
 
         holder.addToCartBtn.setOnClickListener {
-            val sharedPrefs = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-            val clientId = sharedPrefs.getString("clientId", null)
-
+            val activity = context as? AppCompatActivity
+            val clientId = activity
+                ?.let { AuthSessionManager.requireSession(it, UserRole.CLIENT, "Please log in first.") }
+                ?.userId
             if (clientId == null) {
-                Toast.makeText(context, "Please log in first.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- White card body -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F8FAFC" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    <!-- Left accent border -->
+    <item android:right="-8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="3dp" android:color="#344EAD" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+</layer-list>

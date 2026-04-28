@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true"
+    app:strokeColor="@color/slate_200"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvProjectTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_project_badge"
+            android:text="No active project"
+            android:textColor="@color/web_blue"
+            android:textSize="13sp"
+            android:fontFamily="@font/raleway_bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <ProgressBar
+            android:id="@+id/progressProject"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="16dp"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_progress_bar_layered" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PROJECT PHASE"
+                    android:textAllCaps="true"
+                    android:textColor="@color/web_text_body"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tvProjectPhase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="—"
+                    android:textColor="@color/web_text_heading"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OVERALL"
+                    android:textAllCaps="true"
+                    android:textColor="@color/web_text_body"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tvProjectPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="0%"
+                    android:textColor="@color/web_blue"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

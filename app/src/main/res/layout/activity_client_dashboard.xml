@@ -1,277 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F8FAFC"
     tools:context=".network.ClientDashboardActivity">
 
-    <!-- Gradient Blue Header -->
-    <View
-        android:id="@+id/headerBackground"
-        android:layout_width="0dp"
-        android:layout_height="280dp"
-        android:background="@drawable/header_gradient"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
-        android:layout_width="0dp"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="36dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:background="@android:color/white"
+        app:elevation="0dp">
 
-        <ImageView
-            android:id="@+id/bpp_logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/bpp_logo"
-            android:contentDescription="Logo"
-            app:tint="#FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <TextView
-            android:id="@+id/tvHomeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:fontFamily="@font/raleway_bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <ImageView
-            android:id="@+id/chatIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_chat_filled"
-            android:padding="6dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Chat"
-            app:tint="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Scroll Content -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/dashboardScroll"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/dashboardLayout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="20dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome!"
+                    android:textColor="#0F172A"
+                    android:textSize="22sp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="-0.01" />
+
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your architectural journey starts here"
+                    android:textColor="#64748B"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_profile"
+                app:shapeAppearanceOverlay="@style/CircleImage"
+                android:background="#F1F5F9" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="32dp">
+            android:paddingBottom="100dp">
 
-            <!-- Welcome -->
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
+            <!-- Stats Strip -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome, Sage!"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:fontFamily="@font/raleway_bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
-            <TextView
-                android:id="@+id/tvGreeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Connect. Share. Build."
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:fontFamily="@font/raleway_regular"
-                android:alpha="0.8"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/tvUserName"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <!-- Action Prompt -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/actionPromptCard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                app:layout_constraintTop_toBottomOf="@id/tvGreeting"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/promptCardView"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
-                    android:layout_height="130dp"
-                    app:cardCornerRadius="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#B3D9FF"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <TextView
-                        android:id="@+id/tvActionPrompt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="What are you looking \nto build today?"
-                        android:textColor="#1E3A5F"
-                        android:textSize="18sp"
-                        android:fontFamily="@font/raleway_bold"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="24dp" />
-                </androidx.cardview.widget.CardView>
-
-                <ImageView
-                    android:id="@+id/decorativeGraphic"
-                    android:layout_width="140dp"
-                    android:layout_height="150dp"
-                    android:src="@drawable/bpp_logo_updated"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Decorative graphic"
-                    android:alpha="1"
-                    android:layout_marginEnd="10dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Feature Cards -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/featuresCard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                app:layout_constraintTop_toBottomOf="@id/actionPromptCard"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <!-- Find Architect -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/findArchitect"
-                    android:layout_width="0dp"
-                    android:layout_height="200dp"
-                    android:layout_marginEnd="12dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="#0D3C80"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/marketplaceBtn"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.6">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F5F9">
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="20dp">
-
-                        <ImageView
-                            android:id="@+id/architectIcon"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:src="@drawable/ic_architect"
-                            app:tint="#FFFFFF"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <TextView
+                            android:id="@+id/tvStatMatches"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#3B82F6"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/raleway_bold" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Find an Architect"
-                            android:textColor="#FFFFFF"
-                            android:textSize="20sp"
+                            android:text="MATCHES"
+                            android:textColor="#94A3B8"
+                            android:textSize="10sp"
                             android:fontFamily="@font/raleway_bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
+                            android:textAllCaps="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <!-- Marketplace -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F5F9">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <TextView
+                            android:id="@+id/tvStatPurchase"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#8B5CF6"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/raleway_bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PURCHASES"
+                            android:textColor="#94A3B8"
+                            android:textSize="10sp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:textAllCaps="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F5F9">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <TextView
+                            android:id="@+id/tvStatProjects"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#10B981"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/raleway_bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PROJECTS"
+                            android:textColor="#94A3B8"
+                            android:textSize="10sp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:textAllCaps="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Feature Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/findArchitect"
+                    android:layout_width="0dp"
+                    android:layout_height="160dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#0F172A">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:gravity="bottom">
+                        <ImageView
+                            android:id="@+id/architectIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_match"
+                            app:tint="@android:color/white" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Find\nArchitect"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:lineSpacingExtra="2sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/marketplaceBtn"
                     android:layout_width="0dp"
-                    android:layout_height="200dp"
-                    app:cardCornerRadius="16dp"
+                    android:layout_height="160dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    app:cardCornerRadius="24dp"
                     app:cardElevation="0dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="#1E3A5F"
-                    app:cardBackgroundColor="#F5F9FF"
-                    app:layout_constraintStart_toEndOf="@id/findArchitect"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    app:cardBackgroundColor="@android:color/white"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#F1F5F9">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="20dp">
-
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:gravity="bottom">
                         <ImageView
                             android:id="@+id/marketplaceIcon"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:src="@drawable/ic_marketplace"
-                            app:tint="#1E3A5F"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_search"
+                            app:tint="#0F172A" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Browse\nMarketplace"
-                            android:textColor="#1E3A5F"
+                            android:layout_marginTop="12dp"
+                            android:text="Explore\nDesigns"
+                            android:textColor="#0F172A"
                             android:textSize="16sp"
                             android:fontFamily="@font/raleway_bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:lineSpacingExtra="2sp" />
+                    </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Recent Activity -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Recent Activity"
+                android:textColor="#94A3B8"
+                android:textSize="12sp"
+                android:fontFamily="@font/raleway_bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/recentActivityCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:strokeWidth="1dp"
+                app:strokeColor="#F1F5F9">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/ivEmptyRecent"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_info"
+                        app:tint="#CBD5E1" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="No Recent Activity"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/raleway_bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Project updates and matches will appear here."
+                        android:textColor="#64748B"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:fontFamily="@font/raleway_regular" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/chatIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/ic_messages"
+        app:fabCustomSize="56dp"
+        app:backgroundTint="#0F172A"
+        app:tint="@android:color/white"
+        app:elevation="4dp" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_nav_background"
-        android:paddingTop="16dp"
-        app:itemIconTint="@color/nav_item_selector"
-        app:itemTextColor="@color/nav_item_selector"
-        app:itemIconSize="28dp"
-        app:itemPaddingTop="8dp"
-        app:itemPaddingBottom="8dp"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"
-        app:elevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_gravity="bottom"
+        style="@style/Widget.BlueprintPro.BottomNavigation"
+        app:menu="@menu/bottom_nav_menu" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,76 +5,64 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    app:strokeWidth="1dp"
+    app:strokeColor="#E2E8F0"
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="20dp"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Left side: Revision info with icon -->
-        <LinearLayout
+        <!-- Icon Container -->
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_empty_icon"
+            android:backgroundTint="#F1F5F9"
+            android:layout_marginEnd="16dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_work"
+                app:tint="#64748B" />
+        </FrameLayout>
+
+        <!-- Revision Name -->
+        <TextView
+            android:id="@+id/revisionName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:text="Revision_ver.1"
+            android:textSize="15sp"
+            android:textColor="#1E293B"
+            android:fontFamily="@font/raleway_bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-            <!-- Icon Container -->
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/card_modern"
-                android:backgroundTint="#E8F0FE"
-                android:layout_marginEnd="12dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_menu_recent_history"
-                    app:tint="#0D3C80" />
-
-            </FrameLayout>
-
-            <!-- Revision Name -->
-            <TextView
-                android:id="@+id/revisionName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Revision_ver.1"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#0D3C80"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-        </LinearLayout>
-
-        <!-- Right side: Open button -->
+        <!-- Open button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/openBtn"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:text="Open"
             android:textAllCaps="false"
             android:textSize="14sp"
-            android:textStyle="bold"
             android:fontFamily="@font/raleway_bold"
-            android:letterSpacing="0.01"
-            android:textColor="@android:color/white"
+            android:textColor="#2563EB"
             app:cornerRadius="12dp"
-            app:backgroundTint="#0D3C80"
-            app:rippleColor="#1E40AF"
-            android:paddingHorizontal="20dp"
-            android:minWidth="80dp" />
+            app:backgroundTint="#EFF6FF"
+            app:rippleColor="#DBEAFE"
+            app:elevation="0dp"
+            android:paddingHorizontal="20dp" />
 
     </LinearLayout>
 

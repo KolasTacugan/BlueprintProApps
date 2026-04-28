@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_marginEnd="12dp">
+    android:layout_marginEnd="16dp"
+    android:paddingVertical="4dp">
 
+    <!-- Avatar with Ring -->
     <FrameLayout
         android:layout_width="68dp"
         android:layout_height="68dp">
 
-        <!-- Circular image -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="34dp"
-            app:cardElevation="0dp">
-
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Ring overlay -->
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/story_ring" />
+            android:background="@drawable/bg_story_ring"
+            android:padding="2dp" />
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_profile"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            android:background="#F1F5F9" />
+
+        <!-- Active Status Dot -->
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="2dp"
+            android:background="@drawable/bg_active_dot"
+            android:elevation="2dp" />
     </FrameLayout>
-
 
     <TextView
         android:id="@+id/txtName"
-        android:layout_width="match_parent"
+        android:layout_width="68dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/black"
+        android:layout_marginTop="8dp"
+        android:text="Name"
+        android:textColor="#1E293B"
         android:textSize="12sp"
+        android:fontFamily="@font/raleway_bold"
         android:gravity="center"
         android:ellipsize="end"
         android:maxLines="1" />

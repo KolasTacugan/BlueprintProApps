@@ -151,11 +151,11 @@ class ArchitectStepComplianceFragment : Fragment() {
 
                         tracker?.compliance?.let { compliance ->
                             if (!compliance.zoningFile.isNullOrEmpty()) {
-                                val zoningLink = createFileLinkUI("Zoning File", compliance.zoningFile!!)
+                                val zoningLink = createFileLinkUI(compliance.zoningFile!!, zoningContainer)
                                 zoningContainer.addView(zoningLink)
                             }
                             if (!compliance.othersFile.isNullOrEmpty()) {
-                                val otherLink = createFileLinkUI("Others File", compliance.othersFile!!)
+                                val otherLink = createFileLinkUI(compliance.othersFile!!, otherContainer)
                                 otherContainer.addView(otherLink)
                             }
                         }
@@ -243,20 +243,21 @@ class ArchitectStepComplianceFragment : Fragment() {
     }
 
     // ✅ Clean, readable clickable link
-    private fun createFileLinkUI(label: String, fileName: String): View {
-        val textView = TextView(context)
-        textView.text = label
-        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary))
-        textView.paintFlags = textView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+    private fun createFileLinkUI(fileName: String, parent: ViewGroup): View {
+        val view = layoutInflater.inflate(R.layout.item_compliance_file, parent, false)
+        val fileLabel = view.findViewById<TextView>(R.id.fileLabel)
+        val viewBtn = view.findViewById<Button>(R.id.viewBtn)
+
+        fileLabel.text = fileName
 
         // ✅ Fix: prepend full URL path
         val fileUrl = "http://10.0.2.2:5169/uploads/compliance/$fileName"
 
-        textView.setOnClickListener {
+        viewBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fileUrl))
             startActivity(intent)
         }
 
-        return textView
+        return view
     }
 }
