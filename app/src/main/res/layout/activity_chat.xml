@@ -1,113 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
-    tools:context=".network.ChatActivity">
+    android:background="#F8FAFC">
 
-    <!-- Top App Bar -->
-    <LinearLayout
-        android:id="@+id/topAppBar"
-        android:layout_width="0dp"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="32dp"
-        android:paddingBottom="16dp"
         android:background="@android:color/white"
-        android:elevation="2dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingTop="32dp"
+            android:paddingBottom="12dp"
+            android:paddingHorizontal="16dp"
             android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/txtChatTitle"
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_button"
+                android:src="@drawable/ic_arrow_back"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                app:tint="#0F172A" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgRecipientProfile"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="12dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_profile"
+                app:shapeAppearanceOverlay="@style/CircleImage"
+                android:background="#F1F5F9" />
+
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Chat"
-                android:textColor="#091635"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01" />
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
 
-            <ImageView
+                <TextView
+                    android:id="@+id/txtRecipientName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recipient Name"
+                    android:textColor="#0F172A"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/raleway_bold" />
+
+                <TextView
+                    android:id="@+id/txtStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Online"
+                    android:textColor="#22C55E"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/raleway_bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnInfo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_profile"
-                android:contentDescription="Profile"
-                android:padding="4dp" />
+                android:background="@drawable/bg_icon_button"
+                android:src="@drawable/ic_info"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                app:tint="#64748B" />
         </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    </LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!-- Messages RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerMessages"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar"
-        app:layout_constraintBottom_toTopOf="@id/messageInputBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMessages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#F8FAFC"
+            android:clipToPadding="false"
+            android:paddingTop="12dp"
+            android:paddingBottom="100dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Message Input Bar -->
-    <LinearLayout
-        android:id="@+id/messageInputBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="20dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- Input Bar Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/inputContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <EditText
-            android:id="@+id/edtMessage"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:hint="Type a message"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
-            android:background="@drawable/bg_search_field"
-            android:inputType="text"
-            android:textSize="15sp"
-            android:fontFamily="@font/raleway_regular"
-            android:textColor="#091635"
-            android:textColorHint="#6B7280" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="6dp">
 
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:text="Send"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:fontFamily="@font/raleway_bold"
-            android:layout_marginStart="16dp"
-            android:backgroundTint="#0D3C80"
-            android:paddingHorizontal="32dp"
-            android:elevation="2dp" />
-    </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btnAttach"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_attach"
+                    android:padding="10dp"
+                    android:scaleType="centerInside"
+                    app:tint="#64748B" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <EditText
+                    android:id="@+id/edtMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Type a message..."
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="10dp"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:maxLines="4"
+                    android:textColor="#1E293B"
+                    android:textColorHint="#94A3B8" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btnSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_send"
+                    app:fabCustomSize="42dp"
+                    app:backgroundTint="#0F172A"
+                    app:tint="@android:color/white"
+                    app:elevation="0dp"
+                    app:pressedTranslationZ="0dp"
+                    android:layout_margin="2dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

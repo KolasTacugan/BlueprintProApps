@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BlueprintProApps</string>
+    <string name="app_name">BlueprintPro</string>
 
     <string name="personal_information">Personal Information</string>
     <string name="architect_credentials">Architect Credentials (PDF)</string>

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
 import com.example.blueprintproapps.models.ClientProjectFile
+import com.example.blueprintproapps.utils.UiEffects
 
 class ClientRevisionHistoryAdapter(
     private val revisionList: List<ClientProjectFile>
@@ -32,8 +33,9 @@ class ClientRevisionHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val revision = revisionList[position]
+        holder.revisionName.text = "Revision v${revision.Version}"
 
-        holder.revisionName.text = "Revision_ver.${revision.Version}"
+        UiEffects.applyPressScaleEffect(holder.itemView)
 
         holder.openBtn.setOnClickListener {
             val rawPath = revision.FilePath?.trim()
@@ -44,10 +46,8 @@ class ClientRevisionHistoryAdapter(
             }
 
             try {
-                // Build correct URL
                 val uri = if (!rawPath.startsWith("http")) {
-                    val cleanPath = rawPath.removePrefix("/")   // prevent double slash
-                    Uri.parse("http://10.0.2.2:5169/$cleanPath")
+                    Uri.parse("${ApiClient.getBaseUrl()}$rawPath")
                 } else {
                     Uri.parse(rawPath)
                 }
@@ -62,6 +62,5 @@ class ClientRevisionHistoryAdapter(
             }
         }
     }
-
 }
 

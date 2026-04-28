@@ -3,177 +3,210 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB"
-    android:fillViewport="true">
+    android:background="#F1F5F9"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:paddingTop="32dp"
-        android:paddingBottom="24dp">
+        android:paddingTop="24dp"
+        android:paddingBottom="40dp"
+        android:clipChildren="false">
 
-        <!-- Header Section -->
-        <TextView
-            android:id="@+id/stepTitle"
-            android:text="Review"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#091635"
-            android:fontFamily="@font/raleway_bold"
-            android:letterSpacing="0.01"
+        <!-- Stage Header Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E2E8F0">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:background="#FFFFFF">
+
+                <TextView
+                    android:id="@+id/stepTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Revision &amp; Review"
+                    android:textColor="#0F172A"
+                    android:textSize="22sp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="-0.02" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manage and track your project's architectural blueprints through iterations."
+                    android:textColor="#64748B"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_regular"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Current Version Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Manage and review project revisions"
-            android:textColor="#6B7280"
-            android:textSize="14sp"
-            android:fontFamily="@font/raleway_regular"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="24dp" />
+            android:text="LATEST BLUEPRINT"
+            android:textColor="#475569"
+            android:textSize="11sp"
+            android:fontFamily="@font/raleway_bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.12"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="14dp" />
 
-        <!-- Current Revision Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginBottom="36dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeWidth="0dp">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp">
+                android:padding="20dp"
+                android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/currentRevisionLabel"
-                    android:text="Current Revision"
-                    android:textColor="#091635"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/raleway_bold"
-                    android:layout_marginBottom="12dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_empty_icon"
+                    android:backgroundTint="#EFF6FF">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_work"
+                        app:tint="#2563EB" />
+                </FrameLayout>
 
                 <LinearLayout
-                    android:id="@+id/currentRevisionContainer"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginHorizontal="16dp">
 
                     <TextView
                         android:id="@+id/currentRevisionName"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="None yet"
-                        android:textSize="15sp"
-                        android:textColor="#6B7280"
-                        android:fontFamily="@font/raleway_regular"
-                        android:maxLines="2"
-                        android:ellipsize="end" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/openCurrentBtn"
-                        style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Open"
-                        android:textAllCaps="false"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:text="BluePrint_v2.1.pdf"
+                        android:textColor="#1E293B"
+                        android:textSize="16sp"
                         android:fontFamily="@font/raleway_bold"
-                        android:letterSpacing="0.01"
-                        android:textColor="@android:color/white"
-                        android:paddingHorizontal="20dp"
-                        android:paddingVertical="10dp"
-                        app:cornerRadius="8dp"
-                        app:backgroundTint="#0D3C80" />
+                        android:maxLines="1"
+                        android:ellipsize="middle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Currently active version"
+                        android:textColor="#94A3B8"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/raleway_regular"
+                        android:layout_marginTop="2dp" />
                 </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/openCurrentBtn"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_icon_button"
+                    android:src="@drawable/ic_eye"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
+                    app:tint="#2563EB" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Previous Revisions Card -->
-        <androidx.cardview.widget.CardView
+        <!-- Revision History Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REVISION HISTORY"
+            android:textColor="#475569"
+            android:textSize="11sp"
+            android:fontFamily="@font/raleway_bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.12"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="14dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/revisionsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingHorizontal="4dp"
+            android:layout_marginBottom="32dp"
+            android:overScrollMode="never" />
 
-            <LinearLayout
-                android:orientation="vertical"
+        <!-- Control Center -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:padding="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uploadRevisionBtn"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp">
+                android:layout_height="60dp"
+                android:text="Upload New Revision"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:fontFamily="@font/raleway_bold"
+                android:textColor="#2563EB"
+                app:cornerRadius="18dp"
+                app:strokeColor="#CBD5E1"
+                app:strokeWidth="1.5dp"
+                app:icon="@drawable/ic_work"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconTint="#2563EB"
+                android:layout_marginBottom="16dp" />
 
-                <TextView
-                    android:text="Previous Revisions"
-                    android:textColor="#091635"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/raleway_bold"
-                    android:layout_marginBottom="12dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/revisionsRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Upload Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/uploadRevisionBtn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload New Revision"
-            android:textAllCaps="false"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/raleway_bold"
-            android:letterSpacing="0.01"
-            android:textColor="#0D3C80"
-            android:paddingVertical="14dp"
-            android:layout_marginBottom="12dp"
-            app:cornerRadius="12dp"
-            app:strokeColor="#0D3C80"
-            app:strokeWidth="2dp"
-            app:icon="@android:drawable/ic_menu_upload"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
-            app:iconTint="#0D3C80" />
-
-        <!-- Next Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/nextBtn"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Next Step"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/raleway_bold"
-            android:letterSpacing="0.01"
-            android:textColor="@android:color/white"
-            android:paddingVertical="16dp"
-            app:cornerRadius="12dp"
-            app:backgroundTint="#4CAF50"
-            app:icon="@android:drawable/ic_media_play"
-            app:iconGravity="textEnd" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextBtn"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Advance to Compliance"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:fontFamily="@font/raleway_bold"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="18dp"
+                app:backgroundTint="#0F172A"
+                app:elevation="4dp"
+                app:icon="@drawable/ic_match"
+                app:iconGravity="textEnd"
+                app:iconPadding="12dp"
+                app:iconTint="#FFFFFF" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

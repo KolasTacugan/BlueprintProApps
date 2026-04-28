@@ -4,21 +4,26 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
+        
         android:title="Home"
         android:fontFamily="@font/raleway_bold"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/nav_project"
-        android:icon="@drawable/ic_project"
-        android:title="Project"
+        android:id="@+id/nav_work"
+        android:title="Projects"
+        android:fontFamily="@font/raleway_bold"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/nav_messages"
+        android:title="Messages"
         android:fontFamily="@font/raleway_bold"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_profile"
+        
         android:title="Profile"
         android:fontFamily="@font/raleway_bold"
         app:showAsAction="ifRoom" />

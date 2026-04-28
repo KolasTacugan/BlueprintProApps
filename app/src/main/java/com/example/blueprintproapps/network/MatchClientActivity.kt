@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.blueprintproapps.R
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.models.*
 import com.example.blueprintproapps.utils.ArchitectDetailBottomSheet
 import com.google.android.material.chip.Chip
@@ -49,12 +51,15 @@ class MatchClientActivity : AppCompatActivity() {
 
     private var lastQuery: String = ""
     private var hasSearched = false
+    private lateinit var clientId: String
 
     private val questionStates = mutableListOf<QuestionState>()
     private var currentQuestions: List<ClarificationQuestion> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.CLIENT) ?: return
+        clientId = session.userId
         setContentView(R.layout.activity_match_client)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { v, insets ->
@@ -133,9 +138,6 @@ class MatchClientActivity : AppCompatActivity() {
         matchRecyclerView.visibility       = View.GONE
         clarificationScrollView.visibility = View.GONE
         aiFeedbackContainer.visibility     = View.GONE
-
-        val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-            .getString("clientId", null) ?: return
 
         ApiClient.instance.getMatches(clientId, query, clarifications)
             .enqueue(object : Callback<MatchesApiResponse> {
@@ -485,10 +487,6 @@ class MatchClientActivity : AppCompatActivity() {
     // ─── Match request ────────────────────────────────────────────────────────
 
     private fun sendMatchRequest(architectId: String) {
-        val clientId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-            .getString("clientId", "") ?: ""
-        if (clientId.isEmpty()) return
-
         ApiClient.instance.requestMatch(
             MatchRequest(architectId, clientId)
         ).enqueue(object : Callback<GenericResponse> {

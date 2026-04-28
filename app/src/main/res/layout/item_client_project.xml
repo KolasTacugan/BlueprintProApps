@@ -4,17 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    android:layout_marginBottom="20dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#F1F5F9"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Project Image with Status Overlay -->
+        <!-- Project Image Section -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="200dp">
@@ -24,26 +26,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_gallery"
+                android:src="@drawable/ic_placeholder_blueprint"
                 android:contentDescription="Project image" />
 
-            <!-- Status Badge Overlay -->
+            <!-- Glassmorphism Status Badge -->
             <TextView
                 android:id="@+id/projectStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="12dp"
-                android:text="Status: Ongoing"
-                android:textStyle="bold"
+                android:layout_gravity="top|start"
+                android:layout_margin="16dp"
+                android:text="Ongoing"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="11sp"
                 android:fontFamily="@font/raleway_bold"
-                android:background="@drawable/card_modern"
-                android:backgroundTint="#0D3C80"
+                android:background="@drawable/bg_glass_badge"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
+                android:letterSpacing="0.05"
+                android:textAllCaps="true" />
+
+            <!-- Gradient Bottom Overlay -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/gradient_overlay_bottom" />
+
+            <!-- Budget Tag -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:background="@drawable/bg_price_tag"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:elevation="4dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                
+                <TextView
+                    android:id="@+id/tvProjectBudget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱2.5M"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/raleway_bold" />
+            </LinearLayout>
 
         </FrameLayout>
 
@@ -54,70 +84,87 @@
             android:layout_height="wrap_content"
             android:padding="20dp">
 
-            <!-- Project Title -->
             <TextView
                 android:id="@+id/projectTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Project Title"
+                android:text="Modern Minimalist Villa"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#0D3C80"
+                android:textColor="#0F172A"
                 android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_marginBottom="8dp" />
+                android:letterSpacing="-0.01"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-            <!-- Architect Name with Label -->
+            <TextView
+                android:id="@+id/architectName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Architect: Arch. John Anderson"
+                android:textSize="13sp"
+                android:textColor="#64748B"
+                android:fontFamily="@font/raleway_regular"
+                android:layout_marginTop="4dp" />
+
+            <!-- Progress Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Architect: "
-                    android:textSize="14sp"
-                    android:textColor="#6B7280"
-                    android:fontFamily="@font/raleway_regular"
-                    android:letterSpacing="0.01" />
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Project Progress"
+                        android:textSize="11sp"
+                        android:textColor="#94A3B8"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textAllCaps="true" />
+                    <TextView
+                        android:id="@+id/progressPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="65%"
+                        android:textSize="11sp"
+                        android:textColor="#3B82F6"
+                        android:fontFamily="@font/raleway_bold" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/architectName"
-                    android:layout_width="0dp"
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/projectProgress"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Architect: John Doe"
-                    android:textSize="14sp"
-                    android:textColor="#0D3C80"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/raleway_bold"
-                    android:letterSpacing="0.01"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
-
+                    android:layout_marginTop="8dp"
+                    app:indicatorColor="#3B82F6"
+                    app:trackColor="#F1F5F9"
+                    app:trackCornerRadius="4dp"
+                    app:trackThickness="6dp"
+                    android:progress="65" />
             </LinearLayout>
 
             <!-- Track Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/trackBtn"
-                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Track"
+                android:layout_marginTop="20dp"
+                android:text="Track Project"
                 android:textAllCaps="false"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:textSize="14sp"
                 android:fontFamily="@font/raleway_bold"
-                android:letterSpacing="0.01"
-                android:textColor="@android:color/white"
-                app:cornerRadius="12dp"
-                app:backgroundTint="#0D3C80"
-                app:rippleColor="#1E40AF" />
+                app:cornerRadius="14dp"
+                app:backgroundTint="#0F172A"
+                app:elevation="0dp"
+                app:icon="@drawable/ic_eye"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconSize="18dp" />
 
         </LinearLayout>
     </LinearLayout>

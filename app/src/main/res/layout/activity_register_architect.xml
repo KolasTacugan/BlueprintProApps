@@ -7,227 +7,543 @@
     android:layout_height="match_parent"
     tools:context=".network.RegisterArchitectActivity">
 
-    <!-- 🌇 Fullscreen Background -->
+    <!-- Immersive Background -->
     <ImageView
-        android:id="@+id/bgImage"
+        android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/bldg_bg"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/app_name" />
+        android:scaleX="1.1"
+        android:scaleY="1.1" />
 
-    <!-- 📜 White Rounded Card Scrollable -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_overlay" />
+
     <ScrollView
         android:id="@+id/register_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         android:overScrollMode="never">
 
         <LinearLayout
-            android:id="@+id/cardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/rounded_white_card"
-            android:elevation="16dp"
-            android:padding="24dp"
-            android:clipToOutline="true"
-            android:layout_marginBottom="24dp">
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="28dp"
+            android:paddingTop="80dp"
+            android:paddingBottom="32dp">
 
-            <!-- 🏷 Title Section -->
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/bpp_logo_updated" />
+
+            <!-- Architect Header Section -->
+            <TextView
+                android:id="@+id/tvRegisterTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="Architect Registration"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.7"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Join the elite network of developers"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <!-- Stepper Progress Indicator -->
+            <TextView
+                android:id="@+id/tvStepIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="Step 1 of 3: Profile Details"
+                android:textColor="#82B1FF"
+                android:textSize="13sp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/stepProgress"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:indicatorColor="#82B1FF"
+                app:trackColor="#33FFFFFF"
+                app:trackCornerRadius="4dp"
+                android:max="3"
+                android:progress="1" />
+
+            <!-- Step 1 Container -->
             <LinearLayout
+                android:id="@+id/step1Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="24dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/registerTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Join as an Architect"
-                    android:textColor="#091635"
-                    android:textSize="26sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/raleway_bold" />
-
-                <TextView
-                    android:id="@+id/registerSubtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Create your professional BlueprintPro account"
-                    android:textColor="#6c757d"
-                    android:textSize="15sp"
-                    android:layout_marginTop="6dp"
-                    android:fontFamily="@font/raleway_regular" />
-            </LinearLayout>
-
-            <!-- 🧍 Basic Info -->
+            <!-- Section: Personal Details -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/firstNameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:hint="First Name"
-                android:layout_marginBottom="12dp">
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="textPersonName"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/lastNameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:hint="Last Name"
-                android:layout_marginBottom="12dp">
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/lastNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:fontFamily="@font/raleway_regular"
+                    android:inputType="textPersonName"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phoneNumberLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:hint="Phone Number"
-                android:layout_marginBottom="12dp">
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phoneNumberInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="phone"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/emailLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
-                android:layout_marginBottom="12dp">
+                android:layout_marginTop="12dp"
+                android:hint="Email Address"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="textEmailAddress"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- Step 2 Container -->
+            <LinearLayout
+                android:id="@+id/step2Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:hint="Password"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
                 app:endIconMode="password_toggle"
-                android:layout_marginBottom="12dp">
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="textPassword"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/confirmPasswordLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:hint="Confirm Password"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
                 app:endIconMode="password_toggle"
-                android:layout_marginBottom="20dp">
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/confirmPasswordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="textPassword"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- 🧱 Architect Info -->
+            </LinearLayout>
+
+            <!-- Step 3 Container -->
+            <LinearLayout
+                android:id="@+id/step3Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            <!-- Section: Professional Credentials -->
             <TextView
-                android:id="@+id/tvArchitectInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Architect Information"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/raleway_bold" />
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/raleway_bold"
+                android:text="Professional Credentials"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/licenseNoLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:hint="License Number"
-                android:layout_marginBottom="12dp">
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:hintTextColor="@android:color/white"
+                app:startIconTint="#82B1FF"
+                app:endIconTint="#82B1FF">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/licenseNoInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
                     android:inputType="text"
-                    android:fontFamily="@font/raleway_regular" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Dropdowns -->
-            <Spinner
-                android:id="@+id/spinnerStyle"
+            <!-- Professional Dropdowns -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/styleLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="12dp"
+                android:hint="Architectural Style"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
 
-            <Spinner
-                android:id="@+id/spinnerBudget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp" />
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Spinner
-                android:id="@+id/spinnerLocation"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/budgetLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="12dp"
+                android:hint="Project Budget Range"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
 
-            <Spinner
-                android:id="@+id/spinnerSpecialization"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp" />
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoBudget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- 🎨 Register Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/registerButtonArchitect"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/locationLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Register"
-                android:textColor="@android:color/white"
-                android:background="@drawable/gradient_button"
-                android:paddingVertical="12dp"
-                android:fontFamily="@font/raleway_bold"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginTop="12dp"
+                android:hint="Service Location"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/specializationLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Professional Specialization"
+                android:textColorHint="@android:color/white"
+                app:boxBackgroundColor="#4DFFFFFF"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeColor="@android:color/white"
+                app:endIconTint="@android:color/white"
+                app:hintTextColor="@android:color/white">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/autoSpecialization"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/raleway_regular"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- Complete Registration Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBackArchitect"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/raleway_bold"
+                    android:letterSpacing="0.02"
+                    android:text="Back"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/registerButtonArchitect"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:fontFamily="@font/raleway_bold"
+                        android:letterSpacing="0.02"
+                        android:text="Next Step"
+                        android:textSize="16sp"
+                        app:cornerRadius="14dp" />
+
+                    <LinearLayout
+                        android:id="@+id/registerProgressLayoutArchitect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:indeterminate="true"
+                            app:indicatorColor="@android:color/white"
+                            app:indicatorSize="20dp"
+                            app:trackThickness="2dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/raleway_bold"
+                            android:text="REGISTERING..."
+                            android:textColor="@android:color/white"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Login Link Container -->
+            <LinearLayout
+                android:id="@+id/loginLinkContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
+                    android:text="Already have an account? "
+                    android:textColor="@android:color/white"
+                    android:alpha="0.7"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_bold"
+                    android:text="Login"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
 </FrameLayout>

@@ -1,6 +1,5 @@
 package com.example.blueprintproapps.network
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -11,9 +10,13 @@ import com.example.blueprintproapps.R
 import com.example.blueprintproapps.adapter.ChatHeadAdapter
 import com.example.blueprintproapps.adapter.MessagesAdapter
 import com.example.blueprintproapps.api.ApiClient
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.auth.UserRole
 import com.example.blueprintproapps.databinding.ActivityMessagesBinding
 import com.example.blueprintproapps.models.ConversationListResponse
 import com.example.blueprintproapps.models.MatchListResponse
+import com.example.blueprintproapps.navigation.AppNavDestination
+import com.example.blueprintproapps.navigation.AppNavigator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,12 +30,11 @@ class MessagesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = AuthSessionManager.requireSession(this, UserRole.CLIENT) ?: return
         binding = ActivityMessagesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ Load logged-in user's profile photo in the top search bar
-        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-        val userProfileUrl = sharedPref.getString("profilePhoto", null)
+        val clientId = session.userId
 //        userProfileUrl?.let {
 //            Glide.with(this)
 //                .load(it)
@@ -46,31 +48,32 @@ class MessagesActivity : AppCompatActivity() {
         binding.recyclerChatHeads.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // ✅ Get clientId from SharedPreferences
-        val clientId = sharedPref.getString("clientId", null)
-        if (clientId.isNullOrEmpty()) {
-            Toast.makeText(this, "Missing client ID", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
         // ✅ Initialize Adapters
         messageAdapter = MessagesAdapter(emptyList()) { conversation ->
             openChatActivity(
                 conversation.architectId ?: "",
-                conversation.architectName ?: "Unknown"
+                conversation.architectName ?: "Unknown",
+                conversation.profileUrl
             )
         }
 
         chatHeadAdapter = ChatHeadAdapter(emptyList()) { match ->
             openChatActivity(
                 match.architectId ?: "",
-                match.architectName ?: "Unknown"
+                match.architectName ?: "Unknown",
+                match.architectPhoto
             )
         }
 
         binding.recyclerMessages.adapter = messageAdapter
         binding.recyclerChatHeads.adapter = chatHeadAdapter
+
+        AppNavigator.bind(
+            activity = this,
+            bottomNavigationView = binding.bottomNavigation,
+            role = UserRole.CLIENT,
+            currentDestination = AppNavDestination.MESSAGES
+        )
 
         // ✅ Load data
         loadConversations(clientId)
@@ -82,12 +85,9 @@ class MessagesActivity : AppCompatActivity() {
         super.onResume()
         val now = System.currentTimeMillis()
         if (now - lastRefreshTime > 3000) { // refresh only if 3s passed
-            val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-            val clientId = sharedPref.getString("clientId", null)
-            if (!clientId.isNullOrEmpty()) {
-                loadConversations(clientId)
-                loadMatches(clientId)
-            }
+            val clientId = AuthSessionManager.requireSession(this, UserRole.CLIENT)?.userId ?: return
+            loadConversations(clientId)
+            loadMatches(clientId)
             lastRefreshTime = now
         }
     }
@@ -104,7 +104,8 @@ class MessagesActivity : AppCompatActivity() {
                         messageAdapter = MessagesAdapter(conversations) { convo ->
                             openChatActivity(
                                 convo.architectId ?: "",
-                                convo.architectName ?: "Unknown"
+                                convo.architectName ?: "Unknown",
+                                convo.profileUrl
                             )
                         }
                         binding.recyclerMessages.adapter = messageAdapter
@@ -140,7 +141,8 @@ class MessagesActivity : AppCompatActivity() {
                         chatHeadAdapter = ChatHeadAdapter(matches) { match ->
                             openChatActivity(
                                 match.architectId ?: "",
-                                match.architectName ?: "Unknown"
+                                match.architectName ?: "Unknown",
+                                match.architectPhoto
                             )
                         }
                         binding.recyclerChatHeads.adapter = chatHeadAdapter
@@ -164,7 +166,7 @@ class MessagesActivity : AppCompatActivity() {
     }
 
     // 🚀 Open ChatActivity
-    private fun openChatActivity(receiverId: String, receiverName: String) {
+    private fun openChatActivity(receiverId: String, receiverName: String, receiverPhoto: String? = null) {
         if (receiverId.isEmpty()) {
             Toast.makeText(this, "Invalid chat target.", Toast.LENGTH_SHORT).show()
             return
@@ -173,6 +175,7 @@ class MessagesActivity : AppCompatActivity() {
         val intent = Intent(this, ChatActivity::class.java).apply {
             putExtra("receiverId", receiverId)
             putExtra("receiverName", receiverName)
+            putExtra("receiverPhoto", receiverPhoto)
         }
         startActivity(intent)
     }

@@ -1,7 +1,10 @@
 package com.example.blueprintproapps.network
 
+import com.example.blueprintproapps.R
+import com.example.blueprintproapps.auth.AuthSessionManager
+import com.example.blueprintproapps.utils.UiEffects
+
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -9,47 +12,76 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.blueprintproapps.R
+import android.view.View
+import android.widget.ImageView
+import com.example.blueprintproapps.utils.ParallaxEffect
 
 class ChooseRoleActivity : AppCompatActivity() {
+
+    private lateinit var parallaxEffect: ParallaxEffect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_choose_role)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        val background = findViewById<ImageView>(R.id.ivBackground)
+        val logo = findViewById<View>(R.id.ivLogo)
+        val tagline = findViewById<TextView>(R.id.tvTagline)
+        val clientButton = findViewById<View>(R.id.btnClient)
+        val architectButton = findViewById<View>(R.id.btnArchitect)
+        val ivClientIcon = findViewById<ImageView>(R.id.ivClientIcon)
+        val ivArchitectIcon = findViewById<ImageView>(R.id.ivArchitectIcon)
+        val loginLinkContainer = findViewById<View>(R.id.loginLinkContainer)
+
+        // Window Insets for Content (Applied to ScrollView to keep background full-screen)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.roleScrollView)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val clientButton = findViewById<LinearLayout>(R.id.clientButton)
-        val architectButton = findViewById<LinearLayout>(R.id.architectButton)
-        val backToLogin = findViewById<TextView>(R.id.backToLogin)
+        // Apply Premium Effects
+        parallaxEffect = ParallaxEffect(this)
+        parallaxEffect.attach(background)
 
-        val sharedPrefs: SharedPreferences = getSharedPreferences("BlueprintPrefs", MODE_PRIVATE)
+        UiEffects.applyIconify(ivClientIcon, "md-person")
+        UiEffects.applyIconify(ivArchitectIcon, "md-account-balance")
+        
+        // Interactive visual feedback
+        UiEffects.applyPressScaleEffect(clientButton)
+        UiEffects.applyPressScaleEffect(architectButton)
+        
+        // Cascading Entrance for all components
+        UiEffects.applyCascadingEntrance(listOf(logo, tagline, clientButton, architectButton, loginLinkContainer))
 
         clientButton.setOnClickListener {
-            saveRole(sharedPrefs, "Client")
-            val intent = Intent(this, RegisterClientActivity::class.java)
-            startActivity(intent)
+            openRegistration(RegisterClientActivity::class.java, "Client")
         }
 
         architectButton.setOnClickListener {
-            saveRole(sharedPrefs, "Architect")
-            val intent = Intent(this, RegisterArchitectActivity::class.java)
-            startActivity(intent)
+            openRegistration(RegisterArchitectActivity::class.java, "Architect")
         }
 
-        backToLogin.setOnClickListener {
+        loginLinkContainer.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
         }
     }
-    //test push
-    private fun saveRole(sharedPrefs: SharedPreferences, role: String) {
-        sharedPrefs.edit().putString("user_role", role).apply()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::parallaxEffect.isInitialized) {
+            parallaxEffect.detach()
+        }
+    }
+
+    private fun openRegistration(target: Class<*>, role: String) {
+        val intent = Intent(this, target).apply {
+            putExtra(AuthSessionManager.EXTRA_SELECTED_ROLE, role)
+        }
+        startActivity(intent)
     }
 }
