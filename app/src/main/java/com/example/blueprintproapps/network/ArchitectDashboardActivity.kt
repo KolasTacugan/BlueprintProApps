@@ -172,28 +172,6 @@ class ArchitectDashboardActivity : AppCompatActivity() {
             })
     }
 
-    private fun fetchArchitectProfile(architectId: String?, tvUserName: TextView) {
-        if (architectId == null) return
-
-        ApiClient.instance.getProfile(architectId)
-            .enqueue(object : Callback<ProfileApiResponse> {
-
-                override fun onResponse(
-                    call: Call<ProfileApiResponse>,
-                    response: Response<ProfileApiResponse>
-                ) {
-                    val body = response.body()
-
-                    if (body != null && body.success && body.data != null) {
-                        val firstName = body.data.firstName ?: "Architect"
-
-                        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                        prefs.edit().putString("firstName", firstName).apply()
-
-                        tvUserName.text = firstName
-                    }
-                }
-
     override fun onDestroy() {
         profileCall?.cancel()
         matchesCall?.cancel()
