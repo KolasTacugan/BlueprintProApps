@@ -25,6 +25,8 @@ import com.example.blueprintproapps.utils.UiEffects
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
+import com.example.blueprintproapps.models.VerifyEmailRequest
+import com.example.blueprintproapps.models.VerifyEmailResponse
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.joanzapata.iconify.IconDrawable
@@ -89,6 +91,30 @@ class ChangePasswordActivity : AppCompatActivity() {
             if (email.isEmpty()) { emailLayout.error = "Required"; vibrateError() }
             else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) { emailLayout.error = "Invalid format"; vibrateError() }
             else performVerification(email, passwordSection)
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            ApiClient.instance.verifyEmail(VerifyEmailRequest(email)).enqueue(object : Callback<VerifyEmailResponse> {
+                override fun onResponse(
+                    call: Call<VerifyEmailResponse>,
+                    response: Response<VerifyEmailResponse>
+                ) {
+                    if (response.code() == 404) {
+                        Toast.makeText(this@ChangePasswordActivity, "Email not found", Toast.LENGTH_SHORT).show()
+                    } else {
+                        passwordSection.visibility = View.VISIBLE
+                        emailInput.isEnabled = false
+                        verifyButton.visibility = View.GONE
+                        Toast.makeText(this@ChangePasswordActivity, "Email verified. You can now change your password.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<VerifyEmailResponse>, t: Throwable) {
+                    Toast.makeText(this@ChangePasswordActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
 
         changeButton.setOnClickListener {

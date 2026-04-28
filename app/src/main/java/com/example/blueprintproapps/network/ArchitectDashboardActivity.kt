@@ -17,6 +17,7 @@ import com.example.blueprintproapps.models.ArchitectBlueprintResponse
 import com.example.blueprintproapps.models.ArchitectConversationListResponse
 import com.example.blueprintproapps.models.ArchitectMatchListResponse
 import com.example.blueprintproapps.models.ArchitectProjectResponse
+import com.example.blueprintproapps.models.CredentialStatusResponse
 import com.example.blueprintproapps.models.ProfileApiResponse
 import com.example.blueprintproapps.navigation.AppNavDestination
 import com.example.blueprintproapps.navigation.AppNavigator
@@ -76,6 +77,7 @@ class ArchitectDashboardActivity : AppCompatActivity() {
         val architectId = session.userId
         fetchArchitectProfile(architectId, tvUserName)
         loadDashboardStats(architectId, tvStatMatches, tvStatUploads, tvStatProjects)
+        checkAndShowCredentialReminder(architectId)
 
         // Click Listeners
         chatIcon.setOnClickListener {
@@ -147,6 +149,50 @@ class ArchitectDashboardActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<ArchitectBlueprintResponse>>, t: Throwable) {}
         })
     }
+    private fun checkAndShowCredentialReminder(architectId: String?) {
+        if (architectId.isNullOrBlank()) return
+
+        ApiClient.instance.getCredentialStatus(architectId)
+            .enqueue(object : Callback<CredentialStatusResponse> {
+
+                override fun onResponse(
+                    call: Call<CredentialStatusResponse>,
+                    response: Response<CredentialStatusResponse>
+                ) {
+                    val body = response.body()
+                    if (body != null && body.success && !body.hasCredentialFile) {
+                        CredentialReminderBottomSheet()
+                            .show(supportFragmentManager, "credential_reminder")
+                    }
+                }
+
+                override fun onFailure(call: Call<CredentialStatusResponse>, t: Throwable) {
+                    // silent — reminder is non-critical
+                }
+            })
+    }
+
+    private fun fetchArchitectProfile(architectId: String?, tvUserName: TextView) {
+        if (architectId == null) return
+
+        ApiClient.instance.getProfile(architectId)
+            .enqueue(object : Callback<ProfileApiResponse> {
+
+                override fun onResponse(
+                    call: Call<ProfileApiResponse>,
+                    response: Response<ProfileApiResponse>
+                ) {
+                    val body = response.body()
+
+                    if (body != null && body.success && body.data != null) {
+                        val firstName = body.data.firstName ?: "Architect"
+
+                        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                        prefs.edit().putString("firstName", firstName).apply()
+
+                        tvUserName.text = firstName
+                    }
+                }
 
     override fun onDestroy() {
         profileCall?.cancel()
